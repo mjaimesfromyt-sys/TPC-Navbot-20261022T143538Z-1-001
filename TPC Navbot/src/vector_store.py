@@ -1,202 +1,273 @@
-import os
-from src.embedding import EmbeddingGenerator
+"""Durable, idempotent vector storage with source validation before retrieval.
 
-try:
-    import chromadb
-    HAS_CHROMADB = True
-except ImportError:
-    HAS_CHROMADB = False
+The v2 snapshot is authoritative. Legacy Chroma collections are neither loaded nor
+trusted. Chroma, when available, mirrors the current snapshot in a new namespace.
+"""
+import hashlib
+import json
+import math
+import os
+import warnings
+from pathlib import Path
+
+from src.config import PERSIST_DIRECTORY, RAW_DATA_DIR, SOURCE_REGISTRY_PATH
+from src.embedding import EmbeddingGenerator
+from src.preprocessing import TextPreprocessor
+
+
+DESTINATION_ALIASES = {
+    "library": ("library", "aklatan", "basahanan", "basahan", "learning center"),
+    "cashier": ("cashier", "cashiering", "finance services", "finance office", "kahera", "kaser"),
+    "registrar": ("registrar", "records office"),
+    "guidance": ("guidance", "counseling", "counselling", "tagapayo"),
+    "clinic": ("clinic", "klinika", "tambalanan", "medical", "dental"),
+    "canteen": ("canteen", "cafeteria", "kantina", "kainan", "kan anan", "kan an", "kaonan", "dining hall"),
+    "gymnasium": ("gymnasium", "gym", "gymnasyum", "covered court"),
+    "computer studies": ("computer studies", "bsis", "bsais", "comlab", "computer lab", "ccis"),
+    "criminology": ("criminology", "bscrim", "kriminolohiya"),
+    "agriculture": ("agriculture", "agrikultura", "bsag"),
+    "student affairs": ("student affairs", "saso", "student services"),
+    "security": ("security", "guardhouse", "guard house", "gwardya", "lost and found", "lost found"),
+    "administration": ("administration", "admin building"),
+    "admissions": ("admissions", "scholarship", "scholarships"),
+    "chapel": ("chapel", "kapilya", "ecumenical"),
+    "nstp": ("nstp", "rotc", "cwts"),
+    "student government": ("student government", "ssg", "supreme student"),
+    "restroom": ("restroom", "comfort room", "toilet", "cr", "kasilyas", "palikuran"),
+}
+
+
+def _normalized_words(text):
+    import re
+    return " ".join(re.findall(r"\w+", text.casefold().replace("_", " ")))
+
+
+def canonical_destinations(text):
+    """Exact multilingual phrase matching, never substring-based word boosts."""
+    words = " " + _normalized_words(text) + " "
+    return {name for name, aliases in DESTINATION_ALIASES.items()
+            if any(" " + _normalized_words(alias) + " " in words for alias in aliases)}
+
 
 class VectorStore:
-    """
-    Vector Database implementation using ChromaDB for indexing TPC campus text chunks
-    and executing similarity queries across Cosine, Euclidean, and Dot Product metrics.
-    """
-    def __init__(self, embedding_generator=None, collection_name: str = "tpc_navbot_collection", persist_directory: str = r"c:\Users\ranz\Desktop\TPC Navbot\data\chroma_db"):
+    def __init__(self, embedding_generator=None, collection_name="tpc_navbot_collection",
+                 persist_directory=None, raw_data_dir=None, source_registry_path=None,
+                 backend="auto"):
+        if backend not in {"auto", "json", "memory", "chroma"}:
+            raise ValueError("backend must be auto, json, memory, or chroma")
         self.embedder = embedding_generator or EmbeddingGenerator()
-        self.documents = []
-        self.embeddings = []
-        self.metadatas = []
-        self.ids = []
-        self.collection_name = collection_name
-        self.persist_directory = persist_directory
-
-        self.chroma_client = None
-        self.collection = None
-
-        if HAS_CHROMADB:
+        self.raw_data_dir = Path(raw_data_dir or RAW_DATA_DIR).resolve()
+        self.source_registry_path = Path(source_registry_path or SOURCE_REGISTRY_PATH)
+        self.persist_directory = str(persist_directory or PERSIST_DIRECTORY)
+        # Embedding spaces never share a collection or a snapshot.
+        signature = getattr(self.embedder, "signature", f"custom:{self.embedder.vector_dim}")
+        self.embedding_signature = signature
+        suffix = hashlib.sha256(signature.encode()).hexdigest()[:12]
+        self.collection_name = f"{collection_name}_v2_{suffix}"
+        self._snapshot = Path(self.persist_directory) / f"{self.collection_name}.json"
+        self._persistent = backend != "memory"
+        self.backend = "JSON persistent vector index" if self._persistent else "in-memory vector index"
+        self.chroma_client = self.collection = None
+        self._records = {}
+        self._tracked_sources = set()
+        if self._persistent:
+            self._load_snapshot()
+        if backend in {"auto", "chroma"}:
             try:
-                os.makedirs(self.persist_directory, exist_ok=True)
-                self.chroma_client = chromadb.PersistentClient(path=self.persist_directory)
-                try:
-                    self.collection = self.chroma_client.get_or_create_collection(
-                        name=self.collection_name,
-                        metadata={"hnsw:space": "cosine"}
-                    )
-                except Exception:
-                    self.collection = self.chroma_client.create_collection(
-                        name=self.collection_name,
-                        metadata={"hnsw:space": "cosine"}
-                    )
-            except Exception as e:
-                print(f"ChromaDB initialization notice: {e}")
-                self.chroma_client = None
-                self.collection = None
+                import chromadb
+                from chromadb.config import Settings
+                self.chroma_client = chromadb.PersistentClient(
+                    path=self.persist_directory, settings=Settings(anonymized_telemetry=False))
+                self.collection = self.chroma_client.get_or_create_collection(
+                    name=self.collection_name, metadata={"hnsw:space": "cosine"})
+                self.backend = "ChromaDB + persistent snapshot"
+                self._mirror_snapshot()
+            except Exception as exc:
+                if backend == "chroma":
+                    raise RuntimeError("ChromaDB backend requested but unavailable") from exc
+                warnings.warn("ChromaDB unavailable; using persistent JSON vectors with exact similarity search.", RuntimeWarning)
+                self.chroma_client = self.collection = None
+        self._refresh_arrays()
 
-    def add_chunks(self, chunks: list):
-        if not chunks:
+    def _load_snapshot(self):
+        if not self._snapshot.exists():
             return
+        try:
+            data = json.loads(self._snapshot.read_text(encoding="utf-8"))
+            if data.get("schema_version") != 2 or data.get("embedding_signature") != self.embedding_signature:
+                return
+            self._tracked_sources = {name for name in data.get("tracked_sources", []) if isinstance(name, str)}
+            for row in data.get("records", []):
+                if not isinstance(row, dict) or not isinstance(row.get("metadata"), dict):
+                    continue
+                vector = row.get("embedding", [])
+                if len(vector) != self.embedder.vector_dim or not all(isinstance(x, (int, float)) and math.isfinite(x) for x in vector):
+                    continue
+                if isinstance(row.get("id"), str) and isinstance(row.get("text"), str):
+                    self._records[row["id"]] = row
+                    if isinstance(row["metadata"].get("source_doc"), str):
+                        self._tracked_sources.add(row["metadata"]["source_doc"])
+            counts = data.get("source_chunk_counts", {})
+            if isinstance(counts, dict):
+                for name in list(self._tracked_sources):
+                    actual = sum(r["metadata"].get("source_doc") == name for r in self._records.values())
+                    if name in counts and counts[name] != actual:
+                        self._tracked_sources.discard(name)
+                        self._records = {key: row for key, row in self._records.items() if row["metadata"].get("source_doc") != name}
+        except (OSError, ValueError, TypeError, AttributeError):
+            warnings.warn("Unreadable vector snapshot; re-ingest source documents to rebuild it.", RuntimeWarning)
 
-        new_ids = []
-        new_docs = []
-        new_metas = []
-        new_embs = []
+    def _save_snapshot(self):
+        if not self._persistent:
+            return
+        self._snapshot.parent.mkdir(parents=True, exist_ok=True)
+        temporary = self._snapshot.with_suffix(".json.tmp")
+        temporary.write_text(json.dumps({
+            "schema_version": 2,
+            "embedding_signature": self.embedding_signature,
+            "tracked_sources": sorted(self._tracked_sources),
+            "source_chunk_counts": {name: sum(r["metadata"].get("source_doc") == name for r in self._records.values())
+                                    for name in sorted(self._tracked_sources)},
+            "records": list(self._records.values()),
+        }, ensure_ascii=False), encoding="utf-8")
+        os.replace(temporary, self._snapshot)
 
-        for chunk in chunks:
-            text = chunk['text']
-            meta = chunk['metadata']
-            chunk_id = meta.get('chunk_id', f"id_{len(self.ids)+1:04d}")
-            emb = self.embedder.embed_text(text)
-
-            self.ids.append(chunk_id)
-            self.documents.append(text)
-            self.metadatas.append(meta)
-            self.embeddings.append(emb)
-
-            new_ids.append(chunk_id)
-            new_docs.append(text)
-            new_embs.append(emb)
-
-            clean_meta = {}
-            for k, v in meta.items():
-                if isinstance(v, (str, int, float, bool)):
-                    clean_meta[k] = v
-                else:
-                    clean_meta[k] = str(v)
-            new_metas.append(clean_meta)
-
-        if self.collection:
-            try:
+    def _mirror_snapshot(self):
+        if self.collection is None:
+            return
+        try:
+            present = set(self.collection.get(include=[]).get("ids", []))
+            stale = present - self._records.keys()
+            if stale:
+                self.collection.delete(ids=sorted(stale))
+            rows = list(self._records.values())
+            for start in range(0, len(rows), 100):
+                batch = rows[start:start + 100]
                 self.collection.upsert(
-                    ids=new_ids,
-                    embeddings=new_embs,
-                    documents=new_docs,
-                    metadatas=new_metas
-                )
-                print(f"Indexed {len(self.ids)} text chunks into ChromaDB Collection ('{self.collection_name}').")
-            except Exception as e:
-                print(f"Indexed {len(self.ids)} text chunks into VectorStore (ChromaDB notice: {e}).")
-        else:
-            print(f"Indexed {len(self.ids)} text chunks into VectorStore.")
+                    ids=[r["id"] for r in batch],
+                    documents=[r["text"] for r in batch],
+                    embeddings=[r["embedding"] for r in batch],
+                    metadatas=[{k: v for k, v in r["metadata"].items() if isinstance(v, (str, int, float, bool))} for r in batch])
+        except Exception:
+            warnings.warn("ChromaDB mirror update failed; authoritative JSON snapshot remains available.", RuntimeWarning)
+            self.collection = None
+            self.backend = "JSON persistent vector index"
 
-    def search(self, query: str, top_k: int = 3, metric: str = "cosine") -> list:
-        if len(self.documents) == 0:
+    def _refresh_arrays(self):
+        rows = list(self._records.values())
+        self.ids = [r["id"] for r in rows]
+        self.documents = [r["text"] for r in rows]
+        self.metadatas = [r["metadata"] for r in rows]
+        self.embeddings = [r["embedding"] for r in rows]
+
+    def _commit(self):
+        self._save_snapshot()
+        self._mirror_snapshot()
+        self._refresh_arrays()
+
+    def _upsert(self, chunks):
+        for chunk in chunks:
+            text, metadata = chunk["text"], dict(chunk["metadata"])
+            chunk_id = metadata.get("chunk_id")
+            if not isinstance(chunk_id, str) or not chunk_id or not metadata.get("source_doc"):
+                raise ValueError("Each chunk needs source_doc and a stable chunk_id")
+            current = self._records.get(chunk_id)
+            embedding = current["embedding"] if current and current["text"] == text else self.embedder.embed_text(text)
+            self._records[chunk_id] = {"id": chunk_id, "text": text, "metadata": metadata, "embedding": embedding}
+            self._tracked_sources.add(metadata["source_doc"])
+
+    def add_chunks(self, chunks):
+        """Upsert stable IDs; ingestion uses replace_document to prune removed chunks."""
+        self._upsert(chunks)
+        self._commit()
+
+    def replace_document(self, source_doc, chunks):
+        if any(c.get("metadata", {}).get("source_doc") != source_doc for c in chunks):
+            raise ValueError("All replacement chunks must belong to source_doc")
+        desired_ids = {c["metadata"]["chunk_id"] for c in chunks}
+        self._upsert(chunks)
+        self._tracked_sources.add(source_doc)
+        for chunk_id, row in list(self._records.items()):
+            if row["metadata"].get("source_doc") == source_doc and chunk_id not in desired_ids:
+                del self._records[chunk_id]
+        self._commit()
+
+    def delete_document(self, source_doc):
+        for chunk_id, row in list(self._records.items()):
+            if row["metadata"].get("source_doc") == source_doc:
+                del self._records[chunk_id]
+        self._tracked_sources.discard(source_doc)
+        self._commit()
+
+    def has_document(self, source_doc):
+        return source_doc in self._tracked_sources
+
+    def source_documents(self):
+        return set(self._tracked_sources)
+
+    def _verified_rows(self):
+        expected = {}
+        for row in self._records.values():
+            metadata = row["metadata"]
+            filename = metadata.get("source_doc", "")
+            if not isinstance(filename, str) or Path(filename).name != filename:
+                continue
+            if filename not in expected:
+                try:
+                    source = (self.raw_data_dir / filename).resolve()
+                    if source.parent != self.raw_data_dir:
+                        continue
+                    chunks = TextPreprocessor(source_registry_path=self.source_registry_path).process_file(source)
+                    expected[filename] = {c["metadata"]["chunk_id"]: c for c in chunks}
+                except (OSError, UnicodeError, ValueError):
+                    expected[filename] = {}
+            actual = expected[filename].get(row["id"])
+            # Reject stale chunks, stale approvals, forged metadata and legacy DB entries.
+            if (actual and actual["metadata"].get("verified_source") is True
+                    and actual["text"] == row["text"] and actual["metadata"] == metadata):
+                yield row
+
+    def search(self, query, top_k=3, metric="cosine", verified_only=True):
+        if metric not in {"cosine", "euclidean", "dot_product"}:
+            raise ValueError(f"Unsupported metric: {metric}")
+        if top_k <= 0:
             return []
-
+        rows = list(self._verified_rows()) if verified_only else list(self._records.values())
+        if not rows:
+            return []
+        targets = canonical_destinations(query)
+        if len(targets) == 1:
+            target = next(iter(targets))
+            matched = []
+            for row in rows:
+                metadata = row["metadata"]
+                identity = " ".join(str(metadata.get(key, "")) for key in ("building", "source_doc"))
+                # Verified structured destination names can identify generic file names.
+                for key in ("location_data", "route_data"):
+                    try:
+                        fact = json.loads(metadata.get(key, "{}"))
+                        if isinstance(fact, dict):
+                            identity += " " + str(fact.get("destination", ""))
+                            aliases = fact.get("aliases", [])
+                            if isinstance(aliases, list):
+                                identity += " " + " ".join(alias for alias in aliases if isinstance(alias, str))
+                    except (TypeError, ValueError):
+                        pass
+                if target in canonical_destinations(identity):
+                    matched.append(row)
+            # An explicit facility must never silently retrieve a different one.
+            rows = matched
+            query = f"{target} {query}"
         query_emb = self.embedder.embed_text(query)
-        q_lower = query.lower()
-
-        # Attempt search via ChromaDB vector store collection if available
-        if self.collection:
-            try:
-                chroma_res = self.collection.query(
-                    query_embeddings=[query_emb],
-                    n_results=min(top_k * 3, len(self.documents)),
-                    include=["documents", "metadatas", "distances"]
-                )
-                if chroma_res and chroma_res.get('ids') and len(chroma_res['ids']) > 0 and len(chroma_res['ids'][0]) > 0:
-                    results = []
-                    ids = chroma_res['ids'][0]
-                    docs = chroma_res['documents'][0]
-                    metas = chroma_res['metadatas'][0]
-                    distances = chroma_res['distances'][0]
-
-                    for idx in range(len(ids)):
-                        dist = distances[idx]
-                        score = max(0.0, 1.0 - dist)
-                        bldg = (metas[idx].get('building', '')).lower()
-                        src_doc = (metas[idx].get('source_doc', '')).lower()
-
-                        if ('bsis' in q_lower or 'comlab' in q_lower or 'computer' in q_lower or 'kompyuter' in q_lower) and ('computer studies' in bldg or 'computer_studies' in src_doc):
-                            score += 0.40
-                        elif ('crim' in q_lower or 'criminology' in q_lower or 'pulis' in q_lower) and ('criminology' in bldg or 'criminology' in src_doc):
-                            score += 0.40
-                        elif ('agri' in q_lower or 'agriculture' in q_lower or 'uma' in q_lower or 'tanom' in q_lower) and ('agriculture' in bldg or 'agriculture' in src_doc):
-                            score += 0.40
-                        elif ('polsci' in q_lower or 'english' in q_lower or 'beced' in q_lower or 'academic' in q_lower) and ('main academic' in bldg or 'main_academic' in src_doc):
-                            score += 0.40
-                        elif ('cashier' in q_lower or 'registrar' in q_lower or 'admin' in q_lower or 'tuition' in q_lower or 'fee' in q_lower or 'pay' in q_lower or 'permit' in q_lower or 'bayad' in q_lower or 'bayranan' in q_lower or 'bayaran' in q_lower or 'matrikula' in q_lower or 'magbayad' in q_lower) and ('administration' in bldg or 'administration' in src_doc or 'cashier' in src_doc or 'registrar' in src_doc):
-                            score += 0.40
-                        elif ('gym' in q_lower or 'sports' in q_lower or 'dulaan' in q_lower) and ('gymnasium' in bldg or 'gymnasium' in src_doc):
-                            score += 0.40
-                        elif ('clinic' in q_lower or 'medical' in q_lower or 'nurse' in q_lower or 'health' in q_lower or 'tambal' in q_lower or 'tambalanan' in q_lower or 'malipong' in q_lower or 'sakit' in q_lower or 'doktor' in q_lower) and ('clinic' in bldg or 'clinic' in src_doc):
-                            score += 0.40
-                        elif ('lost' in q_lower or 'security' in q_lower or 'guard' in q_lower or 'gwardya' in q_lower or 'bantay' in q_lower or 'nawala' in q_lower or 'nawagtang' in q_lower) and ('security' in bldg or 'security' in src_doc):
-                            score += 0.40
-                        elif ('library' in q_lower or 'libro' in q_lower or 'basahan' in q_lower or 'aklatan' in q_lower) and ('library' in bldg or 'library' in src_doc):
-                            score += 0.40
-                        elif ('canteen' in q_lower or 'cafeteria' in q_lower or 'kaonan' in q_lower or 'kainan' in q_lower or 'pagkaon' in q_lower) and ('canteen' in bldg or 'canteen' in src_doc):
-                            score += 0.40
-                        elif ('saso' in q_lower or 'affairs' in q_lower) and ('student affairs' in bldg or 'student_affairs' in src_doc):
-                            score += 0.40
-
-                        results.append({
-                            "id": ids[idx],
-                            "score": float(score),
-                            "text": docs[idx],
-                            "metadata": metas[idx]
-                        })
-
-                    results.sort(key=lambda x: x['score'], reverse=True)
-                    return results[:top_k]
-            except Exception as e:
-                pass
-
-        # In-memory vector calculation fallback
+        # All metrics use the same active snapshot, so Chroma distance conventions
+        # and stale mirror records cannot change application trust or ranking.
         results = []
-        for idx, doc_emb in enumerate(self.embeddings):
-            if metric == "cosine":
-                score = self.embedder.cosine_similarity(query_emb, doc_emb)
-            elif metric == "euclidean":
-                dist = self.embedder.euclidean_distance(query_emb, doc_emb)
-                score = 1.0 / (1.0 + dist)
+        for row in rows:
+            if metric == "euclidean":
+                score = 1.0 / (1.0 + self.embedder.euclidean_distance(query_emb, row["embedding"]))
             elif metric == "dot_product":
-                score = self.embedder.dot_product(query_emb, doc_emb)
+                score = self.embedder.dot_product(query_emb, row["embedding"])
             else:
-                raise ValueError(f"Unsupported metric: {metric}")
-
-            bldg = (self.metadatas[idx].get('building', '')).lower()
-            src_doc = (self.metadatas[idx].get('source_doc', '')).lower()
-
-            if ('bsis' in q_lower or 'comlab' in q_lower or 'computer' in q_lower) and ('computer studies' in bldg or 'computer_studies' in src_doc):
-                score += 0.40
-            elif ('crim' in q_lower or 'criminology' in q_lower) and ('criminology' in bldg or 'criminology' in src_doc):
-                score += 0.40
-            elif ('agri' in q_lower or 'agriculture' in q_lower or 'uma' in q_lower or 'tanom' in q_lower) and ('agriculture' in bldg or 'agriculture' in src_doc):
-                score += 0.40
-            elif ('polsci' in q_lower or 'english' in q_lower or 'beced' in q_lower or 'academic' in q_lower) and ('main academic' in bldg or 'main_academic' in src_doc):
-                score += 0.40
-            elif ('cashier' in q_lower or 'registrar' in q_lower or 'admin' in q_lower or 'tuition' in q_lower or 'fee' in q_lower or 'pay' in q_lower or 'permit' in q_lower or 'bayad' in q_lower or 'bayranan' in q_lower or 'bayaran' in q_lower or 'matrikula' in q_lower or 'magbayad' in q_lower) and ('administration' in bldg or 'administration' in src_doc or 'cashier' in src_doc or 'registrar' in src_doc):
-                score += 0.40
-            elif ('gym' in q_lower or 'sports' in q_lower or 'dulaan' in q_lower) and ('gymnasium' in bldg or 'gymnasium' in src_doc):
-                score += 0.40
-            elif ('clinic' in q_lower or 'medical' in q_lower or 'nurse' in q_lower or 'health' in q_lower or 'tambal' in q_lower or 'tambalanan' in q_lower or 'malipong' in q_lower or 'sakit' in q_lower or 'doktor' in q_lower) and ('clinic' in bldg or 'clinic' in src_doc):
-                score += 0.40
-            elif ('lost' in q_lower or 'security' in q_lower or 'guard' in q_lower or 'gwardya' in q_lower or 'bantay' in q_lower or 'nawala' in q_lower or 'nawagtang' in q_lower) and ('security' in bldg or 'security' in src_doc):
-                score += 0.40
-            elif ('library' in q_lower or 'libro' in q_lower or 'basahan' in q_lower or 'aklatan' in q_lower) and ('library' in bldg or 'library' in src_doc):
-                score += 0.40
-            elif ('canteen' in q_lower or 'cafeteria' in q_lower or 'kaonan' in q_lower or 'kainan' in q_lower or 'pagkaon' in q_lower) and ('canteen' in bldg or 'canteen' in src_doc):
-                score += 0.40
-            elif ('saso' in q_lower or 'affairs' in q_lower) and ('student affairs' in bldg or 'student_affairs' in src_doc):
-                score += 0.40
-
-            results.append({
-                "id": self.ids[idx],
-                "score": float(score),
-                "text": self.documents[idx],
-                "metadata": self.metadatas[idx]
-            })
-
-        results.sort(key=lambda x: x['score'], reverse=True)
-        return results[:top_k]
+                score = self.embedder.cosine_similarity(query_emb, row["embedding"])
+            results.append({"id": row["id"], "score": float(score), "text": row["text"], "metadata": dict(row["metadata"])})
+        return sorted(results, key=lambda r: (-r["score"], r["id"]))[:top_k]

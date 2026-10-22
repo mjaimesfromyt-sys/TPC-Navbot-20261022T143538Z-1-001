@@ -1,158 +1,120 @@
+"""Incremental ingestion: portable paths, review-aware updates, and stale pruning."""
+import hashlib
+import json
 import os
 import sys
-import glob
-import json
-import hashlib
 import time
-from typing import List, Dict, Optional
+from pathlib import Path
 
-# Ensure project root is in sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from src.config import MANIFEST_PATH, PROCESSED_CHUNKS_PATH, RAW_DATA_DIR, SOURCE_REGISTRY_PATH
 from src.preprocessing import TextPreprocessor
-from src.embedding import EmbeddingGenerator
 from src.vector_store import VectorStore
 
+
 class IngestionPipeline:
-    """
-    End-to-End Automated Document Ingestion Pipeline for TPC NavBot.
-    Monitors raw knowledge documents, handles cleaning, chunking, embedding generation,
-    and incremental upserting into the ChromaDB vector database.
-    """
-    def __init__(
-        self,
-        raw_data_dir: str = r"c:\Users\ranz\Desktop\TPC Navbot\data\raw",
-        manifest_path: str = r"c:\Users\ranz\Desktop\TPC Navbot\data\ingestion_manifest.json",
-        vector_store: Optional[VectorStore] = None
-    ):
-        self.raw_data_dir = raw_data_dir
-        self.manifest_path = manifest_path
-        self.processor = TextPreprocessor(chunk_size=400, chunk_overlap=50)
-        self.embedder = EmbeddingGenerator()
-        self.vector_store = vector_store or VectorStore(embedding_generator=self.embedder)
+    def __init__(self, raw_data_dir=None, manifest_path=None, vector_store=None, source_registry_path=None, processed_path=None):
+        self.raw_data_dir = str(raw_data_dir or RAW_DATA_DIR)
+        self.manifest_path = str(manifest_path or MANIFEST_PATH)
+        self.processed_path = str(processed_path or PROCESSED_CHUNKS_PATH)
+        self.source_registry_path = source_registry_path or SOURCE_REGISTRY_PATH
+        self.processor = TextPreprocessor(source_registry_path=self.source_registry_path)
+        self.vector_store = vector_store or VectorStore(raw_data_dir=self.raw_data_dir, source_registry_path=self.source_registry_path)
+        self.embedder = self.vector_store.embedder
         self.manifest = self._load_manifest()
 
-    def _load_manifest(self) -> Dict[str, str]:
-        if os.path.exists(self.manifest_path):
-            try:
-                with open(self.manifest_path, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            except Exception:
-                return {}
-        return {}
+    def _load_manifest(self):
+        try:
+            manifest = json.loads(Path(self.manifest_path).read_text(encoding="utf-8"))
+            return manifest if isinstance(manifest, dict) else {}
+        except (OSError, ValueError):
+            return {}
 
     def _save_manifest(self):
-        os.makedirs(os.path.dirname(self.manifest_path), exist_ok=True)
-        with open(self.manifest_path, 'w', encoding='utf-8') as f:
-            json.dump(self.manifest, f, indent=2)
+        path = Path(self.manifest_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(".json.tmp")
+        temporary.write_text(json.dumps(self.manifest, indent=2), encoding="utf-8")
+        os.replace(temporary, path)
 
-    def _compute_file_hash(self, filepath: str) -> str:
-        hasher = hashlib.sha256()
-        with open(filepath, 'rb') as f:
-            while chunk := f.read(8192):
-                hasher.update(chunk)
-        return hasher.hexdigest()
+    def _export_processed(self):
+        path = Path(self.processed_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(".jsonl.tmp")
+        with temporary.open("w", encoding="utf-8") as output:
+            for text, metadata in zip(self.vector_store.documents, self.vector_store.metadatas):
+                output.write(json.dumps({"text": text, "metadata": metadata}, ensure_ascii=False) + "\n")
+        os.replace(temporary, path)
 
-    def ingest_file(self, filepath: str, force: bool = False) -> List[Dict]:
-        """
-        Ingests a single text document into the pipeline.
-        """
-        if not os.path.isfile(filepath):
+    @staticmethod
+    def _compute_file_hash(filepath):
+        return hashlib.sha256(Path(filepath).read_bytes()).hexdigest()
+
+    def _fingerprint(self, filepath):
+        entry = self.processor.registry.entries().get(Path(filepath).name, {})
+        payload = {"sha256": self._compute_file_hash(filepath), "review": entry,
+                   "embedding": self.vector_store.embedding_signature, "chunker": "bounded-v2:400:50"}
+        return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+    def ingest_file(self, filepath, force=False):
+        path = Path(filepath)
+        if not path.is_file():
             raise FileNotFoundError(f"File not found: {filepath}")
-
-        current_hash = self._compute_file_hash(filepath)
-        filename = os.path.basename(filepath)
-
-        if not force and self.manifest.get(filename) == current_hash:
+        fingerprint = self._fingerprint(path)
+        # A manifest alone must never suppress rebuilding a missing vector index.
+        if not force and self.manifest.get(path.name) == fingerprint and self.vector_store.has_document(path.name):
             return []
-
-        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read()
-
-        metadata = self.processor.extract_metadata(content, filename)
-        chunks = self.processor.chunk_text(content, metadata)
-
-        if chunks:
-            self.vector_store.add_chunks(chunks)
-
-        self.manifest[filename] = current_hash
+        chunks = self.processor.process_file(path)
+        self.vector_store.replace_document(path.name, chunks)
+        self.manifest[path.name] = fingerprint
         self._save_manifest()
         return chunks
 
-    def run(self, force: bool = False) -> Dict:
-        """
-        Executes end-to-end automated batch ingestion over all documents in raw_data_dir.
-        """
-        start_time = time.time()
-        txt_files = sorted(glob.glob(os.path.join(self.raw_data_dir, "*.txt")))
-
-        total_scanned = len(txt_files)
-        processed_files = []
-        new_chunks_count = 0
-
-        print(f"\n===============================================================================")
-        print(f"            TPC NAVBOT AUTOMATED END-TO-END INGESTION PIPELINE                 ")
-        print(f"===============================================================================")
-        print(f"Directory: {self.raw_data_dir}")
-        print(f"Total documents found: {total_scanned}")
-        print(f"Force re-index mode: {force}\n")
-
-        for filepath in txt_files:
-            filename = os.path.basename(filepath)
-            file_hash = self._compute_file_hash(filepath)
-
-            if force or self.manifest.get(filename) != file_hash:
-                with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                    content = f.read()
-
-                meta = self.processor.extract_metadata(content, filename)
-                chunks = self.processor.chunk_text(content, meta)
-
-                if chunks:
-                    self.vector_store.add_chunks(chunks)
-                    new_chunks_count += len(chunks)
-
-                self.manifest[filename] = file_hash
-                processed_files.append(filename)
-                print(f"[INGESTED] {filename} -> {len(chunks)} chunks created & embedded")
-            else:
-                pass
-
+    def run(self, force=False):
+        start = time.monotonic()
+        raw_dir = Path(self.raw_data_dir)
+        if not raw_dir.is_dir():
+            raise FileNotFoundError(f"Raw data directory not found: {raw_dir}")
+        files = sorted(raw_dir.glob("*.txt"))
+        active_names = {p.name for p in files}
+        removed = (set(self.manifest) | self.vector_store.source_documents()) - active_names
+        for name in sorted(removed):
+            self.vector_store.delete_document(name)
+            self.manifest.pop(name, None)
+        changed, chunk_count = 0, 0
+        for path in files:
+            fingerprint = self._fingerprint(path)
+            needs_update = force or self.manifest.get(path.name) != fingerprint or not self.vector_store.has_document(path.name)
+            if needs_update:
+                chunks = self.ingest_file(path, force=True)
+                changed += 1
+                chunk_count += len(chunks)
         self._save_manifest()
-        elapsed_sec = round(time.time() - start_time, 2)
-
-        summary = {
-            "status": "COMPLETED",
-            "total_documents_scanned": total_scanned,
-            "documents_updated_or_added": len(processed_files),
-            "new_chunks_indexed": new_chunks_count,
-            "total_collection_chunks": len(self.vector_store.documents),
-            "elapsed_seconds": elapsed_sec,
-            "vector_store_type": "ChromaDB Persistent Client",
-            "collection_name": self.vector_store.collection_name
+        self._export_processed()
+        return {
+            "status": "COMPLETED", "total_documents_scanned": len(files),
+            "documents_updated_or_added": changed, "documents_removed": len(removed),
+            "new_chunks_indexed": chunk_count, "total_collection_chunks": len(self.vector_store.documents),
+            "verified_chunks": sum(m.get("verified_source") is True for m in self.vector_store.metadatas),
+            "elapsed_seconds": round(time.monotonic() - start, 2),
+            "vector_store_type": self.vector_store.backend, "collection_name": self.vector_store.collection_name,
+            "embedding_backend": self.embedder.backend, "semantic_embeddings": self.embedder.is_semantic,
+            "processed_chunks_path": self.processed_path,
         }
-
-        print(f"\n-------------------------------------------------------------------------------")
-        print(f"INGESTION SUMMARY:")
-        print(f" - Documents Scanned: {total_scanned}")
-        print(f" - Documents Ingested/Updated: {len(processed_files)}")
-        print(f" - Chunks Stored in ChromaDB: {new_chunks_count}")
-        print(f" - Total Active Vector Chunks: {len(self.vector_store.documents)}")
-        print(f" - Execution Time: {elapsed_sec}s")
-        print(f"-------------------------------------------------------------------------------\n")
-
-        return summary
 
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="TPC NavBot Automated Ingestion Pipeline")
-    parser.add_argument("--force", action="store_true", help="Force re-indexing of all documents")
-    parser.add_argument("--dir", type=str, default=r"c:\Users\ranz\Desktop\TPC Navbot\data\raw", help="Target raw dataset directory")
+    parser = argparse.ArgumentParser(description="TPC NavBot incremental document ingestion")
+    parser.add_argument("--force", action="store_true", help="Re-index all documents")
+    parser.add_argument("--dir", default=str(RAW_DATA_DIR), help="Raw TXT directory")
+    parser.add_argument("--registry", default=str(SOURCE_REGISTRY_PATH), help="Human-reviewed source registry")
     args = parser.parse_args()
+    pipeline = IngestionPipeline(raw_data_dir=args.dir, source_registry_path=args.registry)
+    print(json.dumps(pipeline.run(force=args.force), indent=2))
 
-    pipeline = IngestionPipeline(raw_data_dir=args.dir)
-    pipeline.run(force=args.force)
 
 if __name__ == "__main__":
     main()

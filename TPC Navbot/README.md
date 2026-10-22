@@ -1,154 +1,79 @@
-# TPC NavBot: Intelligent Campus Navigation & Knowledge-Base RAG Assistant
+# TPC NavBot
 
-> **IS Professional Elective #4 — Generative AI Capstone Project**  
-> **Complete Checkpoints 1, 2, 3, and 4 Full Implementation**  
-> **Institution**: Talibon Polytechnic College (TPC), San Isidro, Talibon, Bohol  
-> **100% Pure Python Architecture | ChromaDB | Google Gemini API | Streamlit | Docker**
+A campus assistance prototype for Talibon Polytechnic College (TPC), with English, Bisaya, and Tagalog responses. The bot handles campus locations and supported campus services, rejects unrelated requests, and withholds unverified facts and routes.
 
----
+**Data status:** the 30 text files in `data/raw/` are generated sample documents. They demonstrate the capstone pipeline; they are **not official or verified campus records**. The source registry leaves them unverified. A normal question about their locations should return an honest unavailable-information response until an authorized reviewer supplies real evidence.
 
-## 📌 Project Overview
+Read [the requirements audit](docs/00_requirements_audit.md) for what is complete, partial, and still dependent on real-world evidence. The earlier README's claims of full checkpoint scores, verified documents, and completed deployment were unsupported.
 
-**TPC NavBot** is an artificial intelligence campus assistant built using **Retrieval-Augmented Generation (RAG)**, **ChromaDB Persistent Vector Store**, multi-turn **Conversational Memory**, and the **Google Gemini API**. It provides real-time, verified answers for students, faculty, and visitors seeking directions, room numbers, building locations, administrative office hours, payment policies, and campus services across the Talibon Polytechnic College (TPC) campus.
+The existing `TPC_NavBot_Checkpoint_1_Report.docx` is an obsolete report with unsupported grade/statistics and navigation claims. Use the corrected documentation and actual evaluation artifacts when preparing a submission.
 
----
+## Run locally
 
-## 🗂️ Project Repository Structure
+From this directory:
 
-```
-TPC Navbot/
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml                   # CI/CD Automated Test & Docker Build Pipeline
-├── .env.example                        # Template for environment configuration
-├── .env                                # Local environment secrets (GEMINI_API_KEY)
-├── .dockerignore                       # Docker exclusion list
-├── Dockerfile                          # Multi-stage production container build
-├── docker-compose.yml                  # One-command container deployment
-├── app.py                              # Modern Streamlit Web Application Interface
-├── cli_chat.py                         # Interactive terminal CLI chat entrypoint
-├── requirements.txt                    # Project dependencies
-├── README.md                           # Master documentation
-│
-├── data/
-│   ├── raw/                            # 30 Verified Campus Knowledge Base documents
-│   ├── chroma_db/                      # Persistent ChromaDB vector index storage
-│   └── ingestion_manifest.json         # SHA-256 incremental ingestion manifest
-│
-├── docs/
-│   ├── 01_project_proposal.md          # Checkpoint 1: Project Proposal & Scope
-│   ├── 02_data_reflection.md           # Checkpoint 1: Data Reflection & Cleaning Report
-│   ├── 03_prompt_engineering.md        # Checkpoint 2: System Prompts & Guardrails Spec
-│   ├── 04_distance_metric_report.md     # Checkpoint 2: Distance Metric Benchmark Report
-│   ├── 05_framework_comparison.md      # Checkpoint 3: LangChain vs. LlamaIndex Comparison
-│   ├── 06_model_customization.md       # Checkpoint 4: PEFT / LoRA / QLoRA Technical Report
-│   ├── 07_deployment_and_containerization.md # Checkpoint 4: Docker & Cloud Deployment Guide
-│   ├── 07_final_technical_report.md    # Checkpoint 4: 5-Page Consolidated Final Report
-│   └── 08_presentation_defense_guide.md# Checkpoint 4: Slide Deck Outline & Defense Q&A
-│
-├── src/
-│   ├── __init__.py                     # Package definition
-│   ├── preprocessing.py                # Text normalization, cleaning & chunking
-│   ├── embedding.py                    # 384D dense vector embeddings (all-MiniLM-L6-v2)
-│   ├── vector_store.py                 # ChromaDB collection & hybrid similarity search
-│   ├── memory.py                       # Multi-turn conversational memory & co-reference resolution
-│   ├── ingestion.py                    # Automated end-to-end ingestion pipeline
-│   └── llm_rag.py                      # Gemini RAG orchestrator, safety guardrails & routing
-│
-├── scripts/
-│   ├── generate_tpc_raw_data.py        # 30-document TPC dataset generator
-│   ├── demo_checkpoint3.py             # Multi-turn Checkpoint 3 live evaluation demo
-│   └── cli_chat.py                     # CLI Chat engine
-│
-└── tests/
-    └── run_tests.py                    # Automated Test Suite (20/20 assertions passing)
-```
-
----
-
-## 🏆 Course Deliverables Compliance Matrix
-
-### **Checkpoint 1: Foundation & Data Pipeline (Prelim - 100/100 Points | CILO 1)**
-- ✅ **Project Proposal**: [`docs/01_project_proposal.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/01_project_proposal.md)
-- ✅ **Data Collection**: 30 structured documents in [`data/raw/`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/data/raw) covering all TPC programs and services.
-- ✅ **Text Preprocessing**: [`src/preprocessing.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/preprocessing.py) (tokenization, regex cleaning, abbreviation expansion).
-- ✅ **Embedding Generation**: [`src/embedding.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/embedding.py) (384-dimensional dense vector embeddings).
-- ✅ **Reflection Report**: [`docs/02_data_reflection.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/02_data_reflection.md).
-
-### **Checkpoint 2: Prompt Architecture & Vector Indexing (Midterm - 100/100 Points | CILO 2)**
-- ✅ **Prompt Engineering Spec**: [`docs/03_prompt_engineering.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/03_prompt_engineering.md) (3 system prompts preventing hallucinations).
-- ✅ **API Integration**: [`src/llm_rag.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/llm_rag.py) with Google Gemini API client.
-- ✅ **Vector Database Setup**: [`src/vector_store.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/vector_store.py) (ChromaDB persistent collection with metadata boosting).
-- ✅ **Distance Metric Analysis**: [`docs/04_distance_metric_report.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/04_distance_metric_report.md) comparing Cosine, Euclidean, and Dot Product.
-
-### **Checkpoint 3: RAG Orchestration & Working Application (Semi-Final - 100/100 Points | CILO 2)**
-- ✅ **Automated Ingestion Pipeline**: [`src/ingestion.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/ingestion.py) (end-to-end scanner, parser, chunker, and deduplicating embedder).
-- ✅ **Conversational Memory**: [`src/memory.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/src/memory.py) (multi-turn session memory resolving pronouns like *"it"*, *"its"*, *"there"*).
-- ✅ **Framework Comparison Report**: [`docs/05_framework_comparison.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/05_framework_comparison.md) (LangChain vs. LlamaIndex technical analysis).
-- ✅ **Live Evaluation Demo**: [`scripts/demo_checkpoint3.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/scripts/demo_checkpoint3.py) (6 realistic multi-turn queries, route metrics, and guardrail refusals).
-
-### **Checkpoint 4: Customization, Deployment & Defense (Final - 100/100 Points | CILO 3 & 4)**
-- ✅ **Model Customization Note**: [`docs/06_model_customization.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/06_model_customization.md) (PEFT / LoRA / QLoRA mathematical analysis and RAG justification).
-- ✅ **Application Web Interface**: [`app.py`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/app.py) (interactive Streamlit web application with grounding drawer and route cards).
-- ✅ **Multi-Stage Containerization**: [`Dockerfile`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/Dockerfile), [`.dockerignore`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/.dockerignore), and [`docker-compose.yml`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docker-compose.yml).
-- ✅ **Deployment Guide & Secrets Handling**: [`docs/07_deployment_and_containerization.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/07_deployment_and_containerization.md).
-- ✅ **CI/CD Workflow**: [`.github/workflows/ci-cd.yml`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/.github/workflows/ci-cd.yml).
-- ✅ **Final Consolidated Technical Report**: [`docs/07_final_technical_report.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/07_final_technical_report.md) (5-page comprehensive capstone documentation).
-- ✅ **Final Presentation & Defense Guide**: [`docs/08_presentation_defense_guide.md`](file:///c:/Users/ranz/Desktop/TPC%20Navbot/docs/08_presentation_defense_guide.md) (Slide-by-slide script and panel Q&A).
-
----
-
-## ⚡ Quick Start & Execution
-
-### 1. Environment Setup
-```bash
-# Clone repository and install dependencies
-pip install -r requirements.txt
-
-# Configure your Google Gemini API Key in .env
-cp .env.example .env
-# Edit .env and insert your GEMINI_API_KEY
-```
-
-### 2. Run the Streamlit Web Application (Checkpoint 4 UI)
-```bash
-# Easiest way (works in all terminals):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
 python run_app.py
-
-# Or in PowerShell:
-.\run_web.bat
-```
-Open your browser to: `http://localhost:8501`.
-
-### 3. Run the Automated Ingestion Pipeline (Checkpoint 3 Ingestion)
-```bash
-python src/ingestion.py --force
 ```
 
-### 4. Run the Checkpoint 3 Live Multi-Turn Demo
-```bash
+Open `http://localhost:8501`. The app supports an offline, deterministic mode without a Gemini API key. Keep `.env` private. Check `.env.example` for optional settings; enable a cloud model only when that deployment is authorized to send student questions and candidate campus record fields to the provider.
+
+```powershell
+python cli_chat.py
+python -m src.ingestion --force
+python tests/run_tests.py
 python scripts/demo_checkpoint3.py
 ```
 
-### 5. Run the Automated Test Suite (20/20 Tests Passing)
-```bash
-python tests/run_tests.py
+The regression suite uses explicitly fictional test fixtures to exercise verified-answer behavior. Test review records are not evidence about the actual TPC campus.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Raw text and source review registry] --> B[Clean and chunk]
+    B --> C[Local embeddings or labelled lexical fallback]
+    C --> D[Persistent vector store]
+    U[Student question] --> E[Language, scope and session context]
+    E --> F[Retrieve verified relevant sources]
+    D --> F
+    F --> G[Validate destination and fact fields]
+    G --> H[Grounded multilingual response]
+    G --> I[Clarification or unavailable information]
 ```
 
-### 6. Run via Docker Compose (Checkpoint 4 Containerization)
-```bash
-docker-compose up -d --build
+LangChain orchestration is used when the framework dependency is installed; a lightweight fallback keeps the core available offline. Optional Gemini selection is constrained to source IDs from retrieved evidence. The final response uses reviewed fact fields, so a generated route cannot enter the answer through the model.
+
+`auto` embedding mode uses a locally available Sentence Transformers model when possible. If unavailable, it explicitly reports lexical hashing. The [measured lexical and semantic comparison](docs/04_distance_metric_report.md) identifies both actual backends and gives reproduction commands. Metric JSON outputs and local MiniLM weights are excluded from Git; provision a model explicitly on a fresh machine and set `TPC_EMBEDDING_MODEL` to its absolute local directory for semantic mode. The lexical fallback is not a semantic language model.
+
+## Trust and route policy
+
+Verification lives in `data/source_registry.json`, outside document text. A source is eligible only with a matching SHA-256, approved source type, official reference, reviewer, and review date. Editing reviewed source bytes invalidates that approval. Document headings such as "official" never grant trust.
+
+Reviewed location fields and route fields are separate. A verified office location does not establish directions, walking time, accessibility, or a starting point. Missing route evidence produces a route-unavailable response. See [the verification workflow](docs/09_source_verification.md) before adding real campus information.
+
+## Containers
+
+```powershell
+docker compose up --build
 ```
 
----
+The Dockerfile uses separate build and runtime stages. The runtime runs as a non-root user. Configuration and credentials belong in deployment environment variables, not in the image or repository. Local container configuration is not proof of a cloud deployment. See [deployment and evidence requirements](docs/07_deployment_and_containerization.md).
 
-## 🛡️ Safety Guardrail Efficacy
+## Project files
 
-- **In-Scope Query**: *"Where do I pay my tuition fee installments?"*
-  - **Output**: Returns Cashier Windows 1–4 in the Administration Building East Wing with exact citations and route steps.
-- **Multi-Turn Follow-Up**: *"What are its operating hours?"*
-  - **Output**: Memory resolves *"its"* to the Cashier/Finance office and provides exact weekday hours (8:00 AM - 4:30 PM).
-- **Off-Topic Query**: *"Explain quantum computing and general relativity theory."*
-  - **Output**: Intercepted by Guardrail: *"I am TPC NavBot, specialized exclusively in Talibon Polytechnic College campus navigation..."*
-- **Unverified Query**: *"Where is the Olympic campus swimming pool?"*
-  - **Output**: Grounded refusal: *"I do not have verified TPC campus information regarding that query in my knowledge base. Please check with Campus Security HQ at Main Gate 1."*
+- `src/`: preprocessing, provenance checks, embeddings, vector retrieval, memory, and response orchestration.
+- `data/raw/`: 30 generated sample documents; `data/source_registry.json`: review metadata.
+- `app.py`, `cli_chat.py`: web and terminal interfaces.
+- `tests/`, `scripts/`: regression tests, demo, and evaluation entry points.
+- `docs/`: audit, proposal, data reflection, prompt design, measured metric comparison, framework comparison, customization rationale, deployment guide, final report, and defense plan.
+
+## Evidence and attribution
+
+The [metric comparison](docs/04_distance_metric_report.md) reports an actual offline run, including retrieval failures. It does not claim campus accuracy or a student usability study. No training experiment, live cloud API success, remote deployment, or completed defense is claimed without a retained artifact.
+
+This project includes AI-assisted implementation and generated sample text. Review and explain that assistance in the course submission. The audit records the supplied semester guide and behavioral guidelines as requirements sources; official library documentation and research references appear in the relevant reports.

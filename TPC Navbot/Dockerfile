@@ -61,7 +61,7 @@ EXPOSE 8501
 
 # Healthcheck to verify service availability
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health', timeout=4)"
 
 # Launch the Streamlit application
 ENTRYPOINT ["streamlit", "run", "app.py"]

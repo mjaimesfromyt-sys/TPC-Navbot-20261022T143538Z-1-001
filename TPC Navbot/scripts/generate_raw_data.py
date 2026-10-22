@@ -1,6 +1,8 @@
+"""Legacy simulated coursework generator; does not overwrite the active corpus."""
 import os
+from pathlib import Path
 
-RAW_DATA_DIR = r"c:\Users\ranz\Desktop\TPC Navbot\data\raw"
+RAW_DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "legacy_simulated_generated"
 os.makedirs(RAW_DATA_DIR, exist_ok=True)
 
 documents = {

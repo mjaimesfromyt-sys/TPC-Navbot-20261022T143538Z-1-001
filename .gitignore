@@ -13,3 +13,11 @@ venv/
 # Local editor and operating system files
 .DS_Store
 Thumbs.db
+
+# Local review tools and generated evaluation output
+.codex-tmp/
+tmp/
+TPC Navbot/data/evaluation/
+TPC Navbot/data/chroma_verified/
+TPC Navbot/data/vector_store/
+TPC Navbot/data/models/

@@ -1,6 +1,7 @@
 import time
 import sys
 import os
+from uuid import uuid4
 
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -12,6 +13,7 @@ from src.llm_rag import TPCNavBotRAG
 
 def main():
     bot = TPCNavBotRAG()
+    session_id = str(uuid4())
 
     print('===============================================================================')
     print('                 TPC NAVBOT: CAMPUS NAVIGATION ASSISTANT                        ')
@@ -19,6 +21,7 @@ def main():
     print('===============================================================================')
     print('Welcome! Ask me anything about TPC campus locations, room numbers, office hours,')
     print('tuition payments, IT support, library facilities, or campus policies.')
+    print('Only reviewed TPC information is answered. Sample locations are unverified.')
     print('Type "exit" or "quit" to end the session.\n')
 
     while True:
@@ -33,7 +36,7 @@ def main():
 
             print('\n[TPC NavBot Thinking...] Searching vector database...')
             start_time = time.time()
-            response = bot.query(user_input)
+            response = bot.chat(user_input, session_id=session_id)
             elapsed_ms = int((time.time() - start_time) * 1000)
 
             print(f"\n--- TPC NavBot Response (Latency: {elapsed_ms}ms | Status: {response['status']}) ---")

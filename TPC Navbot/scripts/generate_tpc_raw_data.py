@@ -1,6 +1,8 @@
+"""Generate simulated coursework data. These are not verified TPC facts."""
 import os
+from pathlib import Path
 
-RAW_DATA_DIR = r"c:\Users\ranz\Desktop\TPC Navbot\data\raw"
+RAW_DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "simulated_generated"
 os.makedirs(RAW_DATA_DIR, exist_ok=True)
 
 documents = {
@@ -654,4 +656,4 @@ for filename, content in documents.items():
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(content.strip() + "\n")
 
-print(f"Successfully generated {len(documents)} official TPC dataset documents in {RAW_DATA_DIR}.")
+print(f"Generated {len(documents)} SIMULATED documents in {RAW_DATA_DIR}; staff review is required before use.")

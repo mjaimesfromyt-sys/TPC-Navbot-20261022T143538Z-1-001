@@ -13,12 +13,11 @@ try:
 except ImportError:
     import subprocess
     cmd = [
-        sys.executable, "-m", "streamlit", "run", "app.py",
+        sys.executable, "-m", "streamlit", "run", os.path.join(os.path.dirname(__file__), "app.py"),
         "--server.headless=true",
         "--browser.gatherUsageStats=false"
     ]
-    subprocess.run(cmd)
-    sys.exit(0)
+    sys.exit(subprocess.run(cmd).returncode)
 
 if __name__ == "__main__":
     app_path = os.path.join(os.path.dirname(__file__), "app.py")

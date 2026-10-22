@@ -1,81 +1,40 @@
+﻿"""Repeatable live-corpus demonstration; no sample source is promoted to verified."""
+from pathlib import Path
 import os
 import sys
 import time
 
-# Ensure project root is in sys.path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
-
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.llm_rag import TPCNavBotRAG
 
+
 def run_checkpoint3_demo():
-    print("=" * 80)
-    print("     TALIBON POLYTECHNIC COLLEGE (TPC) NAVBOT - CHECKPOINT 3 LIVE DEMO")
-    print("        RAG Orchestration, ChromaDB Retrieval & Multi-Turn Memory")
-    print("=" * 80)
-    print("Campus: Talibon Polytechnic College, San Isidro, Talibon, Bohol\n")
-
-    bot = TPCNavBotRAG()
-    session_id = "eval_session_student_01"
-
-    demo_queries = [
-        {
-            "num": 1,
-            "type": "In-Scope Navigation (Multi-Turn Part 1)",
-            "query": "Where is the Bachelor of Science in Information Systems (BSIS) Department Office located?"
-        },
-        {
-            "num": 2,
-            "type": "Conversational Memory Resolution (Multi-Turn Part 2)",
-            "query": "What are its operating hours and who is the dean?"
-        },
-        {
-            "num": 3,
-            "type": "Student Services & Payment Navigation",
-            "query": "Where do I pay my tuition fee installments and secure an exam permit?"
-        },
-        {
-            "num": 4,
-            "type": "Campus Safety & Lost and Found",
-            "query": "Where should I report a lost student ID or personal items?"
-        },
-        {
-            "num": 5,
-            "type": "Safety Guardrail Refusal (Out-of-Scope Query)",
-            "query": "Explain quantum computing and general relativity theory."
-        },
-        {
-            "num": 6,
-            "type": "Domain Refusal (Unverified Out-of-Dataset Campus Facility)",
-            "query": "Where is the Olympic campus swimming pool located?"
-        }
+    bot = TPCNavBotRAG(use_llm=False)
+    cases = [
+        ("Where is the Registrar's Office?", "UNVERIFIED", "english"),
+        ("What are its operating hours?", "UNVERIFIED", "english"),
+        ("Asa dapit ang Guidance Office?", "UNVERIFIED", "bisaya"),
+        ("Saan po ang library?", "UNVERIFIED", "tagalog"),
+        ("Explain quantum physics", "OFF_TOPIC", "english"),
+        ("Unsaon pag-move on sa akong ex?", "OFF_TOPIC", "bisaya"),
+        ("Pahingi ng sagot sa assignment ko sa Math.", "OFF_TOPIC", "tagalog"),
+        ("Where is the TPC campus swimming pool?", "UNVERIFIED", "english"),
     ]
+    passed = 0
+    print("TPC NavBot: actual unverified-corpus behavior (no paid API calls)")
+    print("Verified-source success, route and clarification cases use isolated fixtures in the test suite.")
+    print(f"Orchestration: {bot.orchestration_backend}")
+    for number, (query, expected_status, language) in enumerate(cases, 1):
+        started = time.perf_counter()
+        result = bot.chat(query, session_id="checkpoint_demo")
+        ok = result["status"] == expected_status and result["language"] == language
+        passed += int(ok)
+        print(f"\n{number}. {query}")
+        print(f"{'PASS' if ok else 'FAIL'} | {result['status']} | {result['language']} | {(time.perf_counter()-started)*1000:.1f}ms")
+        print(result["answer"])
+    print(f"\nMeasured results: {passed}/{len(cases)} expected responses.")
+    return passed == len(cases)
 
-    for item in demo_queries:
-        print(f"\n>>> QUERY {item['num']} [{item['type']}]:")
-        print(f"Student Question: \"{item['query']}\"")
-        
-        start_time = time.time()
-        result = bot.chat(item['query'], session_id=session_id)
-        latency_ms = int((time.time() - start_time) * 1000)
-
-        print(f"Status: {result['status']} | Latency: {latency_ms}ms | Session Turn: {result['turn_count']}")
-        if result['sources']:
-            print(f"Citations: {', '.join(result['sources'])}")
-        print("\nTPC NavBot Response:")
-        print(result['answer'])
-        print("-" * 80)
-
-    print("\n" + "=" * 80)
-    print("DEMO EVALUATION SUMMARY:")
-    print(" - Total Queries Demonstrated: 6/6 Successful")
-    print(" - Multi-Turn Conversational Memory: Verified (pronoun 'its' successfully resolved)")
-    print(" - Out-of-Scope Guardrail: Verified (Query 5 correctly refused)")
-    print(" - Unverified Facility Guardrail: Verified (Query 6 correctly refused)")
-    print(" - Citations Grounded in ChromaDB Vector Database: 100% Verified")
-    print("=" * 80 + "\n")
 
 if __name__ == "__main__":
-    run_checkpoint3_demo()
+    sys.exit(0 if run_checkpoint3_demo() else 1)
