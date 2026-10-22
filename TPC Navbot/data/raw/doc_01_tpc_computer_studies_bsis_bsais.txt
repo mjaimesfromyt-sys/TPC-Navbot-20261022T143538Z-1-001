@@ -1,0 +1,36 @@
+===============================================================================
+TALIBON POLYTECHNIC COLLEGE (TPC) DIRECTORY: COMPUTER STUDIES COMPLEX (CCIS)
+===============================================================================
+Location ID: TPC-BLDG-CSC
+Building Name: TPC Computer Studies Building / CCIS Building
+Operating Hours: Monday - Saturday: 7:00 AM - 8:00 PM
+Campus Location: North Campus Area, Talibon Polytechnic College, San Isidro, Talibon, Bohol
+
+PROGRAMS SERVED:
+1. Bachelor of Science in Information Systems (BSIS)
+2. Bachelor of Science in Accountancy Information System (BSAIS)
+
+FLOOR DIRECTORY & PROGRAM OFFICES:
+- Ground Floor (1st Floor):
+  * BSIS Department Office (Room CSC-104): Office of the BSIS Department Chair & Program Coordinator.
+  * BSIS ComLab 1 / BSIS Room 1 (Room CSC-101): Computer Laboratory 1 (BSIS Database, SQL & Programming Lab - 45 Workstations).
+  * BSIS ComLab 2 / BSIS Room 2 (Room CSC-102): Computer Laboratory 2 (Enterprise Systems, Web & Accounting Software Lab - 45 Workstations).
+  * BSIS Room 3 (Room CSC-103): BSIS Systems Analysis, Software Engineering & Lecture Seminar Room.
+  * Office of the CCIS Dean (Room CSC-105): Executive Dean Suite for Computer Studies.
+  * TPC IT Helpdesk (Room CSC-106): Campus Network & Computer Support Office.
+  * Restrooms / Comfort Rooms (CR):
+    - Male Comfort Room (Male CR): Ground Floor East Hallway next to BSIS ComLab 1 (CSC-101).
+    - Female Comfort Room (Female CR): Ground Floor West Hallway next to IT Helpdesk (CSC-106).
+    - PWD CR: Ground Floor main lobby.
+
+- Second Floor (2nd Floor):
+  * BSAIS Department Office (Room CSC-202): Office of the BSAIS Program Coordinator.
+  * BSIS Room 4 (Room CSC-201): Upper Level BSIS Systems Development & IT Lecture Classroom.
+  * Accounting Information Systems Lab (Room CSC-203): BSAIS Audit & Accounting Software Lab.
+  * Rooms CSC-204 to CSC-206: CCIS Lecture Classrooms.
+  * Restrooms / Comfort Rooms (CR):
+    - Male Comfort Room (Male CR): 2nd Floor East Corridor.
+    - Female Comfort Room (Female CR): 2nd Floor West Corridor.
+
+NAVIGATION DIRECTIONS:
+From TPC Main Gate 1 at San Isidro, Talibon, Bohol, walk North along the main entrance walkway past the Library. The Computer Studies Building is located on the North side of the campus quadrangle.

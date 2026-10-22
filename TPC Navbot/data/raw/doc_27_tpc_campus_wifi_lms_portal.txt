@@ -1,0 +1,16 @@
+===============================================================================
+TALIBON POLYTECHNIC COLLEGE (TPC) DIRECTORY: WI-FI & IT PORTAL SERVICES
+===============================================================================
+Location ID: TPC-POL-03
+Building Name: Campus IT Network & Student Portal Services
+Operating Hours: Monday - Saturday: 7:00 AM - 8:00 PM
+Campus Location: IT Helpdesk, Room CSC-106, Computer Studies Building
+
+IT ACCESS & SERVICES:
+1. Campus Wi-Fi SSID: 'TPC-Student-WiFi' (Coverage: Library, CSC, MAB, Canteen).
+2. Wi-Fi Access Credentials: Log in using your TPC Student ID Number and registered birthday (YYYYMMDD).
+3. Student Portal URL: Check official grades, balance assessment, and enrolled schedule online.
+4. Account Assistance: Password resets and account unlocking are done at the IT Helpdesk, Room CSC-106.
+
+NAVIGATION DIRECTIONS:
+From Main Gate 1, walk 110 meters North into the Computer Studies Building, Ground Floor Room CSC-106.

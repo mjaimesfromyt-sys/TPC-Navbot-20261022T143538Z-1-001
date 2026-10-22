@@ -1,0 +1,16 @@
+===============================================================================
+TALIBON POLYTECHNIC COLLEGE (TPC) DIRECTORY: BSIS SOFTWARE INNOVATION HUB
+===============================================================================
+Location ID: TPC-BLDG-HUB
+Building Name: TPC BSIS Software Innovation & Capstone Incubation Hub
+Operating Hours: Monday - Saturday: 7:30 AM - 7:30 PM
+Campus Location: Room CSC-204, Computer Studies Building, San Isidro, Talibon, Bohol
+
+FACILITIES:
+- 30 High-Performance Workstations for AI, Data Analytics, and Full-Stack Development.
+- Prototyping Workshop with IoT sensors, Arduino kits, and Raspberry Pi boards.
+- Agile Scrum Collaboration Tables & Whiteboards.
+- Server Rack hosting local student web apps and ChromaDB vector instances.
+
+NAVIGATION DIRECTIONS:
+From Main Gate 1, walk 110 meters North to the Computer Studies Building, climb to the second floor, Room CSC-204.
