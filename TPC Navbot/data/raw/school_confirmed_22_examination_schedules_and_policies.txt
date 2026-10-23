@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Examination Schedules and Policies
+Location ID: TPC-SCHOOL-22
+Submitted record(s): 22
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Examination Schedules and Policies",
+  "aliases": [
+    "examination schedules",
+    "examination policies",
+    "exam schedule",
+    "exam policies",
+    "exam rules"
+  ],
+  "contact": "Subject instructor first, then department head/program coordinator/Registrar."
+}
+
+Scope and unavailable details:
+No actual exam timetable, handbook sections, late/make-up rules, penalties, or permit fees supplied. Only the named referral is available.

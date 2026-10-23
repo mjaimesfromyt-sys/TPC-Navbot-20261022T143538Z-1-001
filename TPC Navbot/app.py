@@ -1,19 +1,24 @@
 """Student-facing campus assistant; factual grounding stays in the RAG service."""
 from base64 import b64encode
 from html import escape
+import logging
 from pathlib import Path
 import sys
 import time
+import traceback
 from uuid import uuid4
 
 import streamlit as st
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+LOGO_PATH = PROJECT_ROOT / "assets" / "tpc-logo.png"
 sys.path.insert(0, str(PROJECT_ROOT))
 from src.llm_rag import MESSAGES, TPCNavBotRAG
 
+logger = logging.getLogger("tpc_navbot.app")
+
 st.set_page_config(
-    page_title="TPC NavBot · Your campus companion", page_icon="🌿",
+    page_title="TPC NavBot · Your campus companion", page_icon=str(LOGO_PATH),
     layout="wide", initial_sidebar_state="auto",
 )
 
@@ -84,22 +89,52 @@ def show_evidence(metadata):
         st.write(label)
         st.caption(f"Response language: {language}")
         if sources:
+            details = metadata.get("source_details") or []
             for index, source in enumerate(sources, 1):
-                # Source strings are labels, not trusted URLs or HTML.
-                st.text(f"{index:02d} · {source}")
+                detail = details[index - 1] if index <= len(details) else None
+                if isinstance(detail, dict):
+                    st.text(f"{index:02d} · {detail.get('destination', 'Campus record')}")
+                    st.text(f"Reference: {detail.get('official_source', source)}")
+                    st.caption(
+                        f"Reviewed by {detail.get('reviewed_by', 'Not supplied')} · "
+                        f"{detail.get('reviewed_at', 'Date not supplied')}"
+                    )
+                    st.caption(f"Source file: {detail.get('source_doc', 'Not supplied')}")
+                else:
+                    # Source strings are labels, not trusted URLs or HTML.
+                    st.text(f"{index:02d} · {source}")
         else:
             st.caption("No verified source supports a factual answer to this question.")
         if metadata.get("latency_ms") is not None:
             st.caption(f"Checked in {metadata['latency_ms'] / 1000:.2f} seconds")
 
 
+def show_helpful_followups(metadata, message_index, *, latest=False):
+    tip = metadata.get("helpful_tip")
+    if isinstance(tip, str) and tip.strip():
+        st.caption(f"Tip: {tip.strip()}")
+    questions = metadata.get("suggested_questions")
+    if latest and isinstance(questions, list):
+        questions = [question.strip() for question in questions
+                     if isinstance(question, str) and question.strip()][:2]
+        for question_index, question in enumerate(questions):
+            st.button(
+                question, key=f"suggested_{message_index}_{question_index}",
+                use_container_width=True, on_click=ask_question, args=(question,),
+            )
+
+
 def render_sidebar():
     with st.sidebar:
-        html(
-            '<div class="brand"><div class="brand-symbol">' + icon("compass") + '</div>'
-            '<div><div class="brand-name">TPC <span>NavBot</span></div>'
-            '<div class="brand-subtitle">YOUR CAMPUS COMPANION</div></div></div>'
-        )
+        with st.container(key="brand"):
+            seal, identity = st.columns([1, 3], gap="small", vertical_alignment="center")
+            with seal:
+                st.image(str(LOGO_PATH), width=52)
+            with identity:
+                html(
+                    '<div class="brand-name">TPC <span>NavBot</span></div>'
+                    '<div class="brand-subtitle">YOUR CAMPUS COMPANION</div>'
+                )
         st.button(
             "New conversation", key="new_chat", icon=":material/add:",
             use_container_width=True, on_click=new_conversation, type="primary",
@@ -121,14 +156,25 @@ def render_sidebar():
                 html(f'<div class="conversation-item"><span aria-hidden="true">↳</span> {escape(message["content"])}</div>')
         else:
             html('<div class="sidebar-empty">A fresh start.<br>Your questions will appear here.</div>')
+        st.checkbox(
+            "Show answer details", key="show_answer_details", value=False,
+            help="Show source references, review details, and answer status.",
+        )
         with st.container(key="sidebar_footer"):
             html(
                 '<div class="language-card"><span class="language-heading">A language that feels like home.</span>'
                 '<div class="language-tags"><span>English</span><span>Bisaya</span><span>Tagalog</span></div>'
                 '<p>Just ask. NavBot follows your language.</p></div>'
-                '<div class="college-signature"><span class="college-monogram">TPC</span>'
-                '<span>Talibon Polytechnic College<br><small>Built for our campus community</small></span></div>'
             )
+            with st.container(key="college_identity"):
+                seal, identity = st.columns([1, 5], gap="small", vertical_alignment="center")
+                with seal:
+                    st.image(str(LOGO_PATH), width=36)
+                with identity:
+                    html(
+                        '<div class="college-signature">Talibon Polytechnic College'
+                        '<br><small>Built for our campus community</small></div>'
+                    )
 
 
 def render_header():
@@ -149,6 +195,26 @@ def render_verification_notice(bot):
                 "but please confirm locations and services with authorized TPC personnel.",
                 icon=":material/info:",
             )
+    else:
+        st.caption(
+            f"{len(verified_docs)} reviewed campus source records · "
+            "Details without reviewed evidence remain unavailable. Check each answer’s sources."
+        )
+
+
+def campus_revision():
+    """Refresh session-local retrieval when source files or their reviews change."""
+    from src.config import RAW_DATA_DIR, SOURCE_REGISTRY_PATH
+
+    files = [Path(SOURCE_REGISTRY_PATH), *sorted(Path(RAW_DATA_DIR).glob("*.txt"))]
+    revision = []
+    for path in files:
+        try:
+            details = path.stat()
+            revision.append((str(path), details.st_mtime_ns, details.st_size))
+        except OSError:
+            revision.append((str(path), None, None))
+    return tuple(revision)
 
 
 def render_starters():
@@ -213,7 +279,7 @@ def render_about():
     for column, (number, title, description) in zip(st.columns(3, gap="medium"), [
         ("01", "Ask naturally", "Use your own words and language. For directions, include where you’re starting from."),
         ("02", "Check campus sources", "NavBot retrieves relevant campus records and checks whether the facts have been reviewed."),
-        ("03", "Know what’s supported", "Every answer includes a status and source details. Missing facts stay unconfirmed."),
+        ("03", "Know what’s supported", "Replies show the answer. Turn on Show answer details to inspect sources and review status. Missing facts stay unconfirmed."),
     ]):
         with column:
             with st.container(border=True):
@@ -231,12 +297,17 @@ def render_chat(bot):
     else:
         render_welcome()
     render_verification_notice(bot)
+    latest_assistant = max((index for index, message in enumerate(st.session_state.messages)
+                            if message["role"] == "assistant"), default=-1)
     with st.container(key="conversation"):
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"], avatar=":material/person:" if message["role"] == "user" else ":material/explore:"):
+        for message_index, message in enumerate(st.session_state.messages):
+            with st.chat_message(message["role"], avatar=":material/person:" if message["role"] == "user" else str(LOGO_PATH)):
                 st.caption("You" if message["role"] == "user" else "TPC NavBot")
                 st.markdown(message["content"])
-                if message.get("metadata"):
+                if message["role"] == "assistant" and message.get("metadata"):
+                    show_helpful_followups(message["metadata"], message_index,
+                                          latest=message_index == latest_assistant)
+                if message.get("metadata") and st.session_state.get("show_answer_details", False):
                     show_evidence(message["metadata"])
 
     prompt = st.chat_input("Ask about a classroom, office, or campus service…", key="campus_prompt", max_chars=2000)
@@ -247,7 +318,7 @@ def render_chat(bot):
         with st.chat_message("user", avatar=":material/person:"):
             st.caption("You")
             st.markdown(prompt)
-        with st.chat_message("assistant", avatar=":material/explore:"):
+        with st.chat_message("assistant", avatar=str(LOGO_PATH)):
             st.caption("TPC NavBot")
             started = time.perf_counter()
             with st.spinner("Checking campus information…"):
@@ -259,14 +330,18 @@ def render_chat(bot):
             metadata = {
                 "status": response.get("status", "ERROR"), "language": response.get("language", "english"),
                 "sources": response.get("sources", []), "latency_ms": round((time.perf_counter() - started) * 1000),
+                "source_details": response.get("source_details", []),
+                "helpful_tip": response.get("helpful_tip", ""),
+                "suggested_questions": response.get("suggested_questions", []),
                 "turn_count": response.get("turn_count", 1),
             }
             st.markdown(response["answer"])
-            show_evidence(metadata)
+            if st.session_state.get("show_answer_details", False):
+                show_evidence(metadata)
         st.session_state.messages.append({"role": "assistant", "content": response["answer"], "metadata": metadata})
         # Redraw removes the empty state and refreshes the sidebar transcript.
         st.rerun()
-    html('<div class="composer-note">Made for campus questions. Always check the answer status and sources.</div>')
+    html('<div class="composer-note">Ask a follow-up or start a new conversation.</div>')
 
 
 def main():
@@ -276,11 +351,26 @@ def main():
             st.session_state[key] = default
     render_sidebar()
     render_header()
+    revision = campus_revision()
+    if "rag_bot" in st.session_state and st.session_state.get("knowledge_revision") != revision:
+        # Keep the visible transcript; start fresh backend context against the
+        # current evidence rather than carrying an outdated retrieval snapshot.
+        del st.session_state.rag_bot
     if "rag_bot" not in st.session_state:
         try:
             with st.spinner("Getting your campus companion ready…"):
                 st.session_state.rag_bot = TPCNavBotRAG()
+                st.session_state.knowledge_revision = revision
         except Exception:
+            logger.exception("Campus information initialization failed")
+            try:
+                error_log = PROJECT_ROOT / "data" / "logs" / "startup.log"
+                error_log.parent.mkdir(parents=True, exist_ok=True)
+                with error_log.open("a", encoding="utf-8") as output:
+                    output.write(traceback.format_exc() + "\n")
+            except OSError:
+                # A diagnostic log must never prevent the recovery UI rendering.
+                pass
             st.error("Campus information could not be loaded. Please try again.")
             if st.button("Try again", key="retry_load", icon=":material/refresh:"):
                 st.rerun()

@@ -6,47 +6,19 @@ trusted. Chroma, when available, mirrors the current snapshot in a new namespace
 import hashlib
 import json
 import math
-import os
 import warnings
 from pathlib import Path
 
+from src.campus_entities import ENTITY_ALIASES as DESTINATION_ALIASES, destination_matches
 from src.config import PERSIST_DIRECTORY, RAW_DATA_DIR, SOURCE_REGISTRY_PATH
 from src.embedding import EmbeddingGenerator
 from src.preprocessing import TextPreprocessor
-
-
-DESTINATION_ALIASES = {
-    "library": ("library", "aklatan", "basahanan", "basahan", "learning center"),
-    "cashier": ("cashier", "cashiering", "finance services", "finance office", "kahera", "kaser"),
-    "registrar": ("registrar", "records office"),
-    "guidance": ("guidance", "counseling", "counselling", "tagapayo"),
-    "clinic": ("clinic", "klinika", "tambalanan", "medical", "dental"),
-    "canteen": ("canteen", "cafeteria", "kantina", "kainan", "kan anan", "kan an", "kaonan", "dining hall"),
-    "gymnasium": ("gymnasium", "gym", "gymnasyum", "covered court"),
-    "computer studies": ("computer studies", "bsis", "bsais", "comlab", "computer lab", "ccis"),
-    "criminology": ("criminology", "bscrim", "kriminolohiya"),
-    "agriculture": ("agriculture", "agrikultura", "bsag"),
-    "student affairs": ("student affairs", "saso", "student services"),
-    "security": ("security", "guardhouse", "guard house", "gwardya", "lost and found", "lost found"),
-    "administration": ("administration", "admin building"),
-    "admissions": ("admissions", "scholarship", "scholarships"),
-    "chapel": ("chapel", "kapilya", "ecumenical"),
-    "nstp": ("nstp", "rotc", "cwts"),
-    "student government": ("student government", "ssg", "supreme student"),
-    "restroom": ("restroom", "comfort room", "toilet", "cr", "kasilyas", "palikuran"),
-}
-
-
-def _normalized_words(text):
-    import re
-    return " ".join(re.findall(r"\w+", text.casefold().replace("_", " ")))
+from src.storage_io import atomic_write_text
 
 
 def canonical_destinations(text):
-    """Exact multilingual phrase matching, never substring-based word boosts."""
-    words = " " + _normalized_words(text) + " "
-    return {name for name, aliases in DESTINATION_ALIASES.items()
-            if any(" " + _normalized_words(alias) + " " in words for alias in aliases)}
+    """Use the same campus names as the question resolver."""
+    return destination_matches(text)
 
 
 class VectorStore:
@@ -120,17 +92,14 @@ class VectorStore:
     def _save_snapshot(self):
         if not self._persistent:
             return
-        self._snapshot.parent.mkdir(parents=True, exist_ok=True)
-        temporary = self._snapshot.with_suffix(".json.tmp")
-        temporary.write_text(json.dumps({
+        atomic_write_text(self._snapshot, json.dumps({
             "schema_version": 2,
             "embedding_signature": self.embedding_signature,
             "tracked_sources": sorted(self._tracked_sources),
             "source_chunk_counts": {name: sum(r["metadata"].get("source_doc") == name for r in self._records.values())
                                     for name in sorted(self._tracked_sources)},
             "records": list(self._records.values()),
-        }, ensure_ascii=False), encoding="utf-8")
-        os.replace(temporary, self._snapshot)
+        }, ensure_ascii=False))
 
     def _mirror_snapshot(self):
         if self.collection is None:
@@ -207,6 +176,10 @@ class VectorStore:
 
     def _verified_rows(self):
         expected = {}
+        # Read approval data once for this search, never cache trust between
+        # searches. Each source's current bytes are still hashed and re-chunked.
+        processor = TextPreprocessor(source_registry_path=self.source_registry_path)
+        registry_entries = processor.registry.entries()
         for row in self._records.values():
             metadata = row["metadata"]
             filename = metadata.get("source_doc", "")
@@ -217,7 +190,7 @@ class VectorStore:
                     source = (self.raw_data_dir / filename).resolve()
                     if source.parent != self.raw_data_dir:
                         continue
-                    chunks = TextPreprocessor(source_registry_path=self.source_registry_path).process_file(source)
+                    chunks = processor.process_file(source, registry_entries=registry_entries)
                     expected[filename] = {c["metadata"]["chunk_id"]: c for c in chunks}
                 except (OSError, UnicodeError, ValueError):
                     expected[filename] = {}

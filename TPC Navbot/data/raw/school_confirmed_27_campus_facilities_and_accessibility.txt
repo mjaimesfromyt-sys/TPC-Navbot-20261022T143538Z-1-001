@@ -1,0 +1,18 @@
+TPC school-confirmed submission: Campus Facilities and Accessibility
+Location ID: TPC-SCHOOL-27
+Submitted record(s): 27
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Campus Facilities and Accessibility",
+  "aliases": [
+    "campus accessibility",
+    "campus facilities",
+    "accessible facilities"
+  ],
+  "contact": "College Administration or Student Affairs Office."
+}
+
+Scope and unavailable details:
+No actual ramp, elevator, accessible toilet, parking place, or accessible route supplied. Only the administration/SAO referral is available.

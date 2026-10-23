@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Campus Internet and Wi-Fi Access
+Location ID: TPC-SCHOOL-15
+Submitted record(s): 15
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Campus Wi-Fi",
+  "aliases": [
+    "wifi",
+    "campus internet",
+    "DICT Free WiFi"
+  ],
+  "location": "Library.",
+  "services": "DICT Free WiFi is available in the library. Connect to Wi-Fi and sign in; exact sign-in steps were not supplied. Ask the librarian for help. Service hours and acceptable-use rules are not specified in the reviewed facts."
+}
+
+Scope and unavailable details:
+24/7, unrestricted acceptable use, visitor access, and unspecified sign-in steps are not approved.

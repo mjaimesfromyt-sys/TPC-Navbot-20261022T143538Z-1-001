@@ -1,0 +1,18 @@
+TPC school-confirmed submission: Criminology Building
+Location ID: TPC-SCHOOL-03
+Submitted record(s): 03
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Criminology Building",
+  "aliases": [
+    "criminology department",
+    "criminology building"
+  ],
+  "location": "Behind the main building.",
+  "services": "Classrooms."
+}
+
+Scope and unavailable details:
+The unscoped 8:30 AM motorcycle rule and incomplete bridge route are not enabled as directions or policy.

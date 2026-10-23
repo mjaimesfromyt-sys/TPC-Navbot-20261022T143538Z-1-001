@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Administration Building
+Location ID: TPC-SCHOOL-05
+Submitted record(s): 05
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Administration Offices",
+  "aliases": [
+    "Administration Building",
+    "administration offices",
+    "admin office"
+  ],
+  "building": "Main Building",
+  "location": "Inside the main building."
+}
+
+Scope and unavailable details:
+Administration is represented as offices inside Main Building; it is not inferred to be a separate building.

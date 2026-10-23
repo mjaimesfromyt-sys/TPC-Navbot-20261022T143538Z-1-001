@@ -1,0 +1,38 @@
+## Record 14 --- Computer Laboratory Rules and Access
+
+-   **Labs:** Computer Laboratory 1 and Computer Laboratory 2.
+-   **Location:** Right-hand side when facing the flagpole from the main
+    building.
+-   **Schedule/access:** Reported as available during class only, for
+    students in scheduled classes.
+-   **Booking:** User reports no booking.
+-   **Reported rules:**
+    1.  No eating or drinking inside the computer lab.
+    2.  Keep the lab clean and organized.
+    3.  Handle computers and equipment carefully.
+    4.  Do not install software without permission.
+    5.  Do not change computer settings without authorization.
+    6.  Use computers for academic purposes only.
+    7.  Do not access inappropriate websites or content.
+    8.  Do not download unauthorized files or applications.
+    9.  Do not bring unauthorized USB drives or external devices.
+    10. Report damaged equipment or technical problems to the lab
+        instructor.
+    11. Do not unplug cables or disconnect equipment.
+    12. Keep noise minimal.
+    13. Log out of accounts after use.
+    14. Save work before shutting down.
+    15. Shut down computers properly after use.
+    16. Follow the instructor's instructions.
+    17. Do not share passwords or personal account information.
+    18. Do not handle liquids near computer equipment (overlaps with the
+        no-food/drink rule).
+    19. Return chairs, keyboards, and other equipment to their proper
+        places.
+    20. Follow lab schedules and use computers only when authorized.
+-   **Evidence/source named:** Program Head; no actual
+    confirmation/document/date was supplied.
+-   **Verification:** Pending confirmation.
+-   **Needs confirmation:** Whether both labs share the rules, whether
+    authorized access is possible outside class, rules during vacant
+    periods/holidays, and formal approval of the list.

@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Student Handbook and Campus Policies
+Location ID: TPC-SCHOOL-25
+Submitted record(s): 25
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Student Handbook and Campus Policies",
+  "aliases": [
+    "student handbook",
+    "handbook",
+    "dress code",
+    "uniform policy"
+  ],
+  "contact": "SAO, Registrar, department head, or college administration."
+}
+
+Scope and unavailable details:
+No handbook edition/pages, actual uniform schedule, sanctions, or grievance deadlines supplied. Only the named referral is available.

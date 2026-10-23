@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Student Attendance and Absence Policies
+Location ID: TPC-SCHOOL-24
+Submitted record(s): 24
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Student Attendance and Absence Policies",
+  "aliases": [
+    "attendance",
+    "absence policies",
+    "absence limits",
+    "tardiness"
+  ],
+  "contact": "Instructor first, then department head/program coordinator/Registrar/Student Affairs Office."
+}
+
+Scope and unavailable details:
+No absence/tardiness threshold, documentation deadline, or academic consequence supplied. Only the named referral is available.

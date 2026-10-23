@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Campus Communication Channels and Announcements
+Location ID: TPC-SCHOOL-29
+Submitted record(s): 29 and 30
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Campus Communication Channels and Announcements",
+  "aliases": [
+    "campus communication",
+    "official announcements",
+    "official website",
+    "official Facebook page",
+    "college website"
+  ],
+  "contact": "Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
+}
+
+Scope and unavailable details:
+Public channels are taken from records 29/30 based on the user's school-confirmation report; no independent website/account availability check is claimed.

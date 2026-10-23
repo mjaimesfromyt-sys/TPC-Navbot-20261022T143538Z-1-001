@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+**/.streamlit/secrets.toml
 
 # Python caches and local environments
 __pycache__/
@@ -21,3 +22,4 @@ TPC Navbot/data/evaluation/
 TPC Navbot/data/chroma_verified/
 TPC Navbot/data/vector_store/
 TPC Navbot/data/models/
+TPC Navbot/data/logs/

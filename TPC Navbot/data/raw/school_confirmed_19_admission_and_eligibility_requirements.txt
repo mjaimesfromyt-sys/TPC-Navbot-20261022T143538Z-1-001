@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Admission and Eligibility Requirements
+Location ID: TPC-SCHOOL-19
+Submitted record(s): 19
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Admission and Eligibility Requirements",
+  "aliases": [
+    "admissions",
+    "admission",
+    "admission requirements",
+    "eligibility requirements"
+  ],
+  "contact": "Registrar's Office or admissions office.",
+  "services": "Inquire with the Registrar or admissions office about available programs, application evaluation, and enrollment. Program-specific rules, exam/interview applicability, deadlines, and fees are not specified in these reviewed facts."
+}
+
+Scope and unavailable details:
+Only the inquiry/referral is retained; entrance-exam/interview scope, age limits, exact eligibility, dates, and fees are unresolved.

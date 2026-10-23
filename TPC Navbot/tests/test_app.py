@@ -1,8 +1,11 @@
 """Exercise actual student chat rendering with Streamlit's supported test harness."""
 import importlib.util
+import importlib
+import json
 import os
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -14,12 +17,61 @@ sys.path.insert(0, str(PROJECT_ROOT))
 @unittest.skipUnless(importlib.util.find_spec("streamlit"), "Streamlit is an optional test dependency")
 class WebChatTests(unittest.TestCase):
     def setUp(self):
+        # UI refusal tests use their own unreviewed fixture. They must remain
+        # stable as personnel approve records in the real campus corpus, and
+        # must never write ingestion artifacts to the application's data folder.
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        raw = base / "raw"
+        raw.mkdir()
+        self.raw = raw
+        (raw / "synthetic_unverified.txt").write_text(
+            "Building Name: Synthetic Test Hall\nLocation ID: TEST-ONLY\n\n"
+            "Unreviewed test fixture only: library, Registrar's Office, Guidance Office, Room 203.\n",
+            encoding="utf-8",
+        )
+        registry = base / "registry.json"
+        registry.write_text(json.dumps({"documents": {}}), encoding="utf-8")
+        paths = {
+            "RAW_DATA_DIR": raw,
+            "SOURCE_REGISTRY_PATH": registry,
+            "PERSIST_DIRECTORY": base / "vectors",
+            "MANIFEST_PATH": base / "manifest.json",
+            "PROCESSED_CHUNKS_PATH": base / "processed" / "chunks.jsonl",
+        }
         environment = patch.dict(os.environ, {
             "TPC_EMBEDDING_MODE": "lexical",
             "TPC_ENABLE_LLM_SELECTION": "0",
+            "TPC_RAW_DATA_DIR": str(paths["RAW_DATA_DIR"]),
+            "TPC_SOURCE_REGISTRY": str(paths["SOURCE_REGISTRY_PATH"]),
+            "TPC_VECTOR_STORE_DIR": str(paths["PERSIST_DIRECTORY"]),
+            "TPC_INGESTION_MANIFEST": str(paths["MANIFEST_PATH"]),
+            "TPC_PROCESSED_CHUNKS": str(paths["PROCESSED_CHUNKS_PATH"]),
         })
         environment.start()
         self.addCleanup(environment.stop)
+        # Other test modules may have imported these constants before setUp.
+        for module_name in ("src.config", "src.preprocessing", "src.vector_store", "src.ingestion"):
+            module = importlib.import_module(module_name)
+            path_patch = patch.multiple(module, **{
+                name: value for name, value in paths.items() if hasattr(module, name)
+            })
+            path_patch.start()
+            self.addCleanup(path_patch.stop)
+        from src.vector_store import VectorStore
+
+        original_init = VectorStore.__init__
+
+        def initialize_memory_store(instance, *args, **kwargs):
+            # Chroma keeps file handles open on Windows; UI tests exercise the
+            # same retrieval API without requiring a persistent database.
+            kwargs["backend"] = "memory"
+            original_init(instance, *args, **kwargs)
+
+        backend_patch = patch.object(VectorStore, "__init__", initialize_memory_store)
+        backend_patch.start()
+        self.addCleanup(backend_patch.stop)
 
     def start_app(self):
         from streamlit.testing.v1 import AppTest
@@ -89,8 +141,41 @@ class WebChatTests(unittest.TestCase):
         self.assertFalse(app.exception)
         self.assertEqual(app.session_state["messages"], [])
 
+    def test_campus_data_change_refreshes_backend_and_preserves_transcript(self):
+        app = self.start_app()
+        app.chat_input(key="campus_prompt").set_value("Directions to the library from Main Gate?").run()
+        self.assertFalse(app.exception)
+        original_bot = app.session_state["rag_bot"]
+        original_revision = app.session_state["knowledge_revision"]
+        session_id = app.session_state["session_id"]
+        transcript = [dict(message) for message in app.session_state["messages"]]
+        original_session = original_bot.memory_manager.get_session(session_id)
+        self.assertTrue(original_session.history)
+        self.assertEqual(original_session.last_entity, "library")
+        self.assertTrue(original_session.starting_point)
+
+        (self.raw / "synthetic_added_after_load.txt").write_text(
+            "Building Name: Additional Synthetic Hall\nLocation ID: TEST-ONLY-NEW\n\n"
+            "Unreviewed synthetic fixture added while the student app is open.\n",
+            encoding="utf-8",
+        )
+        app.run()
+        self.assertFalse(app.exception)
+        refreshed_bot = app.session_state["rag_bot"]
+        self.assertIsNot(refreshed_bot, original_bot)
+        self.assertNotEqual(app.session_state["knowledge_revision"], original_revision)
+        self.assertEqual(app.session_state["session_id"], session_id)
+        self.assertEqual(app.session_state["messages"], transcript)
+        refreshed_session = refreshed_bot.memory_manager.get_session(session_id)
+        self.assertEqual(refreshed_session.history, [])
+        self.assertIsNone(refreshed_session.last_entity)
+        self.assertIsNone(refreshed_session.starting_point)
+        self.assertEqual(refreshed_session.pending_buildings, [])
+        self.assertEqual(refreshed_session.pending_starts, [])
+
     def test_answer_displays_status_language_and_source_evidence(self):
         app = self.start_app()
+        app.checkbox(key="show_answer_details").check().run()
         source = "SYNTHETIC TEST SOURCE: Student Services Guide, p. 12"
         response = {
             "answer": "Synthetic reviewed campus answer for this UI test.",
@@ -109,6 +194,141 @@ class WebChatTests(unittest.TestCase):
         self.assertIn("verified campus information", rendered.lower())
         self.assertIn("English", captions)
         self.assertEqual(app.session_state["messages"][-1]["metadata"]["sources"], [source])
+
+    def test_structured_evidence_is_available_in_expander_without_cluttering_answer(self):
+        app = self.start_app()
+        app.checkbox(key="show_answer_details").check().run()
+        source_doc = "reviewed-fixture.txt"
+        reference = "Authorized campus test record"
+        source = f"{source_doc} [{reference}]"
+        details = [{
+            "destination": "Library", "source_doc": source_doc,
+            "official_source": reference, "reviewed_by": "Test reviewer",
+            "reviewed_at": "2026-10-22",
+        }]
+        response = {
+            "answer": "Destination: **Library**\n\nBuilding: Synthetic Learning Center",
+            "status": "SUCCESS", "language": "english", "sources": [source],
+            "source_details": details, "turn_count": 1,
+        }
+        with patch("src.llm_rag.TPCNavBotRAG.chat", return_value=response):
+            app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
+        self.assertFalse(app.exception)
+        message = app.session_state["messages"][-1]
+        self.assertEqual(message["content"], response["answer"])
+        self.assertEqual(message["metadata"]["sources"], [source])
+        self.assertEqual(message["metadata"]["source_details"], details)
+        evidence = next(element for element in app.expander if "1 source" in element.label)
+        evidence_text = "\n".join(
+            element.value for kind in ("markdown", "caption", "text")
+            for element in getattr(evidence, kind)
+        )
+        for value in ("Library", source_doc, reference, "Test reviewer", "2026-10-22"):
+            with self.subTest(evidence=value):
+                self.assertIn(value, evidence_text)
+        all_rendered = "\n".join(
+            element.value for kind in ("markdown", "caption", "text")
+            for element in getattr(app, kind)
+        )
+        for value in (source_doc, reference, "Test reviewer", "2026-10-22"):
+            with self.subTest(answer_excludes=value):
+                self.assertNotIn(value, message["content"])
+                self.assertEqual(all_rendered.count(value), evidence_text.count(value))
+
+        # Review details survive the ordinary rerun that renders saved messages.
+        app.run()
+        self.assertFalse(app.exception)
+        self.assertEqual(app.session_state["messages"][-1]["metadata"]["source_details"], details)
+        evidence = next(element for element in app.expander if "1 source" in element.label)
+        self.assertIn(source_doc, "\n".join(
+            element.value for kind in ("markdown", "caption", "text")
+            for element in getattr(evidence, kind)
+        ))
+
+    def test_answers_show_plain_text_by_default_and_keep_evidence_available_on_request(self):
+        app = self.start_app()
+        self.assertFalse(app.checkbox(key="show_answer_details").value)
+        source_doc = "synthetic_registrar.txt"
+        reference = "Synthetic reviewed campus reference"
+        response = {
+            "answer": "The Registrar's Office is in front of the main gate.",
+            "status": "SUCCESS", "language": "english",
+            "sources": [f"{source_doc} [{reference}]"],
+            "source_details": [{
+                "destination": "Registrar's Office", "source_doc": source_doc,
+                "official_source": reference, "reviewed_by": "Test reviewer",
+                "reviewed_at": "2026-10-22",
+            }],
+        }
+        with patch("src.llm_rag.TPCNavBotRAG.chat", return_value=response):
+            app.chat_input(key="campus_prompt").set_value("Where is the Registrar's Office?").run()
+        self.assertFalse(app.exception)
+        self.assertFalse(any("Sources & answer details" in element.label for element in app.expander))
+        rendered = "\n".join(
+            element.value for kind in ("markdown", "caption", "text")
+            for element in getattr(app, kind)
+        )
+        self.assertIn(response["answer"], rendered)
+        for value in (source_doc, reference, "Test reviewer", "2026-10-22", '<div class="answer-meta">'):
+            with self.subTest(hidden_evidence=value):
+                self.assertNotIn(value, rendered)
+        self.assertEqual(app.session_state["messages"][-1]["metadata"]["sources"], response["sources"])
+
+        # Students can opt into the existing answer's complete review details.
+        app.checkbox(key="show_answer_details").check().run()
+        self.assertFalse(app.exception)
+        evidence = next(element for element in app.expander if "1 source" in element.label)
+        self.assertIn(source_doc, "\n".join(
+            element.value for kind in ("markdown", "caption", "text")
+            for element in getattr(evidence, kind)
+        ))
+        self.assertEqual(len(app.session_state["messages"]), 2)
+        self.assertEqual(app.session_state["messages"][-1]["content"], response["answer"])
+
+    def test_helpful_tip_and_latest_suggested_question_submit_one_turn(self):
+        app = self.start_app()
+        question = "What are the library office hours?"
+        first_response = {
+            "answer": "Synthetic library location.", "status": "SUCCESS", "language": "english",
+            "sources": ["Synthetic reviewed source"],
+            "helpful_tip": "The library provides reading and book services.",
+            "suggested_questions": [question, "What services does the library offer?", "An extra suggestion"],
+        }
+        second_response = {
+            "answer": "Synthetic library office hours.", "status": "SUCCESS", "language": "english",
+            "sources": ["Synthetic reviewed source"], "helpful_tip": "",
+            "suggested_questions": ["Where is the library?"],
+        }
+        with patch("src.llm_rag.TPCNavBotRAG.chat", side_effect=[first_response, second_response]) as chat:
+            app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
+            self.assertFalse(app.exception)
+            self.assertEqual(len(app.session_state["messages"]), 2)
+            self.assertIn("Tip: " + first_response["helpful_tip"],
+                          "\n".join(element.value for element in app.caption))
+            self.assertEqual(app.session_state["messages"][-1]["content"], first_response["answer"])
+            self.assertEqual(app.session_state["messages"][-1]["metadata"]["helpful_tip"],
+                             first_response["helpful_tip"])
+            self.assertEqual(app.session_state["messages"][-1]["metadata"]["suggested_questions"],
+                             first_response["suggested_questions"])
+            self.assertEqual(app.button(key="suggested_1_0").label, question)
+            self.assertEqual(len([button for button in app.button if button.key.startswith("suggested_")]), 2)
+            self.assertFalse(any("Sources & answer details" in element.label for element in app.expander))
+
+            app.button(key="suggested_1_0").click().run()
+            self.assertFalse(app.exception)
+            self.assertEqual(chat.call_count, 2)
+            self.assertEqual(chat.call_args.args[0], question)
+            self.assertEqual(len(app.session_state["messages"]), 4)
+            self.assertEqual(app.session_state["messages"][-2]["content"], question)
+            self.assertEqual(app.session_state["messages"][-1]["content"], second_response["answer"])
+            self.assertFalse(any(button.key.startswith("suggested_1_") for button in app.button))
+            self.assertEqual(app.button(key="suggested_3_0").label, second_response["suggested_questions"][0])
+            self.assertFalse(any("Sources & answer details" in element.label for element in app.expander))
+
+            app.run()
+            self.assertFalse(app.exception)
+            self.assertEqual(chat.call_count, 2)
+            self.assertEqual(len(app.session_state["messages"]), 4)
 
     def test_chat_failure_is_localized_and_next_request_can_recover(self):
         from src.llm_rag import MESSAGES

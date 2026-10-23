@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Student Enrollment Procedures
+Location ID: TPC-SCHOOL-17
+Submitted record(s): 17
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Student Enrollment Procedures",
+  "aliases": [
+    "student enrollment",
+    "enrollment procedures",
+    "enrollment",
+    "enrolment"
+  ],
+  "building": "Main Building",
+  "services": "Registrar's Office: obtain and complete the enrollment form; submit required documents; undergo evaluation/verification; select/register subjects; complete payments or clearance as applicable; confirm enrollment with the Registrar. Current dates, fees, and category-specific details are not supplied here."
+}
+
+Scope and unavailable details:
+Only the general submitted process is retained; no actual dates, fees, payment requirement, or late-enrollment rule is inferred.

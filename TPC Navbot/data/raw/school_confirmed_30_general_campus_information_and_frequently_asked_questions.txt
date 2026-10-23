@@ -1,0 +1,31 @@
+TPC school-confirmed submission: General Campus Information and Frequently Asked Questions
+Location ID: TPC-SCHOOL-30
+Submitted record(s): 29 and 30
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Talibon Polytechnic College",
+  "aliases": [
+    "general college information",
+    "college information",
+    "about TPC",
+    "about Talibon Polytechnic College",
+    "campus address",
+    "college address",
+    "TPC address",
+    "TPC contact",
+    "TPC phone",
+    "TPC email"
+  ],
+  "location": "San Isidro, Talibon, Bohol, Philippines.",
+  "contact": "Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/",
+  "services": [
+    "Official college name: Talibon Polytechnic College (TPC).",
+    "Campus address: San Isidro, Talibon, Bohol, Philippines.",
+    "Public contact channels: Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
+  ]
+}
+
+Scope and unavailable details:
+Public identity, address, and supplied contacts only. Mission/vision wording and generic procedures are preserved in the original attachment but not mapped to factual answers.

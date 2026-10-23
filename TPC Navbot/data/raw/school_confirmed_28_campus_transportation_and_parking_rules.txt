@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Campus Transportation and Parking Rules
+Location ID: TPC-SCHOOL-28
+Submitted record(s): 28
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Campus Transportation and Parking Rules",
+  "aliases": [
+    "parking",
+    "campus transportation",
+    "vehicle entry",
+    "motorcycle entry",
+    "gate hours"
+  ]
+}
+
+Scope and unavailable details:
+The meaning of 8:30 AM, gate schedule, parking locations, speed limits, and penalties are unresolved; none is enabled.

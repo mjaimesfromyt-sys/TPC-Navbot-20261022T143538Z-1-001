@@ -1,0 +1,22 @@
+TPC school-confirmed submission: Student Affairs Office
+Location ID: TPC-SCHOOL-10
+Submitted record(s): 10
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Student Affairs Office",
+  "aliases": [
+    "student affairs",
+    "SAO",
+    "SASO",
+    "student services office"
+  ],
+  "building": "Main Building",
+  "location": "Inside the main building.",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "Student concerns, discipline, and inquiries about the Student Handbook."
+}
+
+Scope and unavailable details:
+No room code, universal student-ID requirement, or visitor eligibility is inferred.

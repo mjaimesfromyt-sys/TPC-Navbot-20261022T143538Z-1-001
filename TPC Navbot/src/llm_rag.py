@@ -11,47 +11,18 @@ from pathlib import Path
 import re
 from typing import Optional
 
+from src.campus_entities import ENTITY_ALIASES as ENTITIES, normalize
 from src.memory import ConversationMemoryManager, ConversationSession
 
 
 def _norm(value):
-    value = re.sub(r"['’]s\b", "", str(value).casefold())
-    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", " ", value)).strip()
+    return normalize(str(value))
 
 
 def _contains(text, phrase):
-    return bool(re.search(r"(?<!\w)" + re.escape(_norm(phrase)) + r"(?!\w)", _norm(text)))
+    phrase = _norm(phrase)
+    return bool(phrase and " " + phrase + " " in " " + _norm(text) + " ")
 
-
-ENTITIES = {
-    "registrar": ("registrar", "registrars office"),
-    "library": ("library", "aklatan", "basahan"),
-    "guidance office": ("guidance", "guidance office", "guidance center"),
-    "cashier": ("cashier", "accounting office", "finance office"),
-    "clinic": ("clinic", "tambalanan", "medical clinic", "health office"),
-    "canteen": ("canteen", "cafeteria", "kaonan", "kainan"),
-    "gymnasium": ("gym", "gymnasium"),
-    "security office": ("security office", "campus security", "gwardya"),
-    "student affairs": ("student affairs", "saso", "student services office"),
-    "student government": ("student government", "ssg"),
-    "nstp office": ("nstp", "rotc", "cwts"),
-    "chapel": ("chapel",),
-    "restroom": ("restroom", "comfort room", "toilet", "cr", "kasilyas", "palikuran"),
-    "tuition": ("tuition", "matrikula", "bayranan", "school fees"),
-    "admissions": ("admission", "admissions", "enrollment", "enrolment"),
-    "scholarship": ("scholarship", "scholarships", "iskolarship"),
-    "lost and found": ("lost and found", "lost id", "nawagtang nga id", "nawalang id"),
-    "wifi": ("wifi", "wi fi", "campus internet"),
-    "student portal": ("student portal", "lms", "tpc portal"),
-    "student handbook": ("handbook", "dress code", "uniform policy", "uniporme"),
-    "parking": ("parking", "parking area"),
-    "bsis department": ("bsis",),
-    "bsais department": ("bsais",),
-    "criminology department": ("bscrim", "criminology"),
-    "agriculture department": ("bsag", "agriculture", "agri"),
-    "political science department": ("polsci", "baps", "political science department"),
-    "education department": ("beced", "education department"),
-}
 
 MESSAGES = {
     "english": {
@@ -114,6 +85,7 @@ class TPCNavBotRAG:
             from src.vector_store import VectorStore
             vector_store = VectorStore(raw_data_dir=str(self.raw_data_dir))
         self.vector_store = vector_store
+        self.entities = dict(ENTITIES)
         self.processor = processor
         self.memory_manager = memory_manager or ConversationMemoryManager()
         self.api_key = os.environ.get("GEMINI_API_KEY", "").strip()
@@ -131,6 +103,29 @@ class TPCNavBotRAG:
             pass
         if initialize_knowledge_base:
             self._initialize_knowledge_base(str(self.raw_data_dir))
+        self._load_reviewed_names()
+
+    def _load_reviewed_names(self):
+        """Recognize directory names without another hand-written alias list.
+
+        The names only help understand a question. Retrieval still revalidates
+        the current source content and review before returning any facts.
+        """
+        for metadata in getattr(self.vector_store, "metadatas", []):
+            hit = {"score": 0, "metadata": metadata}
+            if not self._approved(hit):
+                continue
+            for record in self._records(hit):
+                names = [record["destination"]]
+                aliases = record.get("aliases", [])
+                if isinstance(aliases, list):
+                    names.extend(name for name in aliases if isinstance(name, str))
+                matches = [(len(_norm(alias)), entity)
+                           for entity, known in ENTITIES.items() for alias in known
+                           if any(_contains(name, alias) for name in names)]
+                entity = max(matches)[1] if matches else _norm(record["destination"])
+                self.entities[entity] = tuple(dict.fromkeys(
+                    self.entities.get(entity, ()) + tuple(names)))
 
     def _initialize_knowledge_base(self, raw_data_dir):
         if self.processor is None and hasattr(self.vector_store, "source_registry_path"):
@@ -172,28 +167,62 @@ class TPCNavBotRAG:
             r"\b(?:joke|jokes|jokes?|weather|forecast|recipe|recipes|horoscope|celebrity|celebrities|boyfriend|girlfriend|love letter|relationship|move on|gaming|basketball score|football score|election|president of the philippines|capital of|stock price|bitcoin|chatgpt)\b",
             r"\b(?:solve|calculate|compute|derive|answer my|sagot sa|sagoti|sulbara|ihap|kwentahin)\b.{0,70}\b(?:math|equation|assignment|homework|physics|science|algebra|problem|\d)\b",
             r"\b(?:write|compose|generate|create|draft|translate|code|debug|magsulat|sulat|paghimo|buhat|gumawa|gawan|isulat|salin)\b.{0,80}\b(?:poem|essay|story|caption|song|letter|script|program|code|python|java|tula|kwento|balak|assignment|french|spanish)\b",
-            r"\b(?:explain|teach|define|ipasabot|ipaliwanag|unsa ang|ano ang|what is)\b.{0,60}\b(?:quantum|relativity|photosynthesis|calculus|algebra|gravity|science|democracy|religion|politics|history of the world)\b",
+            r"\b(?:explain|teach|define|ipasabot|ipaliwanag|unsa ang|ano ang|what is)\b.{0,60}\b(?:quantum|relativity|photosynthesis|calculus|algebra|gravity|democracy|religion|politics|history of the world)\b",
             r"\b(?:private|confidential|another student|ibang estudyante|laing estudyante)\b.{0,40}\b(?:records?|grades?|passwords?|addresses?|phone)\b",
             r"\b(?:passwords?|api keys?|system prompt|system instructions|secret key)\b",
         )
         return any(re.search(pattern, q) for pattern in patterns)
 
-    @staticmethod
-    def _intent(query):
+    def _intent(self, query):
         q = _norm(query)
-        if re.search(r"\b(?:hours?|schedule|open|opening|orasa|oras|abli|bukas|moabli|nagbubukas)\b", q):
+        if re.search(r"\b(?:hours?|schedules?|academic calendar|school calendar|open|opening|close|closes|closing|what time|when does|orasa|oras|abli|bukas|moabli|mag abli|mosira|magsira|sirado|nagbubukas|nagsasara)\b", q):
             return "hours"
         if re.search(r"\b(?:wheelchair|accessible|accessibility|ramp|rampa|elevator|stairs|hagdan)\b", q):
             return "accessibility"
-        if re.search(r"\b(?:directions?|route|walk|walking|distance|far|steps|kalayo|layo|lakang|minutes?|minuto|get there|go there|get to|go to|way to|unsaon|padulong|pag adto|pagadto|paano|pumunta|papunta|gaano katagal)\b", q):
-            return "route"
-        if re.search(r"\b(?:contact|phone|email|telepono|kontak)\b", q):
-            return "contact"
-        if re.search(r"\b(?:services?|serbisyo|procedure|requirements?|policy|policies|fees?|tuition|admission|enrollment|enrolment|scholarship|lost|nawala|nawagtang|magbayad|magbabayad|bayranan|matrikula|handbook|dress code|uniform)\b", q):
+        if (re.search(r"\b(?:borrow|borrowing|maghulam|manghiram|enroll|enrol|magpaenroll|magpa enroll)\b", q)
+                and not re.search(r"\b(?:directions?|route|distance|where|asa|nasaan|saan)\b", q)):
             return "services"
-        if re.search(r"\b(?:where|location|locate|find|which building|which floor|asa|hain|nasaan|saan|saang silid|how about|what about|kumusta ang)\b", q):
+        if re.search(r"^(?:can|may|could) i (?:use|access)\b", q) and self._entity(query):
+            return "services"
+        if re.search(r"\b(?:directions?|route|walk|walking|distance|far|steps|kalayo|layo|lakang|minutes?|minuto|get there|go there|get to|go to|way to|unsaon|moadto|padulong|pag adto|pagadto|paano|pumunta|papunta|gaano katagal)\b", q):
+            return "route"
+        if re.search(r"\b(?:contacts?|phone|email|telepono|kontak|hotline|emergency numbers|website|facebook)\b", q):
+            return "contact"
+        if re.search(r"\b(?:services?|serbisyo|procedures?|requirements?|policy|policies|rules?|regulations?|programs?|courses?|grading|passing grade|attendance|absences|announcements?|communication channels|campus safety|campus transportation|college information|general campus information|about tpc|about talibon polytechnic college|student ids?|id issuance|id replacement|fees?|tuition|admission|enrollment|enrolment|scholarship|lost|nawala|nawagtang|magbayad|magbabayad|bayranan|matrikula|handbook|dress code|uniform)\b", q):
+            return "services"
+        if re.search(r"\b(?:where|location|locate|find|address|which building|which floor|asa|hain|nasaan|saan|saang silid|how about|what about|kumusta ang)\b", q):
             return "location"
+        # A campus place name is a complete location request in a navigation
+        # assistant. Only accept fragments made from a destination and courtesy
+        # words, so an unrelated request cannot borrow one campus keyword.
+        entity = self._entity(query)
+        if entity and self._campus_fragment(query, entity):
+            service_subjects = {
+                "tuition", "admissions", "enrollment", "scholarship", "lost and found", "wifi",
+                "student portal", "student handbook", "enrollment documents",
+                "academic programs", "examination policies", "grading system",
+                "attendance policies", "campus safety", "campus transportation",
+                "campus communication", "college information",
+            }
+            return "services" if entity in service_subjects else "location"
         return None
+
+    def _campus_fragment(self, query, entity):
+        q = _norm(query)
+        q = re.sub(r"^(?:please |palihug |hi |hello )", "", q)
+        q = re.sub(r"^(?:show me|tell me about|information about|info about|info on|looking for|i am looking for|i need)\s+", "", q)
+        q = re.sub(r"\s+(?:please|palihug|po|pls|plz)$", "", q)
+        if entity not in self.entities:
+            return q == entity and bool(re.search(r"\b(?:office|building|department|laboratory|lab|library|room)\b", q))
+        for alias in sorted(self.entities[entity], key=len, reverse=True):
+            remaining, count = re.subn(r"(?<!\w)" + re.escape(_norm(alias)) + r"(?!\w)", " ", q, count=1)
+            if count and set(remaining.split()) <= {
+                "the", "a", "an", "ang", "po", "tpc", "campus", "at", "in",
+                "on", "sa", "of", "building", "office", "department",
+                "laboratory", "lab", "gusali", "opisina", "departamento",
+            }:
+                return True
+        return False
 
     @staticmethod
     def _room(query):
@@ -210,18 +239,21 @@ class TPCNavBotRAG:
         if room:
             return "room " + room
         q = _norm(query)
-        found = [(len(_norm(alias)), entity) for entity, aliases in ENTITIES.items() for alias in aliases if _contains(q, alias)]
+        found = [(len(_norm(alias)), entity, alias) for entity, aliases in self.entities.items() for alias in aliases if _contains(q, alias)]
         if found:
-            entity = max(found)[1]
+            _, entity, alias = max(found)
             phrase = self._target_phrase(original_query)
-            if phrase and any(_contains(phrase, alias) for alias in ENTITIES[entity]):
-                generic = {"the", "a", "an", "ang", "po", "tpc", "campus", "office", "department", "of", "college"}
-                alias_words = {word for alias in ENTITIES[entity] for word in _norm(alias).split()}
+            if phrase and any(_contains(phrase, alias) for alias in self.entities[entity]):
+                generic = {"the", "a", "an", "ang", "po", "tpc", "campus", "office", "department", "of", "college", "building", "gusali", "opisina", "departamento"}
+                alias_words = {word for alias in self.entities[entity] for word in _norm(alias).split()}
                 if set(phrase.split()) - generic - alias_words:
                     return phrase
+            qualified_name = self._qualified_alias(q, alias)
+            if qualified_name:
+                return qualified_name
             return entity
         # Unknown campus destinations remain campus questions, not off-topic.
-        match = re.search(r"(?:where (?:is|are)|find|asa(?: dapit)?(?: ang)?|nasaan(?: po)?(?: ang)?|saan(?: po)?(?: ang)?)\s+(.+?)(?:\s+(?:at|in|sa) (?:tpc|campus)|$)", q)
+        match = re.search(r"\b(?:where (?:is|are)|find|asa(?: dapit)?(?: ang)?|nasaan(?: po)?(?: ang)?|saan(?: po)?(?: ang)?)\s+(.+?)(?:\s+(?:at|in|sa) (?:tpc|campus)|$)", q)
         if match:
             candidate = re.sub(r"^(?:the|ang)\s+", "", match.group(1)).strip()
             candidate = re.sub(r"^(?:tpc|campus)\s+", "", candidate)
@@ -233,17 +265,64 @@ class TPCNavBotRAG:
         return None
 
     @staticmethod
+    def _qualified_alias(query, alias):
+        """Retain a named facility even when the request is about its hours.
+
+        Known aliases are vocabulary, not permission to remove unknown names
+        from "Science Library hours" or "Library of Congress services".
+        """
+        match = re.search(r"(?<!\w)" + re.escape(_norm(alias)) + r"(?!\w)", query)
+        if not match:
+            return None
+        boundary_words = set((
+            "the a an ang mga sa ng si kay ni iyang its my our your school college "
+            "tpc campus talibon polytechnic please palihug po pls plz "
+            "what which when where how who can could would will do does did is are "
+            "was were i me we you it about of for at in on to from near and or "
+            "asa hain unsa unsay unsang unsaon pag orasa naa dapit diay ba kaha "
+            "saan nasaan ano anong paano may meron bang "
+            "show tell need want looking find finding locate give information info use access "
+            "hours hour opening open closes close closing time schedule schedules "
+            "services service rules policy policies requirements contact phone number "
+            "email address location directions route walk walking distance far steps "
+            "orasa oras abli moabli mosira magsira bukas nagsasara nagbubukas serbisyo"
+        ).split())
+        name_words = []
+        for word in reversed(query[:match.start()].split()):
+            if word in boundary_words:
+                break
+            name_words.insert(0, word)
+        if name_words:
+            return " ".join(name_words + [_norm(alias)])
+        suffix = query[match.end():].strip()
+        if suffix.startswith(("of ", "ng ")):
+            qualifier = re.split(r"\b(?:hours?|services?|rules?|phone|contact|email|location|open|close)\b", suffix, maxsplit=1)[0].strip()
+            place = re.sub(r"^(?:of|ng) (?:the |ang )?", "", qualifier)
+            if place and place not in {"tpc", "campus", "tpc campus", "talibon polytechnic college"}:
+                return _norm(alias) + " " + qualifier
+        return None
+
+    @staticmethod
     def _question_portion(query):
         match = re.search(r"\b(?:where|which|how|what|asa|hain|nasaan|saan|saang|unsa|unsang|unsaon|paano|gaano|anong|ano)\b", query, re.I)
         return query[match.start():] if match else query
 
     def _target_phrase(self, query):
         q = _norm(self._question_portion(query))
-        pattern = r"(?:where (?:is|are)|where can i find|location of|asa(?: dapit)?(?: ang)?|hain(?: ang)?|nasaan(?: po)?(?: ang)?|saan(?: po)?(?: matatagpuan)?(?: ang)?|saang silid(?: ang)?|how about|what about)\s+(?:the |ang )?(.+)"
+        pattern = r"\b(?:where (?:is|are)|where can i find|location of|asa(?: dapit)?(?: ang)?|hain(?: ang)?|nasaan(?: po)?(?: ang)?|saan(?: po)?(?: matatagpuan)?(?: ang)?|saang silid(?: ang)?|how about|what about)\s+(?:the |ang )?(.+)"
         match = re.search(pattern, q)
         if not match:
             match = re.search(r"(?:get to|go to|way to|pumunta sa|papunta sa|para sa)\s+(?:the |ang )?(.+)", q)
         if not match:
+            # Retain named qualifiers in short phrases too: "Science Library"
+            # must not silently become the general campus library.
+            candidate = re.sub(r"^(?:please |palihug |the |ang |tpc |campus )+", "", q)
+            candidate = re.sub(r"^(?:show me|tell me about|information about|info about|info on|looking for|i am looking for|i need)\s+", "", candidate)
+            candidate = re.sub(r"\s+(?:please|palihug|po|pls|plz)$", "", candidate)
+            if (len(candidate.split()) <= 8
+                    and not re.search(r"\b(?:what|which|when|how|where|can|may|could|use|access|asa|hain|unsa|unsay|unsang|orasa|saan|nasaan|ano|anong|paano|services?|hours?|rules?|contact|phone|email|open|close)\b", candidate)
+                    and re.fullmatch(r"[\w ]+\b(?:office|building|department|laboratory|lab|library|room)", candidate)):
+                return candidate
             return None
         phrase = re.split(r"\s+(?:at|in|from|near|within|sa|gikan sa|mula sa|and|ug|og|at|also)\s+", match.group(1), maxsplit=1)[0]
         phrase = re.sub(r"^(?:tpc|campus)\s+", "", phrase)
@@ -257,7 +336,7 @@ class TPCNavBotRAG:
             q = re.sub(re.escape(_norm(origin)), " ", q, count=1)
         # Restrict destination qualifiers; "sa library" in a route question is
         # the destination itself, while "library sa UP Diliman" is external.
-        names = ENTITIES.get(entity, (entity,))
+        names = self.entities.get(entity, (entity,))
         positions = [m.end() for name in names for m in re.finditer(r"(?<!\w)" + re.escape(_norm(name)) + r"(?!\w)", q)]
         if entity.startswith("room "):
             room = self._room(q)
@@ -275,12 +354,11 @@ class TPCNavBotRAG:
             qualifiers.append(value)
         return qualifiers
 
-    @staticmethod
-    def _campus_place_name(place):
+    def _campus_place_name(self, place):
         q = _norm(place)
         if q.startswith("the "):
             q = q[4:]
-        if any(q == _norm(alias) for aliases in ENTITIES.values() for alias in aliases):
+        if any(q == _norm(alias) for aliases in self.entities.values() for alias in aliases):
             return True
         return bool(re.fullmatch(r"(?:tpc |campus )?(?:main (?:entrance|gate)|gate\s*\d+|entrance|(?:room|lawak|silid)\s*[a-z]*\s*\d+[a-z]*|[\w ]{1,70} (?:building|hall|center|centre|wing|annex|laboratory|lab)|(?:\d+(?:st|nd|rd|th)?|first|second|third|ground) floor)", q))
 
@@ -391,8 +469,14 @@ class TPCNavBotRAG:
         room = entity[5:] if entity.startswith("room ") else None
         if room:
             return _norm(record.get("room", "")) == room or any(self._room(name) == room for name in names)
-        targets = ENTITIES.get(entity, (entity,))
-        return any(_contains(name, alias) for name in names for alias in targets)
+        if entity in self.entities:
+            # Prefer the full reviewed topic over a shared word. Enrollment
+            # requirements and enrollment procedures are different questions.
+            matches = [(len(_norm(alias)), candidate)
+                       for candidate, aliases in self.entities.items() for alias in aliases
+                       if any(_contains(name, alias) for name in names)]
+            return bool(matches and max(matches)[1] == entity)
+        return any(_contains(name, entity) for name in names)
 
     @staticmethod
     def _origin(query):
@@ -447,9 +531,103 @@ class TPCNavBotRAG:
     def _render_request(self, request):
         return self._render_record(**request)
 
+    def _helpful_next(self, record, lang, intent):
+        """Offer only details present in this same approved destination record."""
+        if record.get("restricted") is True:
+            return "", []
+        values = {field: self._localized(record.get(field), lang)
+                  for field in ("hours", "services", "contact", "accessibility")}
+        available = {field for field, value in values.items()
+                     if self._safe_value(value) or (
+                         isinstance(value, list) and value
+                         and all(self._safe_value(item) for item in value))}
+        if any(self._safe_value(self._localized(record.get(field), lang))
+               for field in ("building", "floor", "room", "location")):
+            available.add("location")
+        destination = record["destination"]
+        templates = {
+            "english": {
+                "location": "Where is the {name}?",
+                "hours": "What are the {name} hours?",
+                "services": "What services does the {name} offer?",
+                "contact": "What are the {name} contact details?",
+                "accessibility": "Is the {name} wheelchair accessible?",
+            },
+            "bisaya": {
+                "location": "Asa dapit ang {name}?",
+                "hours": "Unsa ang oras sa {name}?",
+                "services": "Unsa ang serbisyo sa {name}?",
+                "contact": "Unsa ang kontak sa {name}?",
+                "accessibility": "Accessible ba sa wheelchair ang {name}?",
+            },
+            "tagalog": {
+                "location": "Nasaan ang {name}?",
+                "hours": "Ano ang oras ng {name}?",
+                "services": "Ano ang serbisyo ng {name}?",
+                "contact": "Ano ang kontak ng {name}?",
+                "accessibility": "Accessible ba sa wheelchair ang {name}?",
+            },
+        }
+        questions = [templates[lang][field].format(name=destination)
+                     for field in ("location", "hours", "services", "contact", "accessibility")
+                     if field in available and field != intent][:2]
+        tip = ""
+        # Quote a short actionable service detail without generating new advice.
+        # A bare location answer keeps its wording; the UI presents this separately.
+        if intent != "services" and "services" in available:
+            service = values["services"]
+            sentences = service if isinstance(service, list) else re.split(r"(?<=[.!?])\s+", str(service))
+            for sentence in sentences:
+                if (len(str(sentence)) <= 240 and re.search(
+                        r"\b(?:ask|bring|must|required|needed|only|no eating|no drinking)\b",
+                        str(sentence), re.I)):
+                    tip = str(sentence).strip()
+                    break
+        if not tip and intent in {"location", "route"} and "hours" in available:
+            hours = values["hours"]
+            if self._safe_value(hours) and len(str(hours)) <= 160:
+                tip = f"{destination} — {MESSAGES[lang]['hours']}: {hours}"
+        return tip, questions
+
+    def _plain_location(self, record, lang):
+        """Use reviewed location values without exposing directory field labels."""
+        destination = record["destination"]
+        fields = {key: self._localized(record.get(key), lang)
+                  for key in ("building", "floor", "room", "location")}
+        fields = {key: str(value).strip().rstrip(".") for key, value in fields.items()
+                  if self._safe_value(value)}
+        if not fields:
+            return None
+        location = fields.get("location")
+        if lang != "english":
+            # Preserve supplied source wording; do not invent reviewed translations.
+            details = [location] if location else [fields[key] for key in ("building", "floor", "room") if key in fields]
+            return f"{destination}: {', '.join(details)}."
+        plural = destination.casefold().endswith(("offices", "laboratories", "rooms"))
+        verb = "are" if plural else "is"
+        subject = destination if destination.casefold().startswith(("the ", "talibon ")) else "The " + destination
+        if location:
+            if location.startswith("From ") or location.casefold().startswith(destination.casefold()):
+                return location + "."
+            if re.match(r"(?:right|left) side\b", location, re.I):
+                description = "on the " + location[0].lower() + location[1:]
+            elif re.match(r"(?:in|inside|behind|beside|on|at|near|opposite|directly)\b", location, re.I):
+                description = location[0].lower() + location[1:]
+            else:
+                description = "located at " + location
+            return f"{subject} {verb} {description}."
+        details = []
+        if "building" in fields:
+            details.append("in " + fields["building"])
+        if "floor" in fields:
+            details.append("on " + fields["floor"])
+        if "room" in fields:
+            details.append("in room " + fields["room"])
+        return f"{subject} {verb} {', '.join(details)}."
+
     def _render_record(self, record, lang, intent, origin):
         m = MESSAGES[lang]
-        parts = [f"{m['destination']}: **{record['destination']}**"]
+        parts = [record["destination"]]
         if record.get("restricted") is True:
             return "UNVERIFIED", m["restricted"]
         fields = ("hours",) if intent == "hours" else ("contact",) if intent == "contact" else ("services",) if intent == "services" else ("accessibility",) if intent == "accessibility" else ("building", "floor", "room", "location")
@@ -462,10 +640,9 @@ class TPCNavBotRAG:
             elif isinstance(value, list) and value and all(self._safe_value(item) for item in value):
                 parts.append(f"{m[field]}: " + "; ".join(str(item) for item in value))
                 facts += 1
-        if intent in ("hours", "services", "contact", "accessibility"):
-            if not facts:
-                return "UNVERIFIED", m["unverified"]
-        else:
+        # A location question needs only the reviewed location fields. Routes
+        # and their caveats belong to an explicit directions/time request.
+        if intent == "route":
             route = self._route(record, origin)
             steps = self._localized(route.get("steps"), lang) if route else None
             if isinstance(steps, list) and steps and all(isinstance(step, str) and step.strip() for step in steps):
@@ -488,10 +665,12 @@ class TPCNavBotRAG:
                 if intent == "route" and not origin and record["_hit"]["metadata"].get("route_data"):
                     parts.append(m["start"])
                     return "CLARIFICATION", "\n\n".join(parts)
-            if not facts:
-                return "UNVERIFIED", m["unverified"]
-        meta = record["_hit"]["metadata"]
-        parts.append(f"{m['source']}: {meta['source_doc']} — {meta['official_source']} ({meta['reviewed_at']})")
+        if not facts:
+            return "UNVERIFIED", m["unverified"]
+        if intent == "location":
+            plain_location = self._plain_location(record, lang)
+            if plain_location:
+                return "SUCCESS", plain_location
         return "SUCCESS", "\n\n".join(parts)
 
     def _call_gemini_api(self, query, candidates):
@@ -536,10 +715,13 @@ class TPCNavBotRAG:
         lang = self.detect_language(user_query)
         m = MESSAGES[lang]
 
-        def finish(status, answer, sources=None, hits=None):
+        def finish(status, answer, sources=None, hits=None, source_details=None,
+                   helpful_tip="", suggested_questions=None):
             session.add_user_message(user_query)
             session.add_ai_message(answer)
             return {"status": status, "answer": answer, "sources": sources or [],
+                    "source_details": source_details or [],
+                    "helpful_tip": helpful_tip, "suggested_questions": suggested_questions or [],
                     "retrieved_chunks": hits or [], "session_id": session_id,
                     "turn_count": len(session.history) // 2, "language": lang}
 
@@ -615,7 +797,17 @@ class TPCNavBotRAG:
             if isinstance(routes, list):
                 session.pending_starts = [start for route in routes if isinstance(route, dict) for start in ([route.get("start", "")] + (route.get("start_aliases") if isinstance(route.get("start_aliases"), list) else [])) if isinstance(start, str) and start.strip()]
         sources = [f"{record['_hit']['metadata']['source_doc']} [{record['_hit']['metadata']['official_source']}]"] if status in ("SUCCESS", "CLARIFICATION") else []
-        return finish(status, answer, sources, [record["_hit"]] if sources else [])
+        source_details = []
+        if sources:
+            source_metadata = record["_hit"]["metadata"]
+            source_details.append({
+                "destination": record["destination"],
+                **{key: source_metadata[key] for key in (
+                    "source_doc", "official_source", "reviewed_by", "reviewed_at")},
+            })
+        helpful_tip, suggested_questions = self._helpful_next(record, lang, intent) if status == "SUCCESS" else ("", [])
+        return finish(status, answer, sources, [record["_hit"]] if sources else [], source_details,
+                      helpful_tip, suggested_questions)
 
     def query(self, user_query: str, top_k=3, metric="cosine") -> dict:
         self.reset_conversation("single_turn_eval")

@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Faculty Room / Faculty Offices
+Location ID: TPC-SCHOOL-13
+Submitted record(s): 13
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Faculty Offices",
+  "aliases": [
+    "faculty room",
+    "faculty offices",
+    "faculty office"
+  ],
+  "building": "Main Building",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "Instructor offices."
+}
+
+Scope and unavailable details:
+The official status of the knock-three-times rule and appointment/access rules is unresolved, so omitted.

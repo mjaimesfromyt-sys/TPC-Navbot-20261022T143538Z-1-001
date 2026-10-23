@@ -31,9 +31,17 @@ h3 { font-size: 1.05rem; font-weight: 600; }
 [data-testid="stSidebarUserContent"] { padding: 2.15rem 1.25rem 1.25rem; }
 [data-testid="stSidebarUserContent"] > [data-testid="stVerticalBlock"],
 [data-testid="stSidebarUserContent"] > div > [data-testid="stVerticalBlock"] { min-height: calc(100dvh - 7rem); gap: .4rem; }
-.brand { display: flex; gap: 11px; align-items: center; margin: 0 0 2rem 4px; }
-.brand-symbol { display: flex; align-items: center; justify-content: center; width: 40px; height: 43px; background: var(--forest); color: white; border-radius: 13px 13px 13px 3px; }
-.brand-symbol svg { width: 27px; height: 27px; }
+.st-key-brand { margin-bottom: 1.7rem; }
+.st-key-brand [data-testid="stHorizontalBlock"],
+.st-key-college_identity [data-testid="stHorizontalBlock"] { flex-wrap: nowrap; }
+.st-key-brand [data-testid="stHorizontalBlock"] > [data-testid="stColumn"],
+.st-key-college_identity [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { min-width: 0; }
+.st-key-brand [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child { flex: 0 0 52px; }
+.st-key-college_identity [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child { flex: 0 0 36px; }
+.st-key-brand [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child,
+.st-key-college_identity [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:last-child { flex: 1 1 0; }
+.st-key-brand [data-testid="stImage"] img,
+.st-key-college_identity [data-testid="stImage"] img { object-fit: contain; border-radius: 4px; }
 .brand-name { font-size: 1.32rem; color: var(--forest-dark); font-weight: 750; letter-spacing: -.7px; line-height: 1.2; }
 .brand-name span { font-weight: 450; }
 .brand-subtitle { font-size: .48rem; font-weight: 650; letter-spacing: 1.65px; color: #748172; margin-top: 6px; }
@@ -58,8 +66,8 @@ div[class*="st-key-nav_"] button:hover { background: #e7ece2; color: var(--fores
 .language-tags { display: flex; gap: 5px; margin-top: 12px; }
 .language-tags span { background: #f5f7f0; border: 1px solid #d9e1d0; border-radius: 5px; color: #54654a; padding: 3px 7px; font-size: .64rem; }
 .language-card p { margin: 10px 0 0; color: #77836d; font-size: .66rem; }
-.college-signature { display: flex; gap: 10px; align-items: center; margin-top: 24px; font-size: .65rem; color: #5b6b57; line-height: 1.6; }
-.college-monogram { font-family: Georgia, serif; font-size: .8rem; border: 1px solid #cdd6c5; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.st-key-college_identity { padding-top: 22px; }
+.college-signature { font-size: .65rem; color: #5b6b57; line-height: 1.6; }
 .college-signature small { font-size: .59rem; color: #939d8c; }
 
 /* Bespoke welcome and an illustration, never presented as a real campus map. */
@@ -103,6 +111,7 @@ div[class*="st-key-starter_"] button:hover { color: var(--forest); background: #
 [data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) { background: white; border-color: #e7eae4; }
 [data-testid="stChatMessageAvatarCustom"] { background: var(--forest); color: #fff; }
 [data-testid="stChatMessageAvatarCustom"] [data-testid="stIconMaterial"] { color: inherit; }
+[data-testid="stChatMessageAvatarImage"] { object-fit: contain; border-radius: 5px; }
 [data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) [data-testid="stChatMessageAvatarCustom"] { background: #e9eee4; color: #667b57; }
 [data-testid="stChatMessage"] [data-testid="stCaptionContainer"] p { color: #7a8871; font-size: .7rem; }
 [data-testid="stChatMessageContent"] { min-width: 0; }

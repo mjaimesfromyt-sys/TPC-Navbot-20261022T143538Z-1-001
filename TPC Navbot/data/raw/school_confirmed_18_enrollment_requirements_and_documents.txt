@@ -1,0 +1,25 @@
+TPC school-confirmed submission: Enrollment Requirements and Documents
+Location ID: TPC-SCHOOL-18
+Submitted record(s): 18
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Enrollment Requirements and Documents",
+  "aliases": [
+    "enrollment requirements",
+    "enrollment documents",
+    "admission documents"
+  ],
+  "contact": "Registrar's Office.",
+  "services": [
+    "General submitted checklist; confirm current copy counts, accepted formats, deadlines, and category-specific conditions with the Registrar.",
+    "New students: Accomplished enrollment form; birth certificate; report card or transcript of records; good moral character certificate; valid ID.",
+    "Returning students: Student ID; previous academic records; accomplished enrollment form; required clearance or other documents requested by the college.",
+    "Transferees: Transcript of records/grades; honorable dismissal or transfer credentials; birth certificate; good moral character certificate; valid ID; accomplished admission/enrollment form.",
+    "Shifters: Shifting form; previous academic records; student ID; approval from the appropriate department/office."
+  ]
+}
+
+Scope and unavailable details:
+The submitted general category lists are retained with their limitation; exact copy counts, accepted formats, fees, and deadlines are unknown.

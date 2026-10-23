@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Grading System and Academic Evaluation
+Location ID: TPC-SCHOOL-23
+Submitted record(s): 23
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Grading System and Academic Evaluation",
+  "aliases": [
+    "grading system",
+    "passing grade",
+    "grading scale",
+    "grade computation",
+    "academic evaluation"
+  ],
+  "contact": "Instructor, department head/program coordinator, or Registrar."
+}
+
+Scope and unavailable details:
+No passing grade, grading scale, formula, honors threshold, INC deadline, or appeal deadline supplied. Only the named referral is available.

@@ -1,0 +1,591 @@
+[
+  {
+    "record_id": "school-01",
+    "title": "Computer Laboratories",
+    "source_file": "school_record_01_computer_laboratories.txt",
+    "source_heading": "## Record 01 --- Computer Laboratories",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Names": "Computer Laboratory 1 and Computer Laboratory 2 (ComLab 1\n    / ComLab 2).",
+      "Location": "From the main building, face the flagpole; the\n    laboratories are on the right-hand side.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official building/department name, exact\n    room codes, whether both labs are in the same building, supporting\n    official source and review date, operating hours and access rules."
+    },
+    "raw_text": "## Record 01 --- Computer Laboratories\n\n-   **Existence:** Reported as available.\n-   **Names:** Computer Laboratory 1 and Computer Laboratory 2 (ComLab 1\n    / ComLab 2).\n-   **Location:** From the main building, face the flagpole; the\n    laboratories are on the right-hand side.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official building/department name, exact\n    room codes, whether both labs are in the same building, supporting\n    official source and review date, operating hours and access rules.\n"
+  },
+  {
+    "record_id": "school-02",
+    "title": "Main Academic Building",
+    "source_file": "school_record_02_main_academic_building.txt",
+    "source_heading": "## Record 02 --- Main Academic Building",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Name": "Main Building (formal official name not supplied).",
+      "Location": "Directly in front after entering the main gate.",
+      "Facilities": "User reports that all departments are in the main\n    building.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Formal building name, list of departments\n    and offices, floor/room numbers, official source and review date."
+    },
+    "raw_text": "## Record 02 --- Main Academic Building\n\n-   **Existence:** Reported as available.\n-   **Name:** Main Building (formal official name not supplied).\n-   **Location:** Directly in front after entering the main gate.\n-   **Facilities:** User reports that all departments are in the main\n    building.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Formal building name, list of departments\n    and offices, floor/room numbers, official source and review date.\n"
+  },
+  {
+    "record_id": "school-03",
+    "title": "Criminology Building",
+    "source_file": "school_record_03_criminology_building.txt",
+    "source_heading": "## Record 03 --- Criminology Building",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Behind the main building; cross a small bridge to\n    reach it.",
+      "Facilities": "Classrooms.",
+      "Campus access note": "Motorcycles can only enter the school at\n    8:30 AM (reported as a general campus rule, not a building-specific\n    rule).",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Classroom numbers and other facilities;\n    exact meaning of the motorcycle entry time, any exceptions, and\n    official source/date."
+    },
+    "raw_text": "## Record 03 --- Criminology Building\n\n-   **Existence:** Reported as available.\n-   **Location:** Behind the main building; cross a small bridge to\n    reach it.\n-   **Facilities:** Classrooms.\n-   **Campus access note:** Motorcycles can only enter the school at\n    8:30 AM (reported as a general campus rule, not a building-specific\n    rule).\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Classroom numbers and other facilities;\n    exact meaning of the motorcycle entry time, any exceptions, and\n    official source/date.\n"
+  },
+  {
+    "record_id": "school-04",
+    "title": "Agriculture Building / Field Office",
+    "source_file": "school_record_04_agriculture_building_field_office.txt",
+    "source_heading": "## Record 04 --- Agriculture Building / Field Office",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Name": "Agriculture Building.",
+      "Location directions": "Enter the main gate; do not enter the main\n    building; go right and locate a yellow building. The Agriculture\n    Building is behind the yellow building.",
+      "Facilities": "Classrooms.",
+      "Campus access note": "The 8:30 AM gate rule was reported as a\n    general campus rule and requires separate confirmation.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact rooms and other facilities, location\n    with authorized staff, and source/date for the campus gate rule."
+    },
+    "raw_text": "## Record 04 --- Agriculture Building / Field Office\n\n-   **Existence:** Reported as available.\n-   **Name:** Agriculture Building.\n-   **Location directions:** Enter the main gate; do not enter the main\n    building; go right and locate a yellow building. The Agriculture\n    Building is behind the yellow building.\n-   **Facilities:** Classrooms.\n-   **Campus access note:** The 8:30 AM gate rule was reported as a\n    general campus rule and requires separate confirmation.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact rooms and other facilities, location\n    with authorized staff, and source/date for the campus gate rule.\n"
+  },
+  {
+    "record_id": "school-05",
+    "title": "Administration Building",
+    "source_file": "school_record_05_administration_building.txt",
+    "source_heading": "## Record 05 --- Administration Building",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Inside the main building.",
+      "Offices/facilities": "User reports \"all department\"; the exact\n    list was not provided.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Offices and departments, floor/room numbers,\n    hours, access restrictions, and official source/date."
+    },
+    "raw_text": "## Record 05 --- Administration Building\n\n-   **Existence:** Reported as available.\n-   **Location:** Inside the main building.\n-   **Offices/facilities:** User reports \"all department\"; the exact\n    list was not provided.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Offices and departments, floor/room numbers,\n    hours, access restrictions, and official source/date.\n"
+  },
+  {
+    "record_id": "school-06",
+    "title": "Gymnasium / Cultural Activity Center",
+    "source_file": "school_record_06_gymnasium_cultural_activity_center.txt",
+    "source_heading": "## Record 06 --- Gymnasium / Cultural Activity Center",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Name": "Gymnasium.",
+      "Location": "In front of the flagpole.",
+      "Uses": "Sports, physical education, and other outdoor events.",
+      "Booking": "User reports that no booking is needed and it is\n    available to all.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Operating hours and restrictions; who \"all\"\n    includes; whether organized events still require approval; official\n    source/date."
+    },
+    "raw_text": "## Record 06 --- Gymnasium / Cultural Activity Center\n\n-   **Existence:** Reported as available.\n-   **Name:** Gymnasium.\n-   **Location:** In front of the flagpole.\n-   **Uses:** Sports, physical education, and other outdoor events.\n-   **Booking:** User reports that no booking is needed and it is\n    available to all.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Operating hours and restrictions; who \"all\"\n    includes; whether organized events still require approval; official\n    source/date.\n"
+  },
+  {
+    "record_id": "school-07",
+    "title": "Canteen / Dining Area",
+    "source_file": "school_record_07_canteen_dining_area.txt",
+    "source_heading": "## Record 07 --- Canteen / Dining Area",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Left side of the main building.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Services/products": "Meals, snacks, school supplies, \"sling\"\n    (possibly sling bags; wording needs confirmation), and other items.",
+      "Access": "User reports that students, visitors, and others inside\n    campus can access it.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact official source/date, location,\n    holiday hours, product wording, and visitor access rules."
+    },
+    "raw_text": "## Record 07 --- Canteen / Dining Area\n\n-   **Existence:** Reported as available.\n-   **Location:** Left side of the main building.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Services/products:** Meals, snacks, school supplies, \"sling\"\n    (possibly sling bags; wording needs confirmation), and other items.\n-   **Access:** User reports that students, visitors, and others inside\n    campus can access it.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact official source/date, location,\n    holiday hours, product wording, and visitor access rules.\n"
+  },
+  {
+    "record_id": "school-08",
+    "title": "Library / Learning Resource Center",
+    "source_file": "school_record_08_library_learning_resource_center.txt",
+    "source_heading": "## Record 08 --- Library / Learning Resource Center",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Right side when facing the canteen.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Services": "Books, reading area, free Wi-Fi.",
+      "Access": "Students, staff, and visitors (reported; specific\n    visitor access may vary).",
+      "Borrowing rule": "Ask the librarian; a library card is needed\n    before borrowing.",
+      "Evidence/source named": "Official document or authorized staff\n    confirmation; Librarian named as the role, but no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Location and hours, holiday schedule, how to\n    get a library card, separate rules for students/staff/visitors, and\n    Wi-Fi access for visitors."
+    },
+    "raw_text": "## Record 08 --- Library / Learning Resource Center\n\n-   **Existence:** Reported as available.\n-   **Location:** Right side when facing the canteen.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Services:** Books, reading area, free Wi-Fi.\n-   **Access:** Students, staff, and visitors (reported; specific\n    visitor access may vary).\n-   **Borrowing rule:** Ask the librarian; a library card is needed\n    before borrowing.\n-   **Evidence/source named:** Official document or authorized staff\n    confirmation; Librarian named as the role, but no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Location and hours, holiday schedule, how to\n    get a library card, separate rules for students/staff/visitors, and\n    Wi-Fi access for visitors.\n"
+  },
+  {
+    "record_id": "school-09",
+    "title": "Registrar's Office",
+    "source_file": "school_record_09_registrar_s_office.txt",
+    "source_heading": "## Record 09 --- Registrar's Office",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Described as directly in front after entering the main\n    gate; clarify whether this is inside or outside the gate and the\n    exact building/room.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Services": "Enrollment, grade slips, and inquiries about\n    enrollment requirements.",
+      "Access": "Students, staff, and visitors (reported).",
+      "Requirement": "Student ID (scope of requirement needs\n    confirmation).",
+      "Evidence/source named": "Registrar; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact location, services, ID requirement for\n    each transaction, other document requirements, holiday hours, and\n    source/date."
+    },
+    "raw_text": "## Record 09 --- Registrar's Office\n\n-   **Existence:** Reported as available.\n-   **Location:** Described as directly in front after entering the main\n    gate; clarify whether this is inside or outside the gate and the\n    exact building/room.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Services:** Enrollment, grade slips, and inquiries about\n    enrollment requirements.\n-   **Access:** Students, staff, and visitors (reported).\n-   **Requirement:** Student ID (scope of requirement needs\n    confirmation).\n-   **Evidence/source named:** Registrar; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact location, services, ID requirement for\n    each transaction, other document requirements, holiday hours, and\n    source/date.\n"
+  },
+  {
+    "record_id": "school-10",
+    "title": "Student Affairs Office",
+    "source_file": "school_record_10_student_affairs_office.txt",
+    "source_heading": "## Record 10 --- Student Affairs Office",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Inside the main building.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Services": "Student concerns, discipline, and inquiries about the\n    Student Handbook.",
+      "Access": "Students, staff, and visitors (reported).",
+      "Requirement": "Student ID (scope needs confirmation).",
+      "Evidence/source named": "Student Affairs Director; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official office name, exact room, handbook\n    availability (paper/digital), ID and visitor rules, holiday hours,\n    and source/date."
+    },
+    "raw_text": "## Record 10 --- Student Affairs Office\n\n-   **Existence:** Reported as available.\n-   **Location:** Inside the main building.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Services:** Student concerns, discipline, and inquiries about the\n    Student Handbook.\n-   **Access:** Students, staff, and visitors (reported).\n-   **Requirement:** Student ID (scope needs confirmation).\n-   **Evidence/source named:** Student Affairs Director; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official office name, exact room, handbook\n    availability (paper/digital), ID and visitor rules, holiday hours,\n    and source/date.\n"
+  },
+  {
+    "record_id": "school-11",
+    "title": "Guidance Office",
+    "source_file": "school_record_11_guidance_office.txt",
+    "source_heading": "## Record 11 --- Guidance Office",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Inside the main building, beside the clinic. When\n    entering the main building, the clinic is on the left and the\n    Guidance Office is beside it.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Services": "Counseling and guidance.",
+      "Access": "Students, staff, and visitors (reported; actual service\n    eligibility needs confirmation).",
+      "Requirement": "Student ID (scope needs confirmation).",
+      "Evidence/source named": "Guidance Counselor; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact room, services, appointment process,\n    ID requirement, official procedures, visitor access, hours and\n    source/date."
+    },
+    "raw_text": "## Record 11 --- Guidance Office\n\n-   **Existence:** Reported as available.\n-   **Location:** Inside the main building, beside the clinic. When\n    entering the main building, the clinic is on the left and the\n    Guidance Office is beside it.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Services:** Counseling and guidance.\n-   **Access:** Students, staff, and visitors (reported; actual service\n    eligibility needs confirmation).\n-   **Requirement:** Student ID (scope needs confirmation).\n-   **Evidence/source named:** Guidance Counselor; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact room, services, appointment process,\n    ID requirement, official procedures, visitor access, hours and\n    source/date.\n"
+  },
+  {
+    "record_id": "school-12",
+    "title": "Clinic / Health Services",
+    "source_file": "school_record_12_clinic_health_services.txt",
+    "source_heading": "## Record 12 --- Clinic / Health Services",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Inside the main building, beside the Guidance Office.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Reported services": "First aid treatment; basic health assessment;\n    medical consultation; wound care; emergency assistance; health\n    education; medical referral; health monitoring; medical records\n    management; health and wellness programs.",
+      "Access": "Students, staff, and visitors (reported).",
+      "Requirement": "Student ID (needs confirmation, especially for\n    emergencies).",
+      "Evidence/source named": "School Nurse; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Which services are actually provided,\n    emergency contact/referral process, ID requirements during\n    emergencies, visitor eligibility, hours, and source/date. Do not\n    collect or expose patient records."
+    },
+    "raw_text": "## Record 12 --- Clinic / Health Services\n\n-   **Existence:** Reported as available.\n-   **Location:** Inside the main building, beside the Guidance Office.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Reported services:** First aid treatment; basic health assessment;\n    medical consultation; wound care; emergency assistance; health\n    education; medical referral; health monitoring; medical records\n    management; health and wellness programs.\n-   **Access:** Students, staff, and visitors (reported).\n-   **Requirement:** Student ID (needs confirmation, especially for\n    emergencies).\n-   **Evidence/source named:** School Nurse; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Which services are actually provided,\n    emergency contact/referral process, ID requirements during\n    emergencies, visitor eligibility, hours, and source/date. Do not\n    collect or expose patient records.\n"
+  },
+  {
+    "record_id": "school-13",
+    "title": "Faculty Room / Faculty Offices",
+    "source_file": "school_record_13_faculty_room_faculty_offices.txt",
+    "source_heading": "## Record 13 --- Faculty Room / Faculty Offices",
+    "fields": {
+      "Existence": "Reported as available.",
+      "Location": "Main building.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Purpose": "Instructor offices.",
+      "Access": "Students, staff, and visitors (reported; permission\n    requirements need confirmation).",
+      "Rule": "Knock three times before entering.",
+      "Evidence/source named": "Department Heads; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact floor/room numbers, whether offices\n    are shared or separate, appointment/permission rules, whether the\n    knocking rule is official, and source/date."
+    },
+    "raw_text": "## Record 13 --- Faculty Room / Faculty Offices\n\n-   **Existence:** Reported as available.\n-   **Location:** Main building.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Purpose:** Instructor offices.\n-   **Access:** Students, staff, and visitors (reported; permission\n    requirements need confirmation).\n-   **Rule:** Knock three times before entering.\n-   **Evidence/source named:** Department Heads; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact floor/room numbers, whether offices\n    are shared or separate, appointment/permission rules, whether the\n    knocking rule is official, and source/date.\n"
+  },
+  {
+    "record_id": "school-14",
+    "title": "Computer Laboratory Rules and Access",
+    "source_file": "school_record_14_computer_laboratory_rules_and_access.txt",
+    "source_heading": "## Record 14 --- Computer Laboratory Rules and Access",
+    "fields": {
+      "Labs": "Computer Laboratory 1 and Computer Laboratory 2.",
+      "Location": "Right-hand side when facing the flagpole from the main\n    building.",
+      "Schedule/access": "Reported as available during class only, for\n    students in scheduled classes.",
+      "Booking": "User reports no booking.",
+      "Reported rules": "1.  No eating or drinking inside the computer lab.\n    2.  Keep the lab clean and organized.\n    3.  Handle computers and equipment carefully.\n    4.  Do not install software without permission.\n    5.  Do not change computer settings without authorization.\n    6.  Use computers for academic purposes only.\n    7.  Do not access inappropriate websites or content.\n    8.  Do not download unauthorized files or applications.\n    9.  Do not bring unauthorized USB drives or external devices.\n    10. Report damaged equipment or technical problems to the lab\n        instructor.\n    11. Do not unplug cables or disconnect equipment.\n    12. Keep noise minimal.\n    13. Log out of accounts after use.\n    14. Save work before shutting down.\n    15. Shut down computers properly after use.\n    16. Follow the instructor's instructions.\n    17. Do not share passwords or personal account information.\n    18. Do not handle liquids near computer equipment (overlaps with the\n        no-food/drink rule).\n    19. Return chairs, keyboards, and other equipment to their proper\n        places.\n    20. Follow lab schedules and use computers only when authorized.",
+      "Evidence/source named": "Program Head; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Whether both labs share the rules, whether\n    authorized access is possible outside class, rules during vacant\n    periods/holidays, and formal approval of the list."
+    },
+    "raw_text": "## Record 14 --- Computer Laboratory Rules and Access\n\n-   **Labs:** Computer Laboratory 1 and Computer Laboratory 2.\n-   **Location:** Right-hand side when facing the flagpole from the main\n    building.\n-   **Schedule/access:** Reported as available during class only, for\n    students in scheduled classes.\n-   **Booking:** User reports no booking.\n-   **Reported rules:**\n    1.  No eating or drinking inside the computer lab.\n    2.  Keep the lab clean and organized.\n    3.  Handle computers and equipment carefully.\n    4.  Do not install software without permission.\n    5.  Do not change computer settings without authorization.\n    6.  Use computers for academic purposes only.\n    7.  Do not access inappropriate websites or content.\n    8.  Do not download unauthorized files or applications.\n    9.  Do not bring unauthorized USB drives or external devices.\n    10. Report damaged equipment or technical problems to the lab\n        instructor.\n    11. Do not unplug cables or disconnect equipment.\n    12. Keep noise minimal.\n    13. Log out of accounts after use.\n    14. Save work before shutting down.\n    15. Shut down computers properly after use.\n    16. Follow the instructor's instructions.\n    17. Do not share passwords or personal account information.\n    18. Do not handle liquids near computer equipment (overlaps with the\n        no-food/drink rule).\n    19. Return chairs, keyboards, and other equipment to their proper\n        places.\n    20. Follow lab schedules and use computers only when authorized.\n-   **Evidence/source named:** Program Head; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Whether both labs share the rules, whether\n    authorized access is possible outside class, rules during vacant\n    periods/holidays, and formal approval of the list.\n"
+  },
+  {
+    "record_id": "school-15",
+    "title": "Campus Internet and Wi-Fi Access",
+    "source_file": "school_record_15_campus_internet_and_wi_fi_access.txt",
+    "source_heading": "## Record 15 --- Campus Internet and Wi-Fi Access",
+    "fields": {
+      "Availability": "Reported as available.",
+      "Network": "DICT Free WiFi.",
+      "Coverage": "Library.",
+      "Access": "Students, staff, and visitors (reported).",
+      "Procedure": "Connect to Wi-Fi and sign in; exact sign-in steps\n    were not provided.",
+      "Availability time": "Reported as 24/7, but it is unclear whether\n    this describes the Wi-Fi service or the library opening hours.",
+      "Usage rules": "User stated there are no rules and users may use it\n    freely; this requires verification because network policies may\n    apply.",
+      "Technical help": "Librarian.",
+      "Evidence/source named": "School administration; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact network name and login method,\n    coverage, meaning of 24/7, visitor access, acceptable-use rules,\n    librarian support role, and source/date."
+    },
+    "raw_text": "## Record 15 --- Campus Internet and Wi-Fi Access\n\n-   **Availability:** Reported as available.\n-   **Network:** DICT Free WiFi.\n-   **Coverage:** Library.\n-   **Access:** Students, staff, and visitors (reported).\n-   **Procedure:** Connect to Wi-Fi and sign in; exact sign-in steps\n    were not provided.\n-   **Availability time:** Reported as 24/7, but it is unclear whether\n    this describes the Wi-Fi service or the library opening hours.\n-   **Usage rules:** User stated there are no rules and users may use it\n    freely; this requires verification because network policies may\n    apply.\n-   **Technical help:** Librarian.\n-   **Evidence/source named:** School administration; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact network name and login method,\n    coverage, meaning of 24/7, visitor access, acceptable-use rules,\n    librarian support role, and source/date.\n"
+  },
+  {
+    "record_id": "school-16",
+    "title": "Student ID and Identification Services",
+    "source_file": "school_record_16_student_id_and_identification_services.txt",
+    "source_heading": "## Record 16 --- Student ID and Identification Services",
+    "fields": {
+      "Availability": "Reported as available.",
+      "ID type": "New Student ID.",
+      "Issuing office": "IT Office, inside the main building.",
+      "Hours": "Monday--Friday, 8:00 AM--5:00 PM.",
+      "Eligibility": "All enrolled students.",
+      "Requirement": "Enrollment Form.",
+      "Procedure": "Ask IT staff for the requirements.",
+      "Fee": "Reported free.",
+      "Use": "Campus identification.",
+      "Lost/damaged ID": "Ask IT about a temporary ID and obtain an\n    affidavit of loss; exact procedures need clarification, especially\n    for damaged IDs.",
+      "Evidence/source named": "Registrar; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact room, complete requirements,\n    processing time, lost versus damaged ID procedure, replacement fees,\n    affidavit procedure, and source/date."
+    },
+    "raw_text": "## Record 16 --- Student ID and Identification Services\n\n-   **Availability:** Reported as available.\n-   **ID type:** New Student ID.\n-   **Issuing office:** IT Office, inside the main building.\n-   **Hours:** Monday--Friday, 8:00 AM--5:00 PM.\n-   **Eligibility:** All enrolled students.\n-   **Requirement:** Enrollment Form.\n-   **Procedure:** Ask IT staff for the requirements.\n-   **Fee:** Reported free.\n-   **Use:** Campus identification.\n-   **Lost/damaged ID:** Ask IT about a temporary ID and obtain an\n    affidavit of loss; exact procedures need clarification, especially\n    for damaged IDs.\n-   **Evidence/source named:** Registrar; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact room, complete requirements,\n    processing time, lost versus damaged ID procedure, replacement fees,\n    affidavit procedure, and source/date.\n"
+  },
+  {
+    "record_id": "school-17",
+    "title": "Student Enrollment Procedures",
+    "source_file": "school_record_17_student_enrollment_procedures.txt",
+    "source_heading": "## Record 17 --- Student Enrollment Procedures",
+    "fields": {
+      "Enrollment period": "Before each semester, according to the\n    official academic calendar.",
+      "Responsible office": "Registrar's Office.",
+      "Location": "Main building, TPC campus.",
+      "Hours": "Regular office hours on official working days; exact\n    hours were not supplied in this record.",
+      "Eligibility": "Qualified new, returning, transferee, and shifter\n    students who meet admission requirements.",
+      "General requirements reported": "Accomplished enrollment form,\n    birth certificate, report card or transcript of records, good moral\n    character certificate, and valid identification.",
+      "General steps": "Obtain and complete the enrollment form; submit\n    required documents; undergo evaluation/verification; select/register\n    subjects; complete payments or clearance as applicable; confirm\n    enrollment with the Registrar.",
+      "New students": "Apply for admission, submit documents, undergo\n    evaluation, and complete enrollment.",
+      "Returning students": "Present records, settle pending\n    academic/administrative requirements, and register subjects.",
+      "Transferees/shifters": "Submit academic records, undergo\n    evaluation, obtain approval if necessary, and complete registration.",
+      "Fees": "Depend on college/program policy; confirm with Registrar\n    or Accounting.",
+      "Late enrollment": "May require approval and is subject to\n    deadlines/policies.",
+      "Evidence/source named": "Registrar; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Current calendar/dates, office hours and\n    room, category-specific checklists, fees, deadlines, late enrollment\n    policy, and source/date."
+    },
+    "raw_text": "## Record 17 --- Student Enrollment Procedures\n\n-   **Enrollment period:** Before each semester, according to the\n    official academic calendar.\n-   **Responsible office:** Registrar's Office.\n-   **Location:** Main building, TPC campus.\n-   **Hours:** Regular office hours on official working days; exact\n    hours were not supplied in this record.\n-   **Eligibility:** Qualified new, returning, transferee, and shifter\n    students who meet admission requirements.\n-   **General requirements reported:** Accomplished enrollment form,\n    birth certificate, report card or transcript of records, good moral\n    character certificate, and valid identification.\n-   **General steps:** Obtain and complete the enrollment form; submit\n    required documents; undergo evaluation/verification; select/register\n    subjects; complete payments or clearance as applicable; confirm\n    enrollment with the Registrar.\n-   **New students:** Apply for admission, submit documents, undergo\n    evaluation, and complete enrollment.\n-   **Returning students:** Present records, settle pending\n    academic/administrative requirements, and register subjects.\n-   **Transferees/shifters:** Submit academic records, undergo\n    evaluation, obtain approval if necessary, and complete registration.\n-   **Fees:** Depend on college/program policy; confirm with Registrar\n    or Accounting.\n-   **Late enrollment:** May require approval and is subject to\n    deadlines/policies.\n-   **Evidence/source named:** Registrar; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Current calendar/dates, office hours and\n    room, category-specific checklists, fees, deadlines, late enrollment\n    policy, and source/date.\n"
+  },
+  {
+    "record_id": "school-18",
+    "title": "Enrollment Requirements and Documents",
+    "source_file": "school_record_18_enrollment_requirements_and_documents.txt",
+    "source_heading": "## Record 18 --- Enrollment Requirements and Documents",
+    "fields": {
+      "New students": "Accomplished enrollment form; birth certificate;\n    report card or transcript of records; good moral character\n    certificate; valid ID.",
+      "Returning students": "Student ID; previous academic records;\n    accomplished enrollment form; required clearance or other documents\n    requested by the college.",
+      "Transferees": "Transcript of records/grades; honorable dismissal\n    or transfer credentials; birth certificate; good moral character\n    certificate; valid ID; accomplished admission/enrollment form.",
+      "Shifters": "Shifting form; previous academic records; student ID;\n    approval from the appropriate department/office.",
+      "Number of copies": "Depends on current guidelines; confirm with\n    Registrar.",
+      "Accepted formats": "Originals were reported; photocopy/digital\n    acceptance is not confirmed.",
+      "Submission": "Registrar's Office.",
+      "Deadline": "Within the official enrollment period.",
+      "Missing documents": "Students may be asked to submit them before\n    enrollment is finalized; conditional enrollment depends on policy.",
+      "Fees": "Transcripts, certifications, and transfer credentials may\n    incur fees; confirm with Registrar/Accounting.",
+      "Evidence/source named": "Registrar; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official checklist per student category,\n    copy counts, accepted formats, deadlines, incomplete-document\n    procedure, fees, and source/date."
+    },
+    "raw_text": "## Record 18 --- Enrollment Requirements and Documents\n\n-   **New students:** Accomplished enrollment form; birth certificate;\n    report card or transcript of records; good moral character\n    certificate; valid ID.\n-   **Returning students:** Student ID; previous academic records;\n    accomplished enrollment form; required clearance or other documents\n    requested by the college.\n-   **Transferees:** Transcript of records/grades; honorable dismissal\n    or transfer credentials; birth certificate; good moral character\n    certificate; valid ID; accomplished admission/enrollment form.\n-   **Shifters:** Shifting form; previous academic records; student ID;\n    approval from the appropriate department/office.\n-   **Number of copies:** Depends on current guidelines; confirm with\n    Registrar.\n-   **Accepted formats:** Originals were reported; photocopy/digital\n    acceptance is not confirmed.\n-   **Submission:** Registrar's Office.\n-   **Deadline:** Within the official enrollment period.\n-   **Missing documents:** Students may be asked to submit them before\n    enrollment is finalized; conditional enrollment depends on policy.\n-   **Fees:** Transcripts, certifications, and transfer credentials may\n    incur fees; confirm with Registrar/Accounting.\n-   **Evidence/source named:** Registrar; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official checklist per student category,\n    copy counts, accepted formats, deadlines, incomplete-document\n    procedure, fees, and source/date.\n"
+  },
+  {
+    "record_id": "school-19",
+    "title": "Admission and Eligibility Requirements",
+    "source_file": "school_record_19_admission_and_eligibility_requirements.txt",
+    "source_heading": "## Record 19 --- Admission and Eligibility Requirements",
+    "fields": {
+      "Admission": "Reported as available.",
+      "Programs": "Current list depends on offerings and period; contact\n    Admissions/Registrar.",
+      "Eligibility": "Meet admission requirements, submit documents, and\n    satisfy academic qualifications for the chosen program.",
+      "Age requirements": "Must be confirmed with the college; may vary.",
+      "Incoming college students": "Completion of senior high school or\n    an accepted equivalent.",
+      "Transferees": "May need transcript of records, honorable\n    dismissal/transfer credentials, and other documents for\n    evaluation/approval.",
+      "Documents reported": "Application/enrollment form; birth\n    certificate; senior high school report card or transcript of\n    records; good moral character certificate; valid ID; other required\n    documents.",
+      "Process": "Inquire about programs; obtain and complete form;\n    submit documents; take an entrance exam or interview if required;\n    await evaluation/result; follow enrollment instructions if accepted.",
+      "Entrance exam/interview": "User reports both are required, but\n    whether this applies to all applicants is unconfirmed.",
+      "Deadlines": "Depend on academic calendar/admission announcements.",
+      "Where to inquire": "Visit TPC and ask the Registrar or admissions\n    office.",
+      "Evidence/source named": "Registrar; no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Current programs, exam/interview\n    requirements, age/program-specific rules, dates/location/contact,\n    official checklist, and source/date."
+    },
+    "raw_text": "## Record 19 --- Admission and Eligibility Requirements\n\n-   **Admission:** Reported as available.\n-   **Programs:** Current list depends on offerings and period; contact\n    Admissions/Registrar.\n-   **Eligibility:** Meet admission requirements, submit documents, and\n    satisfy academic qualifications for the chosen program.\n-   **Age requirements:** Must be confirmed with the college; may vary.\n-   **Incoming college students:** Completion of senior high school or\n    an accepted equivalent.\n-   **Transferees:** Previous college academic records and transfer\n    requirements; additional program qualifications may apply.\n-   **Documents reported:** Application/enrollment form; birth\n    certificate; senior high school report card or transcript of\n    records; good moral character certificate; valid ID; other required\n    documents.\n-   **Process:** Inquire about programs; obtain and complete form;\n    submit documents; take an entrance exam or interview if required;\n    await evaluation/result; follow enrollment instructions if accepted.\n-   **Entrance exam/interview:** User reports both are required, but\n    whether this applies to all applicants is unconfirmed.\n-   **Deadlines:** Depend on academic calendar/admission announcements.\n-   **Transferees:** May need transcript of records, honorable\n    dismissal/transfer credentials, and other documents for\n    evaluation/approval.\n-   **Where to inquire:** Visit TPC and ask the Registrar or admissions\n    office.\n-   **Evidence/source named:** Registrar; no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Current programs, exam/interview\n    requirements, age/program-specific rules, dates/location/contact,\n    official checklist, and source/date.\n"
+  },
+  {
+    "record_id": "school-20",
+    "title": "Academic Programs and Departments",
+    "source_file": "school_record_20_academic_programs_and_departments.txt",
+    "source_heading": "## Record 20 --- Academic Programs and Departments",
+    "fields": {
+      "Programs reported": "1.  Bachelor of Arts in English Language --- English communication,\n        linguistics, literature, and language studies.\n    2.  Bachelor of Arts in Political Science --- government, politics,\n        public administration, and political systems.\n    3.  Bachelor in Early Childhood Education --- teaching and child\n        development for young learners.\n    4.  Bachelor of Science in Agriculture --- crop production, animal\n        science, agricultural technology, and sustainable farming.\n    5.  Bachelor of Science in Accounting Information Systems ---\n        accounting principles, financial reporting, and business\n        information systems.\n    6.  Bachelor of Science in Criminology --- criminal investigation,\n        law enforcement, crime prevention, and criminal justice.\n    7.  Bachelor of Science in Information Systems --- IT, systems\n        analysis/design, database management, programming, and business\n        processes.",
+      "Level": "Undergraduate bachelor's programs.",
+      "Departments": "The user's department list matched the program\n    names; whether these are official department names needs\n    confirmation.",
+      "Department heads/coordinators": "Confirm with TPC\n    administration/Registrar.",
+      "Locations": "TPC campus in Talibon, Bohol; exact room assignments\n    not supplied.",
+      "Current admissions": "Depends on period and capacity; contact\n    Admissions/Registrar.",
+      "Class schedules": "Vary by program, year, semester, and subjects;\n    check with the department.",
+      "Services reported": "Academic advising/student consultation,\n    subject registration/curriculum guidance, faculty consultations,\n    performance monitoring, research/project guidance,\n    internship/practicum coordination where applicable, departmental\n    activities/seminars/workshops, and academic concern\n    support/referrals.",
+      "Evidence/source named": "\"Program List\"; no actual document/date\n    was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official program names/spelling and current\n    availability, official department names, coordinators/locations,\n    service list, and current program-list document/date."
+    },
+    "raw_text": "## Record 20 --- Academic Programs and Departments\n\n-   **Programs reported:**\n    1.  Bachelor of Arts in English Language --- English communication,\n        linguistics, literature, and language studies.\n    2.  Bachelor of Arts in Political Science --- government, politics,\n        public administration, and political systems.\n    3.  Bachelor in Early Childhood Education --- teaching and child\n        development for young learners.\n    4.  Bachelor of Science in Agriculture --- crop production, animal\n        science, agricultural technology, and sustainable farming.\n    5.  Bachelor of Science in Accounting Information Systems ---\n        accounting principles, financial reporting, and business\n        information systems.\n    6.  Bachelor of Science in Criminology --- criminal investigation,\n        law enforcement, crime prevention, and criminal justice.\n    7.  Bachelor of Science in Information Systems --- IT, systems\n        analysis/design, database management, programming, and business\n        processes.\n-   **Level:** Undergraduate bachelor's programs.\n-   **Departments:** The user's department list matched the program\n    names; whether these are official department names needs\n    confirmation.\n-   **Department heads/coordinators:** Confirm with TPC\n    administration/Registrar.\n-   **Locations:** TPC campus in Talibon, Bohol; exact room assignments\n    not supplied.\n-   **Current admissions:** Depends on period and capacity; contact\n    Admissions/Registrar.\n-   **Class schedules:** Vary by program, year, semester, and subjects;\n    check with the department.\n-   **Services reported:** Academic advising/student consultation,\n    subject registration/curriculum guidance, faculty consultations,\n    performance monitoring, research/project guidance,\n    internship/practicum coordination where applicable, departmental\n    activities/seminars/workshops, and academic concern\n    support/referrals.\n-   **Evidence/source named:** \"Program List\"; no actual document/date\n    was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official program names/spelling and current\n    availability, official department names, coordinators/locations,\n    service list, and current program-list document/date.\n"
+  },
+  {
+    "record_id": "school-21",
+    "title": "Academic Calendar and School Schedule",
+    "source_file": "school_record_21_academic_calendar_and_school_schedule.txt",
+    "source_heading": "## Record 21 --- Academic Calendar and School Schedule",
+    "fields": {
+      "Calendar availability": "Not sure.",
+      "Term structure": "Must be confirmed with Registrar.",
+      "School year/dates": "Depend on the current official academic\n    calendar.",
+      "Enrollment": "Usually before each semester, according to the\n    official enrollment schedule.",
+      "Class days/hours": "Vary by program, year, subjects, and section.",
+      "Examinations": "Follow the academic calendar and timetable\n    provided by the college/instructors.",
+      "Holidays/breaks": "National holidays and school breaks are listed\n    in the official calendar; additional college-wide breaks may be\n    announced.",
+      "Suspension announcements": "Official college announcements, social\n    media pages, or other administration-designated channels.",
+      "Where to find schedules": "Official TPC announcements, Registrar,\n    or respective departments.",
+      "Office hours": "Confirm with administration and check\n    announcements before visiting.",
+      "Evidence/source named": "Registrar; no actual\n    calendar/confirmation/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Calendar availability/location, exact dates\n    and deadlines, exam periods/holidays, official suspension channels,\n    office hours, and source/date."
+    },
+    "raw_text": "## Record 21 --- Academic Calendar and School Schedule\n\n-   **Calendar availability:** Not sure.\n-   **Term structure:** Must be confirmed with Registrar.\n-   **School year/dates:** Depend on the current official academic\n    calendar.\n-   **Enrollment:** Usually before each semester, according to the\n    official enrollment schedule.\n-   **Class days/hours:** Vary by program, year, subjects, and section.\n-   **Examinations:** Follow the academic calendar and timetable\n    provided by the college/instructors.\n-   **Holidays/breaks:** National holidays and school breaks are listed\n    in the official calendar; additional college-wide breaks may be\n    announced.\n-   **Suspension announcements:** Official college announcements, social\n    media pages, or other administration-designated channels.\n-   **Where to find schedules:** Official TPC announcements, Registrar,\n    or respective departments.\n-   **Office hours:** Confirm with administration and check\n    announcements before visiting.\n-   **Evidence/source named:** Registrar; no actual\n    calendar/confirmation/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Calendar availability/location, exact dates\n    and deadlines, exam periods/holidays, official suspension channels,\n    office hours, and source/date.\n"
+  },
+  {
+    "record_id": "school-22",
+    "title": "Examination Schedules and Policies",
+    "source_file": "school_record_22_examination_schedules_and_policies.txt",
+    "source_heading": "## Record 22 --- Examination Schedules and Policies",
+    "fields": {
+      "Exam types": "Quizzes, long exams, midterm, final, practical\n    exams, and other instructor/program assessments.",
+      "Schedule": "Academic calendar and timetable from the\n    college/instructors.",
+      "Announcements": "Instructors, classroom announcements, official\n    social media, or other authorized channels.",
+      "Coverage": "Instructors usually communicate through classroom\n    discussion, announcements, learning materials, or official\n    platforms.",
+      "Exam day": "School ID, writing materials, permit if applicable,\n    and authorized materials.",
+      "Late arrival": "Subject to rules; may reduce exam time or result\n    in denied entry.",
+      "Missed exam": "Contact the instructor promptly and explain the\n    absence; a special/make-up exam may be allowed under\n    policy/approval.",
+      "Academic dishonesty": "Cheating, plagiarism, unauthorized\n    collaboration, and similar conduct may result in\n    discipline/penalties under the Student Handbook.",
+      "Materials": "Allowed items depend on instructions; unauthorized\n    notes, phones, smart devices, and other prohibited items may not be\n    used.",
+      "Fees": "Confirm with Accounting, Registrar, or instructor if a\n    permit/fee applies.",
+      "Contact": "Subject instructor first, then department head/program\n    coordinator/Registrar.",
+      "Evidence/source named": "Student Handbook; actual handbook\n    version/text/date was not supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Handbook edition/sections, exact\n    late/make-up/absence rules, penalties, permit/fee policy, official\n    channels, and source/date."
+    },
+    "raw_text": "## Record 22 --- Examination Schedules and Policies\n\n-   **Exam types:** Quizzes, long exams, midterm, final, practical\n    exams, and other instructor/program assessments.\n-   **Schedule:** Academic calendar and timetable from the\n    college/instructors.\n-   **Announcements:** Instructors, classroom announcements, official\n    social media, or other authorized channels.\n-   **Coverage:** Instructors usually communicate through classroom\n    discussion, announcements, learning materials, or official\n    platforms.\n-   **Exam day:** School ID, writing materials, permit if applicable,\n    and authorized materials.\n-   **Late arrival:** Subject to rules; may reduce exam time or result\n    in denied entry.\n-   **Missed exam:** Contact the instructor promptly and explain the\n    absence; a special/make-up exam may be allowed under\n    policy/approval.\n-   **Academic dishonesty:** Cheating, plagiarism, unauthorized\n    collaboration, and similar conduct may result in\n    discipline/penalties under the Student Handbook.\n-   **Materials:** Allowed items depend on instructions; unauthorized\n    notes, phones, smart devices, and other prohibited items may not be\n    used.\n-   **Fees:** Confirm with Accounting, Registrar, or instructor if a\n    permit/fee applies.\n-   **Contact:** Subject instructor first, then department head/program\n    coordinator/Registrar.\n-   **Evidence/source named:** Student Handbook; actual handbook\n    version/text/date was not supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Handbook edition/sections, exact\n    late/make-up/absence rules, penalties, permit/fee policy, official\n    channels, and source/date.\n"
+  },
+  {
+    "record_id": "school-23",
+    "title": "Grading System and Academic Evaluation",
+    "source_file": "school_record_23_grading_system_and_academic_evaluation.txt",
+    "source_heading": "## Record 23 --- Grading System and Academic Evaluation",
+    "fields": {
+      "Grading scale/passing grade": "Must be confirmed with\n    Registrar/handbook; may vary by program or subject.",
+      "Assessment components may include": "Quizzes, examinations,\n    assignments, projects, participation, laboratory activities,\n    practical exams, and attendance where applicable.",
+      "Weights/computation": "Depend on syllabus, instructor, and\n    official policy.",
+      "Honors": "May depend on GWA, completion of requirements, and\n    academic/disciplinary compliance.",
+      "Incomplete grades": "Contact the instructor regarding missing\n    requirements and deadlines.",
+      "Failing/retakes": "May require retaking or academic\n    intervention/retention steps; prerequisites can affect enrollment.",
+      "Grade access": "Official portal if available, or\n    instructors/Registrar.",
+      "Appeals": "Discuss with instructor and provide evidence; escalate\n    to department head/office if unresolved.",
+      "Contact": "Instructor, department head/program coordinator, or\n    Registrar.",
+      "Evidence/source named": "Student Handbook; actual\n    handbook/version/date was not supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact grading scale/passing grade,\n    weights/formula, honors/INC/retake/retention rules, grade\n    portal/release schedule, appeal steps/deadlines, and handbook\n    sections."
+    },
+    "raw_text": "## Record 23 --- Grading System and Academic Evaluation\n\n-   **Grading scale/passing grade:** Must be confirmed with\n    Registrar/handbook; may vary by program or subject.\n-   **Assessment components may include:** Quizzes, examinations,\n    assignments, projects, participation, laboratory activities,\n    practical exams, and attendance where applicable.\n-   **Weights/computation:** Depend on syllabus, instructor, and\n    official policy.\n-   **Honors:** May depend on GWA, completion of requirements, and\n    academic/disciplinary compliance.\n-   **Incomplete grades:** Contact the instructor regarding missing\n    requirements and deadlines.\n-   **Failing/retakes:** May require retaking or academic\n    intervention/retention steps; prerequisites can affect enrollment.\n-   **Grade access:** Official portal if available, or\n    instructors/Registrar.\n-   **Appeals:** Discuss with instructor and provide evidence; escalate\n    to department head/office if unresolved.\n-   **Contact:** Instructor, department head/program coordinator, or\n    Registrar.\n-   **Evidence/source named:** Student Handbook; actual\n    handbook/version/date was not supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact grading scale/passing grade,\n    weights/formula, honors/INC/retake/retention rules, grade\n    portal/release schedule, appeal steps/deadlines, and handbook\n    sections.\n"
+  },
+  {
+    "record_id": "school-24",
+    "title": "Student Attendance and Absence Policies",
+    "source_file": "school_record_24_student_attendance_and_absence_policies.txt",
+    "source_heading": "## Record 24 --- Student Attendance and Absence Policies",
+    "fields": {
+      "Attendance": "Expected regularly according to syllabus/college\n    policy.",
+      "Monitoring": "Attendance sheets, roll calls, or authorized\n    systems.",
+      "Tardiness": "Follows instructor rules; repeated tardiness may have\n    consequences.",
+      "Absence limits": "May depend on subject units, class hours, and\n    policy.",
+      "Excused absences": "May include illness, emergencies, or other\n    valid reasons, subject to rules/approval.",
+      "Documents": "May include a medical certificate, parent/guardian\n    explanation, or supporting documents.",
+      "Missed work/assessments": "Contact instructor promptly to ask\n    about missed work or make-up exams.",
+      "Excessive absences": "May affect performance/completion and could\n    result in a failing grade or other action, depending on policy.",
+      "Contact": "Instructor first, then department head/program\n    coordinator/Registrar/Student Affairs Office.",
+      "Evidence/source named": "Student Handbook; actual handbook was not\n    supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Exact allowable absences, subject/program\n    differences, tardiness rules, valid reasons/deadlines/documents,\n    make-up exam rules, consequences, and handbook edition/date."
+    },
+    "raw_text": "## Record 24 --- Student Attendance and Absence Policies\n\n-   **Attendance:** Expected regularly according to syllabus/college\n    policy.\n-   **Monitoring:** Attendance sheets, roll calls, or authorized\n    systems.\n-   **Tardiness:** Follows instructor rules; repeated tardiness may have\n    consequences.\n-   **Absence limits:** May depend on subject units, class hours, and\n    policy.\n-   **Excused absences:** May include illness, emergencies, or other\n    valid reasons, subject to rules/approval.\n-   **Documents:** May include a medical certificate, parent/guardian\n    explanation, or supporting documents.\n-   **Missed work/assessments:** Contact instructor promptly to ask\n    about missed work or make-up exams.\n-   **Excessive absences:** May affect performance/completion and could\n    result in a failing grade or other action, depending on policy.\n-   **Contact:** Instructor first, then department head/program\n    coordinator/Registrar/Student Affairs Office.\n-   **Evidence/source named:** Student Handbook; actual handbook was not\n    supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Exact allowable absences, subject/program\n    differences, tardiness rules, valid reasons/deadlines/documents,\n    make-up exam rules, consequences, and handbook edition/date.\n"
+  },
+  {
+    "record_id": "school-25",
+    "title": "Student Handbook and Campus Policies",
+    "source_file": "school_record_25_student_handbook_and_campus_policies.txt",
+    "source_heading": "## Record 25 --- Student Handbook and Campus Policies",
+    "fields": {
+      "Handbook availability": "User reports yes.",
+      "Where to inquire": "Registrar, Student Affairs Office (SAO), or\n    official communication channels.",
+      "Topics may include": "Academic policies, conduct, attendance,\n    grading, uniform, ID, discipline, services, and grievance\n    procedures.",
+      "Conduct": "Respect, honesty, responsibility, discipline, and\n    proper behavior.",
+      "Uniform": "Follow prescribed dress code; confirm requirements and\n    exemptions with administration.",
+      "Student ID": "May be required to be worn/presented on campus and\n    during official activities; confirm exact rule.",
+      "Prohibited activities may include": "Cheating, bullying,\n    harassment, vandalism, unauthorized access, and prohibited items.",
+      "Discipline": "May involve investigation, notice to explain,\n    hearing/opportunity to respond, and action under applicable\n    policy/regulations.",
+      "Grievance": "Instructor, department head, SAO, or designated\n    authority; formal procedure applies.",
+      "Applicability": "Reported as applying to all students, including\n    new, returning, and transferee students and official activities.",
+      "Contact": "SAO, Registrar, department head, or college\n    administration.",
+      "Evidence/source named": "SAO Director; actual confirmation or\n    handbook edition/date was not supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Handbook title/version/date/link, exact\n    dress code and ID rules, prohibited activities,\n    sanctions/appeals/grievance deadlines, and authorized confirmation."
+    },
+    "raw_text": "## Record 25 --- Student Handbook and Campus Policies\n\n-   **Handbook availability:** User reports yes.\n-   **Where to inquire:** Registrar, Student Affairs Office (SAO), or\n    official communication channels.\n-   **Topics may include:** Academic policies, conduct, attendance,\n    grading, uniform, ID, discipline, services, and grievance\n    procedures.\n-   **Conduct:** Respect, honesty, responsibility, discipline, and\n    proper behavior.\n-   **Uniform:** Follow prescribed dress code; confirm requirements and\n    exemptions with administration.\n-   **Student ID:** May be required to be worn/presented on campus and\n    during official activities; confirm exact rule.\n-   **Prohibited activities may include:** Cheating, bullying,\n    harassment, vandalism, unauthorized access, and prohibited items.\n-   **Discipline:** May involve investigation, notice to explain,\n    hearing/opportunity to respond, and action under applicable\n    policy/regulations.\n-   **Grievance:** Instructor, department head, SAO, or designated\n    authority; formal procedure applies.\n-   **Applicability:** Reported as applying to all students, including\n    new, returning, and transferee students and official activities.\n-   **Contact:** SAO, Registrar, department head, or college\n    administration.\n-   **Evidence/source named:** SAO Director; actual confirmation or\n    handbook edition/date was not supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Handbook title/version/date/link, exact\n    dress code and ID rules, prohibited activities,\n    sanctions/appeals/grievance deadlines, and authorized confirmation.\n"
+  },
+  {
+    "record_id": "school-26",
+    "title": "Campus Safety and Emergency Procedures",
+    "source_file": "school_record_26_campus_safety_and_emergency_procedures.txt",
+    "source_heading": "## Record 26 --- Campus Safety and Emergency Procedures",
+    "fields": {
+      "General emergency": "Stay calm, follow authorized school\n    personnel, avoid panic, move to a safe area when instructed, and\n    contact emergency responders as needed.",
+      "Emergency contact": "911 in the Philippines where available;\n    obtain current local fire, police, MDRRMO, and school administration\n    contacts.",
+      "Fire": "Raise the alarm, notify personnel, evacuate by the nearest\n    safe exit, do not use elevators, and do not re-enter until\n    authorities declare it safe. Use an extinguisher only if trained and\n    safe.",
+      "Earthquake": "Drop, Cover, and Hold On; avoid glass/falling\n    objects; after shaking, evacuate if instructed or if the building is\n    unsafe; watch for damage and aftershocks.",
+      "Medical emergency": "Notify clinic/first aid; call responders for\n    serious emergencies; do not move a seriously injured person unless\n    there is immediate danger.",
+      "Evacuation": "Follow posted maps/signs and staff instructions;\n    keep exits clear. Routes are unconfirmed.",
+      "Assembly": "Go to the designated area, stay with the group, and\n    await instructions. Locations are unconfirmed.",
+      "Security": "Follow entry procedures, identify yourself when\n    required, and report suspicious activity/unauthorized access.",
+      "Incident reporting": "Instructor, security, clinic, or responsible\n    office.",
+      "Possible equipment": "Extinguishers, first-aid supplies, alarms,\n    emergency lights, and maps; actual locations are unknown.",
+      "Contacts": "Administration, safety officer, security, clinic, and\n    emergency response team.",
+      "Evidence/source named": "Campus Safety Plan; actual plan was not\n    supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Current emergency contacts, evacuation\n    routes/assembly areas, equipment locations, designated officer,\n    drills/accessibility procedures, and plan version/date."
+    },
+    "raw_text": "## Record 26 --- Campus Safety and Emergency Procedures\n\n-   **General emergency:** Stay calm, follow authorized school\n    personnel, avoid panic, move to a safe area when instructed, and\n    contact emergency responders as needed.\n-   **Emergency contact:** 911 in the Philippines where available;\n    obtain current local fire, police, MDRRMO, and school administration\n    contacts.\n-   **Fire:** Raise the alarm, notify personnel, evacuate by the nearest\n    safe exit, do not use elevators, and do not re-enter until\n    authorities declare it safe. Use an extinguisher only if trained and\n    safe.\n-   **Earthquake:** Drop, Cover, and Hold On; avoid glass/falling\n    objects; after shaking, evacuate if instructed or if the building is\n    unsafe; watch for damage and aftershocks.\n-   **Medical emergency:** Notify clinic/first aid; call responders for\n    serious emergencies; do not move a seriously injured person unless\n    there is immediate danger.\n-   **Evacuation:** Follow posted maps/signs and staff instructions;\n    keep exits clear. Routes are unconfirmed.\n-   **Assembly:** Go to the designated area, stay with the group, and\n    await instructions. Locations are unconfirmed.\n-   **Security:** Follow entry procedures, identify yourself when\n    required, and report suspicious activity/unauthorized access.\n-   **Incident reporting:** Instructor, security, clinic, or responsible\n    office.\n-   **Possible equipment:** Extinguishers, first-aid supplies, alarms,\n    emergency lights, and maps; actual locations are unknown.\n-   **Contacts:** Administration, safety officer, security, clinic, and\n    emergency response team.\n-   **Evidence/source named:** Campus Safety Plan; actual plan was not\n    supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Current emergency contacts, evacuation\n    routes/assembly areas, equipment locations, designated officer,\n    drills/accessibility procedures, and plan version/date.\n"
+  },
+  {
+    "record_id": "school-27",
+    "title": "Campus Facilities and Accessibility",
+    "source_file": "school_record_27_campus_facilities_and_accessibility.txt",
+    "source_heading": "## Record 27 --- Campus Facilities and Accessibility",
+    "fields": {
+      "Facilities reported or suggested": "Classrooms, computer labs,\n    library, administration offices, clinic, restrooms, and learning\n    facilities; complete inventory is unconfirmed.",
+      "PWD accessibility": "Contact administration to confirm features\n    and services.",
+      "Ramps/elevators/entrances/restrooms": "Accessibility features\n    require confirmation.",
+      "Parking/accessibility parking": "Confirm with\n    security/administration.",
+      "Pathways": "Use designated walkways and authorized entrances;\n    accessible routes are unconfirmed.",
+      "Assistance": "Administration/SAO for reasonable assistance or\n    accommodations.",
+      "Restricted areas": "Labs, administrative offices, storage rooms,\n    and designated areas may require authorization/supervision.",
+      "Maintenance": "Report damaged equipment, unsafe walkways,\n    plumbing/electrical issues to administration/maintenance.",
+      "Hours": "Vary by facility; ask staff.",
+      "Contact": "College Administration, SAO, security,\n    facilities/maintenance staff.",
+      "Evidence/source named": "Campus Facility Plan; actual plan was not\n    supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Facility inventory/locations, accessibility\n    features/routes, parking rules, hours/restrictions, plan date, and\n    authorized confirmation."
+    },
+    "raw_text": "## Record 27 --- Campus Facilities and Accessibility\n\n-   **Facilities reported or suggested:** Classrooms, computer labs,\n    library, administration offices, clinic, restrooms, and learning\n    facilities; complete inventory is unconfirmed.\n-   **PWD accessibility:** Contact administration to confirm features\n    and services.\n-   **Ramps/elevators/entrances/restrooms:** Accessibility features\n    require confirmation.\n-   **Parking/accessibility parking:** Confirm with\n    security/administration.\n-   **Pathways:** Use designated walkways and authorized entrances;\n    accessible routes are unconfirmed.\n-   **Assistance:** Administration/SAO for reasonable assistance or\n    accommodations.\n-   **Restricted areas:** Labs, administrative offices, storage rooms,\n    and designated areas may require authorization/supervision.\n-   **Maintenance:** Report damaged equipment, unsafe walkways,\n    plumbing/electrical issues to administration/maintenance.\n-   **Hours:** Vary by facility; ask staff.\n-   **Contact:** College Administration, SAO, security,\n    facilities/maintenance staff.\n-   **Evidence/source named:** Campus Facility Plan; actual plan was not\n    supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Facility inventory/locations, accessibility\n    features/routes, parking rules, hours/restrictions, plan date, and\n    authorized confirmation.\n"
+  },
+  {
+    "record_id": "school-28",
+    "title": "Campus Transportation and Parking Rules",
+    "source_file": "school_record_28_campus_transportation_and_parking_rules.txt",
+    "source_heading": "## Record 28 --- Campus Transportation and Parking Rules",
+    "fields": {
+      "Transportation types mentioned": "Motorcycles, private cars,\n    bicycles, tricycles, and public transportation.",
+      "Vehicle entry time": "8:30 AM was supplied as a campus access\n    rule; gate opening/closing times and exact meaning need\n    confirmation.",
+      "Allowed vehicles": "May include motorcycles, cars, bicycles, and\n    authorized service/delivery vehicles, subject to campus rules.",
+      "Parking": "Use designated areas; exact locations are unconfirmed.",
+      "Students": "Follow signs and authorized parking spaces; do not\n    block entrances; obey security.",
+      "Visitors": "May need to register, show ID, state their purpose,\n    and follow security instructions.",
+      "Driving": "Follow posted speed limits, drive cautiously, yield to\n    pedestrians, and obey signs/instructions.",
+      "Motorcycle safety": "Riders and passengers must comply with\n    applicable Philippine helmet law; drivers should carry required\n    license and vehicle documents.",
+      "Restricted areas": "Keep emergency routes, pedestrian-only paths,\n    entrances/exits, and restricted areas clear.",
+      "Public transport": "Local routes/drop-off points around Talibon,\n    Bohol need confirmation.",
+      "Violations": "May result in warnings, vehicle relocation,\n    restricted parking privileges, or other action under policy/law.",
+      "Contact": "\"Admin\" was supplied, but the specific office/contact\n    is unclear.",
+      "Evidence/source named": "Admin; no dated confirmation/written\n    policy was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official gate hours and 8:30 AM rule,\n    parking locations/permissions, visitor requirements,\n    speed/restricted zones, penalties, transport points, and written\n    policy/source date."
+    },
+    "raw_text": "## Record 28 --- Campus Transportation and Parking Rules\n\n-   **Transportation types mentioned:** Motorcycles, private cars,\n    bicycles, tricycles, and public transportation.\n-   **Vehicle entry time:** 8:30 AM was supplied as a campus access\n    rule; gate opening/closing times and exact meaning need\n    confirmation.\n-   **Allowed vehicles:** May include motorcycles, cars, bicycles, and\n    authorized service/delivery vehicles, subject to campus rules.\n-   **Parking:** Use designated areas; exact locations are unconfirmed.\n-   **Students:** Follow signs and authorized parking spaces; do not\n    block entrances; obey security.\n-   **Visitors:** May need to register, show ID, state their purpose,\n    and follow security instructions.\n-   **Driving:** Follow posted speed limits, drive cautiously, yield to\n    pedestrians, and obey signs/instructions.\n-   **Motorcycle safety:** Riders and passengers must comply with\n    applicable Philippine helmet law; drivers should carry required\n    license and vehicle documents.\n-   **Restricted areas:** Keep emergency routes, pedestrian-only paths,\n    entrances/exits, and restricted areas clear.\n-   **Public transport:** Local routes/drop-off points around Talibon,\n    Bohol need confirmation.\n-   **Violations:** May result in warnings, vehicle relocation,\n    restricted parking privileges, or other action under policy/law.\n-   **Contact:** \"Admin\" was supplied, but the specific office/contact\n    is unclear.\n-   **Evidence/source named:** Admin; no dated confirmation/written\n    policy was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official gate hours and 8:30 AM rule,\n    parking locations/permissions, visitor requirements,\n    speed/restricted zones, penalties, transport points, and written\n    policy/source date.\n"
+  },
+  {
+    "record_id": "school-29",
+    "title": "Campus Communication Channels and Announcements",
+    "source_file": "school_record_29_campus_communication_channels_and_announcements.txt",
+    "source_heading": "## Record 29 --- Campus Communication Channels and Announcements",
+    "fields": {
+      "Possible channels": "Official announcements, bulletin boards,\n    authorized social pages, and direct notices from\n    instructors/offices.",
+      "Social media": "Follow official TPC pages; confirm the correct\n    page with administration.",
+      "Website supplied by user": "https://www.tpc.edu.ph/\n    (ownership/current availability not independently verified in this\n    record).",
+      "Enrollment": "Official channels and Registrar.",
+      "Suspensions": "Official college channels and government\n    advisories.",
+      "Emergency notices": "Campus security/personnel, official notices,\n    and local authorities.",
+      "Academic calendar/exams": "Registrar, instructors, and\n    departments.",
+      "Direct notices may use": "Instructors, classroom announcements,\n    official student communication groups, institutional email, or a\n    student portal, depending on availability.",
+      "Authenticity checks": "Check source and publication date; read the\n    full announcement; confirm important details with the office; do not\n    rely on screenshots/forwarded messages alone.",
+      "Suspicious posts/impersonation": "Report to administration or\n    communications office with a link/screenshot.",
+      "Contacts": "College Administration, Registrar, or designated\n    information/communications officer.",
+      "Evidence/source named": "\"Official College Page\"; no specific\n    page/post/date was supplied beyond the user-provided website URL.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Website status, exact official social\n    URLs/names, urgent suspension channels, portal/email/groups\n    availability, and communication policy/date."
+    },
+    "raw_text": "## Record 29 --- Campus Communication Channels and Announcements\n\n-   **Possible channels:** Official announcements, bulletin boards,\n    authorized social pages, and direct notices from\n    instructors/offices.\n-   **Social media:** Follow official TPC pages; confirm the correct\n    page with administration.\n-   **Website supplied by user:** https://www.tpc.edu.ph/\n    (ownership/current availability not independently verified in this\n    record).\n-   **Enrollment:** Official channels and Registrar.\n-   **Suspensions:** Official college channels and government\n    advisories.\n-   **Emergency notices:** Campus security/personnel, official notices,\n    and local authorities.\n-   **Academic calendar/exams:** Registrar, instructors, and\n    departments.\n-   **Direct notices may use:** Instructors, classroom announcements,\n    official student communication groups, institutional email, or a\n    student portal, depending on availability.\n-   **Authenticity checks:** Check source and publication date; read the\n    full announcement; confirm important details with the office; do not\n    rely on screenshots/forwarded messages alone.\n-   **Suspicious posts/impersonation:** Report to administration or\n    communications office with a link/screenshot.\n-   **Contacts:** College Administration, Registrar, or designated\n    information/communications officer.\n-   **Evidence/source named:** \"Official College Page\"; no specific\n    page/post/date was supplied beyond the user-provided website URL.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Website status, exact official social\n    URLs/names, urgent suspension channels, portal/email/groups\n    availability, and communication policy/date.\n"
+  },
+  {
+    "record_id": "school-30",
+    "title": "General Campus Information and Frequently Asked Questions",
+    "source_file": "school_record_30_general_campus_information_and_frequently_asked_questions.txt",
+    "source_heading": "## Record 30 --- General Campus Information and Frequently Asked Questions",
+    "fields": {
+      "Official college name": "Talibon Polytechnic College (TPC).",
+      "Campus location": "San Isidro, Talibon, Bohol, Philippines.",
+      "Vision": "An institution committed to provide quality educational\n    opportunities and academic programs that empower students to become\n    competitive and responsive to the needs of the community.",
+      "Mission": "To provide quality educational opportunities and\n    support services, strengthen innovative research and extension, and\n    produce competent individuals in technological and professional\n    fields for community transformation and development.",
+      "Contact information supplied": "-   Facebook: https://www.facebook.com/TalibonPolytechnicCollege\n    -   Email: tpcwebsite05@gmail.com\n    -   Telephone: (038) 411 5340\n    -   Address: San Isidro, Talibon, Bohol",
+      "General office hours": "Offices generally operate during regular\n    school working hours on weekdays. Confirm exact opening/closing\n    times with administration before visiting.",
+      "Directions": "Contact administration for precise directions,\n    nearby landmarks, and transportation options.",
+      "General student services may include": "Academic advising,\n    enrollment assistance, library services, computer laboratory access,\n    clinic services, student records processing, and Student Affairs\n    support. Confirm availability with the appropriate office.",
+      "Applicants/prospective students": "Ask the Registrar/admissions\n    office about programs, admission requirements, application\n    procedures, enrollment schedules, required documents, and fees.",
+      "Visitors": "Follow campus entry procedures; register with security\n    when required; state purpose; observe campus rules; confirm whether\n    an appointment is needed.",
+      "Fees/payments": "Confirm tuition, miscellaneous fees, document\n    charges, and other payments with Accounting or Registrar. Request\n    official receipts.",
+      "Common FAQs": "Enrollment schedules, class timetables, exam dates,\n    grading, attendance, academic programs, student IDs, facility\n    availability, and announcements. Ask the appropriate office for\n    official answers.",
+      "Referral/escalation": "-   Enrollment/student records --- Registrar's Office.\n    -   Tuition/payment --- Accounting Office or Registrar's Office.\n    -   Grades/academic concerns --- subject instructor, then department\n        head/program coordinator.\n    -   Student conduct/welfare --- Student Affairs Office or designated\n        authority.\n    -   Health --- school clinic or emergency medical services.\n    -   Campus safety/security --- campus security or designated safety\n        officer.\n    -   Unresolved concerns --- college administration.\n    -   Students should explain the concern clearly, provide relevant\n        supporting documents, and follow official complaint/referral\n        procedures.",
+      "Evidence/source named": "Official document or authorized staff\n    confirmation; \"Admin\" named, but no actual\n    confirmation/document/date was supplied.",
+      "Verification": "Pending confirmation.",
+      "Needs confirmation": "Official name/address, mission/vision\n    wording, current contact details, exact hours, actual services and\n    referral responsibilities, visitor rules, current fee/payment\n    procedures, official announcement channels, and evidence/review\n    date."
+    },
+    "raw_text": "## Record 30 --- General Campus Information and Frequently Asked Questions\n\n-   **Official college name:** Talibon Polytechnic College (TPC).\n-   **Campus location:** San Isidro, Talibon, Bohol, Philippines.\n-   **Vision:** An institution committed to provide quality educational\n    opportunities and academic programs that empower students to become\n    competitive and responsive to the needs of the community.\n-   **Mission:** To provide quality educational opportunities and\n    support services, strengthen innovative research and extension, and\n    produce competent individuals in technological and professional\n    fields for community transformation and development.\n-   **Contact information supplied:**\n    -   Facebook: https://www.facebook.com/TalibonPolytechnicCollege\n    -   Email: tpcwebsite05@gmail.com\n    -   Telephone: (038) 411 5340\n    -   Address: San Isidro, Talibon, Bohol\n-   **General office hours:** Offices generally operate during regular\n    school working hours on weekdays. Confirm exact opening/closing\n    times with administration before visiting.\n-   **Directions:** Contact administration for precise directions,\n    nearby landmarks, and transportation options.\n-   **General student services may include:** Academic advising,\n    enrollment assistance, library services, computer laboratory access,\n    clinic services, student records processing, and Student Affairs\n    support. Confirm availability with the appropriate office.\n-   **Applicants/prospective students:** Ask the Registrar/admissions\n    office about programs, admission requirements, application\n    procedures, enrollment schedules, required documents, and fees.\n-   **Visitors:** Follow campus entry procedures; register with security\n    when required; state purpose; observe campus rules; confirm whether\n    an appointment is needed.\n-   **Fees/payments:** Confirm tuition, miscellaneous fees, document\n    charges, and other payments with Accounting or Registrar. Request\n    official receipts.\n-   **Common FAQs:** Enrollment schedules, class timetables, exam dates,\n    grading, attendance, academic programs, student IDs, facility\n    availability, and announcements. Ask the appropriate office for\n    official answers.\n-   **Referral/escalation:**\n    -   Enrollment/student records --- Registrar's Office.\n    -   Tuition/payment --- Accounting Office or Registrar's Office.\n    -   Grades/academic concerns --- subject instructor, then department\n        head/program coordinator.\n    -   Student conduct/welfare --- Student Affairs Office or designated\n        authority.\n    -   Health --- school clinic or emergency medical services.\n    -   Campus safety/security --- campus security or designated safety\n        officer.\n    -   Unresolved concerns --- college administration.\n    -   Students should explain the concern clearly, provide relevant\n        supporting documents, and follow official complaint/referral\n        procedures.\n-   **Evidence/source named:** Official document or authorized staff\n    confirmation; \"Admin\" named, but no actual\n    confirmation/document/date was supplied.\n-   **Verification:** Pending confirmation.\n-   **Needs confirmation:** Official name/address, mission/vision\n    wording, current contact details, exact hours, actual services and\n    referral responsibilities, visitor rules, current fee/payment\n    procedures, official announcement channels, and evidence/review\n    date.\n"
+  }
+]

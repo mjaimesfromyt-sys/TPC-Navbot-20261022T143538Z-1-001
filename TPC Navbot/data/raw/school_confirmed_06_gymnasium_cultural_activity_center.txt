@@ -1,0 +1,18 @@
+TPC school-confirmed submission: Gymnasium / Cultural Activity Center
+Location ID: TPC-SCHOOL-06
+Submitted record(s): 06
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Gymnasium",
+  "aliases": [
+    "gym",
+    "gymnasium"
+  ],
+  "location": "In front of the flagpole.",
+  "services": "Sports, physical education, and other outdoor events."
+}
+
+Scope and unavailable details:
+The scope of 'all' access and no-booking is unresolved, so access/booking rules are omitted.

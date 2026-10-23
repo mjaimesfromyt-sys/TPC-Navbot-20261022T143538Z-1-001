@@ -1,0 +1,17 @@
+TPC school-confirmed submission: Main Academic Building
+Location ID: TPC-SCHOOL-02
+Submitted record(s): 02
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Main Building",
+  "aliases": [
+    "Main Academic Building",
+    "main building"
+  ],
+  "location": "Directly in front after entering the main gate."
+}
+
+Scope and unavailable details:
+The blanket 'all departments' claim is omitted because department offices and separate teaching buildings are not distinguished.

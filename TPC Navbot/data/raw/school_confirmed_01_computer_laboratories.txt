@@ -1,0 +1,45 @@
+TPC school-confirmed submission: Computer Laboratories
+Location ID: TPC-SCHOOL-01
+Submitted record(s): 01 and 14
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Computer Laboratories",
+  "aliases": [
+    "Computer Laboratory 1",
+    "Computer Laboratory 2",
+    "ComLab 1",
+    "ComLab 2",
+    "computer lab",
+    "computer labs",
+    "comlab"
+  ],
+  "location": "From the main building, face the flagpole; Computer Laboratory 1 and Computer Laboratory 2 are on the right-hand side.",
+  "services": [
+    "Access is during scheduled classes for students in those classes.",
+    "No eating or drinking inside the computer lab.",
+    "Keep the lab clean and organized.",
+    "Handle computers and equipment carefully.",
+    "Do not install software without permission.",
+    "Do not change computer settings without authorization.",
+    "Use computers for academic purposes only.",
+    "Do not access inappropriate websites or content.",
+    "Do not download unauthorized files or applications.",
+    "Do not bring unauthorized USB drives or external devices.",
+    "Report damaged equipment or technical problems to the lab instructor.",
+    "Do not unplug cables or disconnect equipment.",
+    "Keep noise minimal.",
+    "Log out of accounts after use.",
+    "Save work before shutting down.",
+    "Shut down computers properly after use.",
+    "Follow the instructor's instructions.",
+    "Do not share passwords or personal account information.",
+    "Do not handle liquids near computer equipment (overlaps with the no-food/drink rule).",
+    "Return chairs, keyboards, and other equipment to their proper places.",
+    "Follow lab schedules and use computers only when authorized."
+  ]
+}
+
+Scope and unavailable details:
+Uses the common laboratory location from record 01 and rules from record 14; room codes/building identity are not supplied.

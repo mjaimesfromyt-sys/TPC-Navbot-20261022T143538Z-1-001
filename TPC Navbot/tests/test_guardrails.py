@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.llm_rag import TPCNavBotRAG
+from src.llm_rag import MESSAGES, TPCNavBotRAG
 from src.memory import ConversationSession
 
 
@@ -144,12 +144,39 @@ class GuardrailsTests(unittest.TestCase):
         self.assertEqual(response["status"], "SUCCESS")
         self.assertIn("Learning Center", response["answer"])
         self.assertIn("L-101", response["answer"])
-        self.assertIn("not available", response["answer"])
+        self.assertNotIn("Destination:", response["answer"])
+        self.assertNotIn("Building:", response["answer"])
+        self.assertNotIn("Room:", response["answer"])
+        self.assertNotIn("**", response["answer"])
+        self.assertNotIn(MESSAGES["english"]["route_missing"], response["answer"])
         self.assertNotIn("Main Gate", response["answer"])
         self.assertNotIn("2.5", response["answer"])
         self.assertNotIn("meters", response["answer"])
         self.assertNotIn("ramp", response["answer"].lower())
         self.assertEqual(len(response["sources"]), 1)
+
+    def test_verified_answer_keeps_review_evidence_in_metadata(self):
+        response = bot([approved_hit()]).query("Where is the library?")
+        self.assertEqual(response["sources"], [
+            "reviewed-fixture.txt [Authorized campus test record]",
+        ])
+        self.assertEqual(response["source_details"], [{
+            "destination": "Library", "source_doc": "reviewed-fixture.txt",
+            "official_source": "Authorized campus test record",
+            "reviewed_by": "Test reviewer", "reviewed_at": "2026-10-22",
+        }])
+        for evidence in ("Source:", "reviewed-fixture.txt", "Authorized campus test record",
+                         "Test reviewer", "2026-10-22"):
+            with self.subTest(evidence=evidence):
+                self.assertNotIn(evidence, response["answer"])
+
+    def test_location_with_known_origin_does_not_offer_unsolicited_route(self):
+        response = bot([with_route(approved_hit())]).query("I'm at Main Entrance. Where is the library?")
+        self.assertEqual(response["status"], "SUCCESS")
+        self.assertIn("Learning Center", response["answer"])
+        for value in ("east corridor", "2.5", "100", MESSAGES["english"]["route_missing"]):
+            with self.subTest(value=value):
+                self.assertNotIn(value, response["answer"])
 
     def test_unverified_or_legacy_chunks_never_become_facts(self):
         for key, value in (("verified_source", False), ("verified_source", "true"),
@@ -207,6 +234,7 @@ class GuardrailsTests(unittest.TestCase):
         self.assertNotIn("east corridor", response["answer"])
         self.assertNotIn("2.5", response["answer"])
         self.assertNotIn("100", response["answer"])
+        self.assertIn(MESSAGES["english"]["route_missing"], response["answer"])
 
     def test_origin_clarification_accepts_only_approved_start_reply(self):
         nav = bot([with_route(approved_hit())])
@@ -255,7 +283,11 @@ class GuardrailsTests(unittest.TestCase):
         self.assertIn("Admin", first["answer"])
         second = nav.chat("How about the library?")
         self.assertEqual(second["status"], "SUCCESS")
-        self.assertIn("2.5", second["answer"])
+        self.assertIn("Learning Center", second["answer"])
+        self.assertNotIn("2.5", second["answer"])
+        third = nav.chat("How do I get to the library?")
+        self.assertEqual(third["status"], "SUCCESS")
+        self.assertIn("2.5", third["answer"])
 
     def test_origin_does_not_replace_requested_destination(self):
         nav = bot([approved_hit(), approved_hit("Registrar Office", building="Admin", room="101")])

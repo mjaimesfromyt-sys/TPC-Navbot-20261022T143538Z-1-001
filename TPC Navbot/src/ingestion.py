@@ -1,7 +1,6 @@
 """Incremental ingestion: portable paths, review-aware updates, and stale pruning."""
 import hashlib
 import json
-import os
 import sys
 import time
 from pathlib import Path
@@ -11,6 +10,7 @@ if __package__ in {None, ""}:
 
 from src.config import MANIFEST_PATH, PROCESSED_CHUNKS_PATH, RAW_DATA_DIR, SOURCE_REGISTRY_PATH
 from src.preprocessing import TextPreprocessor
+from src.storage_io import atomic_text_writer, atomic_write_text
 from src.vector_store import VectorStore
 
 
@@ -33,20 +33,12 @@ class IngestionPipeline:
             return {}
 
     def _save_manifest(self):
-        path = Path(self.manifest_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = path.with_suffix(".json.tmp")
-        temporary.write_text(json.dumps(self.manifest, indent=2), encoding="utf-8")
-        os.replace(temporary, path)
+        atomic_write_text(self.manifest_path, json.dumps(self.manifest, indent=2))
 
     def _export_processed(self):
-        path = Path(self.processed_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = path.with_suffix(".jsonl.tmp")
-        with temporary.open("w", encoding="utf-8") as output:
+        with atomic_text_writer(self.processed_path) as output:
             for text, metadata in zip(self.vector_store.documents, self.vector_store.metadatas):
                 output.write(json.dumps({"text": text, "metadata": metadata}, ensure_ascii=False) + "\n")
-        os.replace(temporary, path)
 
     @staticmethod
     def _compute_file_hash(filepath):

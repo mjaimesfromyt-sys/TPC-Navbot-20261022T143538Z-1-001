@@ -1,0 +1,20 @@
+TPC school-confirmed submission: Canteen / Dining Area
+Location ID: TPC-SCHOOL-07
+Submitted record(s): 07
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Canteen",
+  "aliases": [
+    "canteen",
+    "dining area",
+    "cafeteria"
+  ],
+  "location": "Left side of the main building.",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "Meals, snacks, and school supplies."
+}
+
+Scope and unavailable details:
+The ambiguous product 'sling' and visitor/holiday rules are omitted.

@@ -1,0 +1,18 @@
+TPC school-confirmed submission: Agriculture Building / Field Office
+Location ID: TPC-SCHOOL-04
+Submitted record(s): 04
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Agriculture Building",
+  "aliases": [
+    "agriculture department",
+    "agriculture building"
+  ],
+  "location": "Behind the yellow building referenced in the campus notes, to the right from the main gate.",
+  "services": "Classrooms."
+}
+
+Scope and unavailable details:
+Yellow building identity and actual route are not supplied; no route, room code, or gate-hour claim is approved.

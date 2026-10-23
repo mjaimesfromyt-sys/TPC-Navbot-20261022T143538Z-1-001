@@ -155,6 +155,35 @@ class StorageTests(unittest.TestCase):
         self.file.write_text(self.file.read_text(encoding="utf-8") + "Changed.", encoding="utf-8")
         self.assertEqual(store.search("library"), [])
 
+    def test_each_search_reads_one_fresh_registry_and_revalidates_each_source(self):
+        self.approve()
+        second_file = self.raw / "other_library.txt"
+        second_file.write_text("Building Name: Other Synthetic Library\nLocation ID: TEST-002\nLibrary books.", encoding="utf-8")
+        documents = json.loads(self.registry.read_text(encoding="utf-8"))["documents"]
+        documents[second_file.name] = {
+            **documents[self.file.name],
+            "sha256": hashlib.sha256(second_file.read_bytes()).hexdigest(),
+        }
+        self.registry.write_text(json.dumps({"documents": documents}), encoding="utf-8")
+        store = self.store()
+        store.add_chunks(self.processor.process_directory(self.raw))
+        with patch.object(SourceRegistry, "entries", autospec=True,
+                          side_effect=SourceRegistry.entries) as registry_reads:
+            hits = store.search("library", top_k=100)
+            self.assertEqual({hit["metadata"]["source_doc"] for hit in hits},
+                             {self.file.name, second_file.name})
+            self.assertEqual(registry_reads.call_count, 1)
+
+            documents[self.file.name]["verified"] = False
+            self.registry.write_text(json.dumps({"documents": documents}), encoding="utf-8")
+            hits = store.search("library", top_k=100)
+            self.assertEqual({hit["metadata"]["source_doc"] for hit in hits}, {second_file.name})
+            self.assertEqual(registry_reads.call_count, 2)
+
+            second_file.write_text("Changed source content.", encoding="utf-8")
+            self.assertEqual(store.search("library", top_k=100), [])
+            self.assertEqual(registry_reads.call_count, 3)
+
     def test_review_revocation_invalidates_stored_chunks_immediately(self):
         self.approve()
         store = self.store()

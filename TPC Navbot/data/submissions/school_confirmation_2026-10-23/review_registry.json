@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "verification_schema": "tpc-source-v1",
+  "documents": {
+    "school_record_01_computer_laboratories.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "afe2d7f1e0c4060b135f2a43796dd72b7ca5fc606c630b6ff5a5c38ba9ee424d",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 01",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_02_main_academic_building.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "7ed0af3586eff35e4fe3d85011181f19e5ad33f1715f04769d1613e48d1f5a8f",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 02",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_03_criminology_building.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "6587b52de5ec03422a071b221e3b76a30cd191a63661035a03ce76be70762e11",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 03",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_04_agriculture_building_field_office.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "74365680dc99e995043e38448b6163d6611555e70b051dba9f6293882d5cfee2",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 04",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_05_administration_building.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "c6e010a6e9a967d26ffba728e7e8bf0e97410803fe15549958e148fdd91e51c3",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 05",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_06_gymnasium_cultural_activity_center.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "2b794f962f2e56a498beddb9160037a0de20a2a748eb776fae17b46d4e894abd",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 06",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_07_canteen_dining_area.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "05ff0540ebb3aef13e9b3ae53eec4d28792b4a5ac318fb70531fb2bcbeb990ca",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 07",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_08_library_learning_resource_center.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "f99f9b10eb74dbcc9484330a58c4b6dfed25fa11932d7aacd8954e9b7e290232",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 08",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_09_registrar_s_office.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "e91eccd7b943927ab1a774be4aa6ee7fa53dc0c0bca9fd80aef6fb9e216c844b",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 09",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_10_student_affairs_office.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "7047824c495ea8deb3f6dce4fecd40a30921dcf752c2f8e71b578d593234f3fb",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 10",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_11_guidance_office.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "9e19a80aaf2ddbb8dce5258dece7e9f5f0bcb12a5604243483a201c1b6514cf1",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 11",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_12_clinic_health_services.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "0d70cf7bf17c6a6c36f211666003a20c2416e5b0a911e3f4a8e0d25bf5ccc8f4",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 12",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_13_faculty_room_faculty_offices.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "8cba3ff4be9e83ebf8e38a13fcdd99ed11f2ecaf26eddc300379c1f88784ddc8",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 13",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_14_computer_laboratory_rules_and_access.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "d5e5fbca2a4d57eb17ff9b3a831917eace64e65ad47d8a0f60911b226f1d8d16",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 14",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_15_campus_internet_and_wi_fi_access.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "6dcb3fec2c9f44fd2828937b7093c5d2d1c0b86fe41553c626c0733b7dabee7a",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 15",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_16_student_id_and_identification_services.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "72860a668096899ab3e10e124aa88b2538e62a1a719bc4198a75af27594815e3",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 16",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_17_student_enrollment_procedures.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "91783700cacf28de7223a3dc0f049085209536edb9a7665cee00e519a929b24c",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 17",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_18_enrollment_requirements_and_documents.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "041b85fd514072eea6ddd15d91e31ac2b818c82161c91fd699082e9e5c244f3b",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 18",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_19_admission_and_eligibility_requirements.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "3e5fd3d306dff71c2f0d4d5ff61834e42a7cc0b7c3a8b49c727a149a6104dd69",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 19",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_20_academic_programs_and_departments.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "214fa39d92b9b333384b3896c492e36e549c3c815a60d98716547901276b0a36",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 20",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_21_academic_calendar_and_school_schedule.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "76e41e3054012bff120e68e99df14baf28db2af26983ed81735c9bb30797f6a9",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 21",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_22_examination_schedules_and_policies.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "086babdf06e2ec912585c05bd5aa69e52adb4034099a225e81b906708b864202",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 22",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_23_grading_system_and_academic_evaluation.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "51199c9630381357f7d20db2ca293689c39114e5bddf26e1f9c16fb6af7c60a0",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 23",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_24_student_attendance_and_absence_policies.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "d25d99ef374387ef9dca8d10f28952c5dcaa8c9af36bed7842d4ebfc3869ce8f",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 24",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_25_student_handbook_and_campus_policies.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "9ccbd35ab45dcc91e939ec6ea60c34ccd53eb61b50dc14a010c6ab786bc62636",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 25",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_26_campus_safety_and_emergency_procedures.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "3901a56ca70857e270813d64a5272914758e27b807917517be4724b80d87faf3",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 26",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_27_campus_facilities_and_accessibility.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "c7455d650d1e06d333a64ed6febf4de9348fce9989eeb6d75289537f1200f110",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 27",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_28_campus_transportation_and_parking_rules.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "6c3b6a464ce5d54f9415c27ea3337d09c46906a7b6fd19d89e6c2564353601ff",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 28",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_29_campus_communication_channels_and_announcements.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "865c30413f37a8dfe1a281243599f79257b0661f942978728761a09e61b4d588",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 29",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    },
+    "school_record_30_general_campus_information_and_frequently_asked_questions.txt": {
+      "verified": false,
+      "source_type": "pending_review_metadata",
+      "sha256": "e0e3481b3c4bd01781b4a65dc59325cc2cf64edd06746f40238b50460af1b6dc",
+      "official_source": "",
+      "reviewed_by": "",
+      "reviewed_at": "",
+      "submitted_reference": "TPC_NavBot_30_Knowledge_Records.md, Record 30",
+      "notes": "User reports school confirmation. Reviewer identity, actual review date, reference, and scope of remaining unknown fields are not yet supplied. Original draft wording is preserved; this is not a rejection of the user's confirmation."
+    }
+  }
+}

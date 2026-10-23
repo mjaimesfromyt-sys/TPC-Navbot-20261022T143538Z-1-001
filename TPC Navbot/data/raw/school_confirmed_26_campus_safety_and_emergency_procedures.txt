@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Campus Safety and Emergency Procedures
+Location ID: TPC-SCHOOL-26
+Submitted record(s): 26
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Campus Safety and Emergency Procedures",
+  "aliases": [
+    "campus safety",
+    "campus emergency",
+    "evacuation",
+    "assembly area",
+    "emergency hotline"
+  ]
+}
+
+Scope and unavailable details:
+No campus emergency numbers, verified evacuation route, assembly point, equipment location, or campus plan supplied. Generic medical/legal/safety instructions from the draft are not promoted to campus facts.

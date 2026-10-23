@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Library / Learning Resource Center
+Location ID: TPC-SCHOOL-08
+Submitted record(s): 08
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Library",
+  "aliases": [
+    "library",
+    "learning resource center"
+  ],
+  "location": "Right side when facing the canteen.",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "Books, a reading area, and free Wi-Fi. Ask the librarian about borrowing; a library card is needed before borrowing."
+}
+
+Scope and unavailable details:
+Borrowing limits, card application, visitor eligibility, and holiday hours are not supplied.

@@ -1,0 +1,19 @@
+TPC school-confirmed submission: Academic Calendar and School Schedule
+Location ID: TPC-SCHOOL-21
+Submitted record(s): 21
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Academic Calendar and School Schedule",
+  "aliases": [
+    "academic calendar",
+    "school schedule",
+    "enrollment schedule",
+    "class schedule"
+  ],
+  "contact": "Registrar or the respective department."
+}
+
+Scope and unavailable details:
+No calendar dates, term structure, enrollment/exam deadlines, class timetable, or office schedule supplied. Only the named referral is available.

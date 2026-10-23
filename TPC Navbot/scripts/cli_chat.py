@@ -41,6 +41,15 @@ def main():
 
             print(f"\n--- TPC NavBot Response (Latency: {elapsed_ms}ms | Status: {response['status']}) ---")
             print(response['answer'])
+            if response.get('sources'):
+                print('\nSources:')
+                details = response.get('source_details', [])
+                if details:
+                    for source in details:
+                        print(f"- {source['source_doc']} — {source['official_source']} ({source['reviewed_at']})")
+                else:
+                    for source in response['sources']:
+                        print(f'- {source}')
             print('-------------------------------------------------------------------------------\n')
 
         except (KeyboardInterrupt, EOFError):

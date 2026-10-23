@@ -1,0 +1,21 @@
+TPC school-confirmed submission: Clinic / Health Services
+Location ID: TPC-SCHOOL-12
+Submitted record(s): 12
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "Clinic",
+  "aliases": [
+    "clinic",
+    "health services",
+    "medical clinic"
+  ],
+  "building": "Main Building",
+  "location": "Inside the main building, beside the Guidance Office.",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "First aid treatment; basic health assessment; medical consultation; wound care; emergency assistance; health education; medical referral; health monitoring; medical records management; health and wellness programs."
+}
+
+Scope and unavailable details:
+The supplied public service list is retained. Emergency contact/procedure, universal ID requirement, and patient records are excluded.

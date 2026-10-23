@@ -1,0 +1,613 @@
+[
+  {
+    "record_id": "school-01",
+    "title": "Computer Laboratories",
+    "active_source": "school_confirmed_01_computer_laboratories.txt",
+    "source_records": "01 and 14",
+    "selected_facts": {
+      "destination": "Computer Laboratories",
+      "aliases": [
+        "Computer Laboratory 1",
+        "Computer Laboratory 2",
+        "ComLab 1",
+        "ComLab 2",
+        "computer lab",
+        "computer labs",
+        "comlab"
+      ],
+      "location": "From the main building, face the flagpole; Computer Laboratory 1 and Computer Laboratory 2 are on the right-hand side.",
+      "services": [
+        "Access is during scheduled classes for students in those classes.",
+        "No eating or drinking inside the computer lab.",
+        "Keep the lab clean and organized.",
+        "Handle computers and equipment carefully.",
+        "Do not install software without permission.",
+        "Do not change computer settings without authorization.",
+        "Use computers for academic purposes only.",
+        "Do not access inappropriate websites or content.",
+        "Do not download unauthorized files or applications.",
+        "Do not bring unauthorized USB drives or external devices.",
+        "Report damaged equipment or technical problems to the lab instructor.",
+        "Do not unplug cables or disconnect equipment.",
+        "Keep noise minimal.",
+        "Log out of accounts after use.",
+        "Save work before shutting down.",
+        "Shut down computers properly after use.",
+        "Follow the instructor's instructions.",
+        "Do not share passwords or personal account information.",
+        "Do not handle liquids near computer equipment (overlaps with the no-food/drink rule).",
+        "Return chairs, keyboards, and other equipment to their proper places.",
+        "Follow lab schedules and use computers only when authorized."
+      ]
+    },
+    "scope_and_omissions": "Uses the common laboratory location from record 01 and rules from record 14; room codes/building identity are not supplied."
+  },
+  {
+    "record_id": "school-02",
+    "title": "Main Academic Building",
+    "active_source": "school_confirmed_02_main_academic_building.txt",
+    "source_records": "02",
+    "selected_facts": {
+      "destination": "Main Building",
+      "aliases": [
+        "Main Academic Building",
+        "main building"
+      ],
+      "location": "Directly in front after entering the main gate."
+    },
+    "scope_and_omissions": "The blanket 'all departments' claim is omitted because department offices and separate teaching buildings are not distinguished."
+  },
+  {
+    "record_id": "school-03",
+    "title": "Criminology Building",
+    "active_source": "school_confirmed_03_criminology_building.txt",
+    "source_records": "03",
+    "selected_facts": {
+      "destination": "Criminology Building",
+      "aliases": [
+        "criminology department",
+        "criminology building"
+      ],
+      "location": "Behind the main building.",
+      "services": "Classrooms."
+    },
+    "scope_and_omissions": "The unscoped 8:30 AM motorcycle rule and incomplete bridge route are not enabled as directions or policy."
+  },
+  {
+    "record_id": "school-04",
+    "title": "Agriculture Building / Field Office",
+    "active_source": "school_confirmed_04_agriculture_building_field_office.txt",
+    "source_records": "04",
+    "selected_facts": {
+      "destination": "Agriculture Building",
+      "aliases": [
+        "agriculture department",
+        "agriculture building"
+      ],
+      "location": "Behind the yellow building referenced in the campus notes, to the right from the main gate.",
+      "services": "Classrooms."
+    },
+    "scope_and_omissions": "Yellow building identity and actual route are not supplied; no route, room code, or gate-hour claim is approved."
+  },
+  {
+    "record_id": "school-05",
+    "title": "Administration Building",
+    "active_source": "school_confirmed_05_administration_building.txt",
+    "source_records": "05",
+    "selected_facts": {
+      "destination": "Administration Offices",
+      "aliases": [
+        "Administration Building",
+        "administration offices",
+        "admin office"
+      ],
+      "building": "Main Building",
+      "location": "Inside the main building."
+    },
+    "scope_and_omissions": "Administration is represented as offices inside Main Building; it is not inferred to be a separate building."
+  },
+  {
+    "record_id": "school-06",
+    "title": "Gymnasium / Cultural Activity Center",
+    "active_source": "school_confirmed_06_gymnasium_cultural_activity_center.txt",
+    "source_records": "06",
+    "selected_facts": {
+      "destination": "Gymnasium",
+      "aliases": [
+        "gym",
+        "gymnasium"
+      ],
+      "location": "In front of the flagpole.",
+      "services": "Sports, physical education, and other outdoor events."
+    },
+    "scope_and_omissions": "The scope of 'all' access and no-booking is unresolved, so access/booking rules are omitted."
+  },
+  {
+    "record_id": "school-07",
+    "title": "Canteen / Dining Area",
+    "active_source": "school_confirmed_07_canteen_dining_area.txt",
+    "source_records": "07",
+    "selected_facts": {
+      "destination": "Canteen",
+      "aliases": [
+        "canteen",
+        "dining area",
+        "cafeteria"
+      ],
+      "location": "Left side of the main building.",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Meals, snacks, and school supplies."
+    },
+    "scope_and_omissions": "The ambiguous product 'sling' and visitor/holiday rules are omitted."
+  },
+  {
+    "record_id": "school-08",
+    "title": "Library / Learning Resource Center",
+    "active_source": "school_confirmed_08_library_learning_resource_center.txt",
+    "source_records": "08",
+    "selected_facts": {
+      "destination": "Library",
+      "aliases": [
+        "library",
+        "learning resource center"
+      ],
+      "location": "Right side when facing the canteen.",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Books, a reading area, and free Wi-Fi. Ask the librarian about borrowing; a library card is needed before borrowing."
+    },
+    "scope_and_omissions": "Borrowing limits, card application, visitor eligibility, and holiday hours are not supplied."
+  },
+  {
+    "record_id": "school-09",
+    "title": "Registrar's Office",
+    "active_source": "school_confirmed_09_registrar_s_office.txt",
+    "source_records": "09 and 17",
+    "selected_facts": {
+      "destination": "Registrar's Office",
+      "aliases": [
+        "registrar",
+        "records office"
+      ],
+      "building": "Main Building",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Enrollment, grade slips, and inquiries about enrollment requirements.",
+      "location": "In front of the main gate."
+    },
+    "scope_and_omissions": "Main Building comes from submitted record 17. The user clarified the previously school-confirmed Registrar location on 23 October 2026: in front of the main gate. No floor, room, ordered route, walking time, or distance is inferred. The universal ID requirement remains omitted.",
+    "user_clarifications": [
+      {
+        "received_at": "2026-10-23",
+        "record_id": "school-09",
+        "field": "location",
+        "value": "In front of the main gate.",
+        "source": "User clarification in the project conversation",
+        "user_statement": "why saying this Verified step-by-step directions, walking time, and distance are not available for this starting point and destination. Please confirm the route with authorized TPC personnel. even i provied the location in front of the main gate"
+      }
+    ]
+  },
+  {
+    "record_id": "school-10",
+    "title": "Student Affairs Office",
+    "active_source": "school_confirmed_10_student_affairs_office.txt",
+    "source_records": "10",
+    "selected_facts": {
+      "destination": "Student Affairs Office",
+      "aliases": [
+        "student affairs",
+        "SAO",
+        "SASO",
+        "student services office"
+      ],
+      "building": "Main Building",
+      "location": "Inside the main building.",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Student concerns, discipline, and inquiries about the Student Handbook."
+    },
+    "scope_and_omissions": "No room code, universal student-ID requirement, or visitor eligibility is inferred."
+  },
+  {
+    "record_id": "school-11",
+    "title": "Guidance Office",
+    "active_source": "school_confirmed_11_guidance_office.txt",
+    "source_records": "11",
+    "selected_facts": {
+      "destination": "Guidance Office",
+      "aliases": [
+        "guidance",
+        "guidance office",
+        "guidance center"
+      ],
+      "building": "Main Building",
+      "location": "Inside the main building, beside the clinic. When entering the main building, the clinic is on the left and the Guidance Office is beside it.",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Counseling and guidance."
+    },
+    "scope_and_omissions": "No room code, appointment procedure, universal student-ID requirement, or service eligibility is inferred."
+  },
+  {
+    "record_id": "school-12",
+    "title": "Clinic / Health Services",
+    "active_source": "school_confirmed_12_clinic_health_services.txt",
+    "source_records": "12",
+    "selected_facts": {
+      "destination": "Clinic",
+      "aliases": [
+        "clinic",
+        "health services",
+        "medical clinic"
+      ],
+      "building": "Main Building",
+      "location": "Inside the main building, beside the Guidance Office.",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "First aid treatment; basic health assessment; medical consultation; wound care; emergency assistance; health education; medical referral; health monitoring; medical records management; health and wellness programs."
+    },
+    "scope_and_omissions": "The supplied public service list is retained. Emergency contact/procedure, universal ID requirement, and patient records are excluded."
+  },
+  {
+    "record_id": "school-13",
+    "title": "Faculty Room / Faculty Offices",
+    "active_source": "school_confirmed_13_faculty_room_faculty_offices.txt",
+    "source_records": "13",
+    "selected_facts": {
+      "destination": "Faculty Offices",
+      "aliases": [
+        "faculty room",
+        "faculty offices",
+        "faculty office"
+      ],
+      "building": "Main Building",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "Instructor offices."
+    },
+    "scope_and_omissions": "The official status of the knock-three-times rule and appointment/access rules is unresolved, so omitted."
+  },
+  {
+    "record_id": "school-14",
+    "title": "Computer Laboratory Rules and Access",
+    "active_source": "school_confirmed_14_computer_laboratory_rules_and_access.txt",
+    "source_records": "01 and 14",
+    "selected_facts": {
+      "destination": "Computer Laboratories",
+      "aliases": [
+        "Computer Laboratory 1",
+        "Computer Laboratory 2",
+        "ComLab 1",
+        "ComLab 2",
+        "computer lab",
+        "computer labs",
+        "comlab"
+      ],
+      "location": "From the main building, face the flagpole; Computer Laboratory 1 and Computer Laboratory 2 are on the right-hand side.",
+      "services": [
+        "Access is during scheduled classes for students in those classes.",
+        "No eating or drinking inside the computer lab.",
+        "Keep the lab clean and organized.",
+        "Handle computers and equipment carefully.",
+        "Do not install software without permission.",
+        "Do not change computer settings without authorization.",
+        "Use computers for academic purposes only.",
+        "Do not access inappropriate websites or content.",
+        "Do not download unauthorized files or applications.",
+        "Do not bring unauthorized USB drives or external devices.",
+        "Report damaged equipment or technical problems to the lab instructor.",
+        "Do not unplug cables or disconnect equipment.",
+        "Keep noise minimal.",
+        "Log out of accounts after use.",
+        "Save work before shutting down.",
+        "Shut down computers properly after use.",
+        "Follow the instructor's instructions.",
+        "Do not share passwords or personal account information.",
+        "Do not handle liquids near computer equipment (overlaps with the no-food/drink rule).",
+        "Return chairs, keyboards, and other equipment to their proper places.",
+        "Follow lab schedules and use computers only when authorized."
+      ]
+    },
+    "scope_and_omissions": "Same two laboratories as record 01. Rules are supplied for scheduled classes; no outside-class access or availability is inferred."
+  },
+  {
+    "record_id": "school-15",
+    "title": "Campus Internet and Wi-Fi Access",
+    "active_source": "school_confirmed_15_campus_internet_and_wi_fi_access.txt",
+    "source_records": "15",
+    "selected_facts": {
+      "destination": "Campus Wi-Fi",
+      "aliases": [
+        "wifi",
+        "campus internet",
+        "DICT Free WiFi"
+      ],
+      "location": "Library.",
+      "services": "DICT Free WiFi is available in the library. Connect to Wi-Fi and sign in; exact sign-in steps were not supplied. Ask the librarian for help. Service hours and acceptable-use rules are not specified in the reviewed facts."
+    },
+    "scope_and_omissions": "24/7, unrestricted acceptable use, visitor access, and unspecified sign-in steps are not approved."
+  },
+  {
+    "record_id": "school-16",
+    "title": "Student ID and Identification Services",
+    "active_source": "school_confirmed_16_student_id_and_identification_services.txt",
+    "source_records": "16",
+    "selected_facts": {
+      "destination": "IT Office / Student ID Services",
+      "aliases": [
+        "IT Office",
+        "student ID",
+        "student ID services",
+        "ID replacement",
+        "ID issuance"
+      ],
+      "building": "Main Building",
+      "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+      "services": "New student IDs for enrolled students. Requirement: Enrollment Form; ask IT staff for the requirements. New student IDs are free. Replacement fees and lost/damaged-ID procedures are not specified; ask IT staff."
+    },
+    "scope_and_omissions": "Free applies to new student IDs only. Replacement fees, affidavits, and lost/damaged-ID workflows are not approved."
+  },
+  {
+    "record_id": "school-17",
+    "title": "Student Enrollment Procedures",
+    "active_source": "school_confirmed_17_student_enrollment_procedures.txt",
+    "source_records": "17",
+    "selected_facts": {
+      "destination": "Student Enrollment Procedures",
+      "aliases": [
+        "student enrollment",
+        "enrollment procedures",
+        "enrollment",
+        "enrolment"
+      ],
+      "building": "Main Building",
+      "services": "Registrar's Office: obtain and complete the enrollment form; submit required documents; undergo evaluation/verification; select/register subjects; complete payments or clearance as applicable; confirm enrollment with the Registrar. Current dates, fees, and category-specific details are not supplied here."
+    },
+    "scope_and_omissions": "Only the general submitted process is retained; no actual dates, fees, payment requirement, or late-enrollment rule is inferred."
+  },
+  {
+    "record_id": "school-18",
+    "title": "Enrollment Requirements and Documents",
+    "active_source": "school_confirmed_18_enrollment_requirements_and_documents.txt",
+    "source_records": "18",
+    "selected_facts": {
+      "destination": "Enrollment Requirements and Documents",
+      "aliases": [
+        "enrollment requirements",
+        "enrollment documents",
+        "admission documents"
+      ],
+      "contact": "Registrar's Office.",
+      "services": [
+        "General submitted checklist; confirm current copy counts, accepted formats, deadlines, and category-specific conditions with the Registrar.",
+        "New students: Accomplished enrollment form; birth certificate; report card or transcript of records; good moral character certificate; valid ID.",
+        "Returning students: Student ID; previous academic records; accomplished enrollment form; required clearance or other documents requested by the college.",
+        "Transferees: Transcript of records/grades; honorable dismissal or transfer credentials; birth certificate; good moral character certificate; valid ID; accomplished admission/enrollment form.",
+        "Shifters: Shifting form; previous academic records; student ID; approval from the appropriate department/office."
+      ]
+    },
+    "scope_and_omissions": "The submitted general category lists are retained with their limitation; exact copy counts, accepted formats, fees, and deadlines are unknown."
+  },
+  {
+    "record_id": "school-19",
+    "title": "Admission and Eligibility Requirements",
+    "active_source": "school_confirmed_19_admission_and_eligibility_requirements.txt",
+    "source_records": "19",
+    "selected_facts": {
+      "destination": "Admission and Eligibility Requirements",
+      "aliases": [
+        "admissions",
+        "admission",
+        "admission requirements",
+        "eligibility requirements"
+      ],
+      "contact": "Registrar's Office or admissions office.",
+      "services": "Inquire with the Registrar or admissions office about available programs, application evaluation, and enrollment. Program-specific rules, exam/interview applicability, deadlines, and fees are not specified in these reviewed facts."
+    },
+    "scope_and_omissions": "Only the inquiry/referral is retained; entrance-exam/interview scope, age limits, exact eligibility, dates, and fees are unresolved."
+  },
+  {
+    "record_id": "school-20",
+    "title": "Academic Programs and Departments",
+    "active_source": "school_confirmed_20_academic_programs_and_departments.txt",
+    "source_records": "20",
+    "selected_facts": {
+      "destination": "Academic Programs and Departments",
+      "aliases": [
+        "academic programs",
+        "programs offered",
+        "degree programs",
+        "courses offered",
+        "program list"
+      ],
+      "services": [
+        "Bachelor of Arts in English Language",
+        "Bachelor of Arts in Political Science",
+        "Bachelor in Early Childhood Education",
+        "Bachelor of Science in Agriculture",
+        "Bachelor of Science in Accounting Information Systems",
+        "Bachelor of Science in Criminology",
+        "Bachelor of Science in Information Systems"
+      ]
+    },
+    "scope_and_omissions": "The seven supplied program titles are retained. Current intake availability, department names, coordinator identities, and room assignments are not inferred."
+  },
+  {
+    "record_id": "school-21",
+    "title": "Academic Calendar and School Schedule",
+    "active_source": "school_confirmed_21_academic_calendar_and_school_schedule.txt",
+    "source_records": "21",
+    "selected_facts": {
+      "destination": "Academic Calendar and School Schedule",
+      "aliases": [
+        "academic calendar",
+        "school schedule",
+        "enrollment schedule",
+        "class schedule"
+      ],
+      "contact": "Registrar or the respective department."
+    },
+    "scope_and_omissions": "No calendar dates, term structure, enrollment/exam deadlines, class timetable, or office schedule supplied. Only the named referral is available."
+  },
+  {
+    "record_id": "school-22",
+    "title": "Examination Schedules and Policies",
+    "active_source": "school_confirmed_22_examination_schedules_and_policies.txt",
+    "source_records": "22",
+    "selected_facts": {
+      "destination": "Examination Schedules and Policies",
+      "aliases": [
+        "examination schedules",
+        "examination policies",
+        "exam schedule",
+        "exam policies",
+        "exam rules"
+      ],
+      "contact": "Subject instructor first, then department head/program coordinator/Registrar."
+    },
+    "scope_and_omissions": "No actual exam timetable, handbook sections, late/make-up rules, penalties, or permit fees supplied. Only the named referral is available."
+  },
+  {
+    "record_id": "school-23",
+    "title": "Grading System and Academic Evaluation",
+    "active_source": "school_confirmed_23_grading_system_and_academic_evaluation.txt",
+    "source_records": "23",
+    "selected_facts": {
+      "destination": "Grading System and Academic Evaluation",
+      "aliases": [
+        "grading system",
+        "passing grade",
+        "grading scale",
+        "grade computation",
+        "academic evaluation"
+      ],
+      "contact": "Instructor, department head/program coordinator, or Registrar."
+    },
+    "scope_and_omissions": "No passing grade, grading scale, formula, honors threshold, INC deadline, or appeal deadline supplied. Only the named referral is available."
+  },
+  {
+    "record_id": "school-24",
+    "title": "Student Attendance and Absence Policies",
+    "active_source": "school_confirmed_24_student_attendance_and_absence_policies.txt",
+    "source_records": "24",
+    "selected_facts": {
+      "destination": "Student Attendance and Absence Policies",
+      "aliases": [
+        "attendance",
+        "absence policies",
+        "absence limits",
+        "tardiness"
+      ],
+      "contact": "Instructor first, then department head/program coordinator/Registrar/Student Affairs Office."
+    },
+    "scope_and_omissions": "No absence/tardiness threshold, documentation deadline, or academic consequence supplied. Only the named referral is available."
+  },
+  {
+    "record_id": "school-25",
+    "title": "Student Handbook and Campus Policies",
+    "active_source": "school_confirmed_25_student_handbook_and_campus_policies.txt",
+    "source_records": "25",
+    "selected_facts": {
+      "destination": "Student Handbook and Campus Policies",
+      "aliases": [
+        "student handbook",
+        "handbook",
+        "dress code",
+        "uniform policy"
+      ],
+      "contact": "SAO, Registrar, department head, or college administration."
+    },
+    "scope_and_omissions": "No handbook edition/pages, actual uniform schedule, sanctions, or grievance deadlines supplied. Only the named referral is available."
+  },
+  {
+    "record_id": "school-26",
+    "title": "Campus Safety and Emergency Procedures",
+    "active_source": "school_confirmed_26_campus_safety_and_emergency_procedures.txt",
+    "source_records": "26",
+    "selected_facts": {
+      "destination": "Campus Safety and Emergency Procedures",
+      "aliases": [
+        "campus safety",
+        "campus emergency",
+        "evacuation",
+        "assembly area",
+        "emergency hotline"
+      ]
+    },
+    "scope_and_omissions": "No campus emergency numbers, verified evacuation route, assembly point, equipment location, or campus plan supplied. Generic medical/legal/safety instructions from the draft are not promoted to campus facts."
+  },
+  {
+    "record_id": "school-27",
+    "title": "Campus Facilities and Accessibility",
+    "active_source": "school_confirmed_27_campus_facilities_and_accessibility.txt",
+    "source_records": "27",
+    "selected_facts": {
+      "destination": "Campus Facilities and Accessibility",
+      "aliases": [
+        "campus accessibility",
+        "campus facilities",
+        "accessible facilities"
+      ],
+      "contact": "College Administration or Student Affairs Office."
+    },
+    "scope_and_omissions": "No actual ramp, elevator, accessible toilet, parking place, or accessible route supplied. Only the administration/SAO referral is available."
+  },
+  {
+    "record_id": "school-28",
+    "title": "Campus Transportation and Parking Rules",
+    "active_source": "school_confirmed_28_campus_transportation_and_parking_rules.txt",
+    "source_records": "28",
+    "selected_facts": {
+      "destination": "Campus Transportation and Parking Rules",
+      "aliases": [
+        "parking",
+        "campus transportation",
+        "vehicle entry",
+        "motorcycle entry",
+        "gate hours"
+      ]
+    },
+    "scope_and_omissions": "The meaning of 8:30 AM, gate schedule, parking locations, speed limits, and penalties are unresolved; none is enabled."
+  },
+  {
+    "record_id": "school-29",
+    "title": "Campus Communication Channels and Announcements",
+    "active_source": "school_confirmed_29_campus_communication_channels_and_announcements.txt",
+    "source_records": "29 and 30",
+    "selected_facts": {
+      "destination": "Campus Communication Channels and Announcements",
+      "aliases": [
+        "campus communication",
+        "official announcements",
+        "official website",
+        "official Facebook page",
+        "college website"
+      ],
+      "contact": "Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
+    },
+    "scope_and_omissions": "Public channels are taken from records 29/30 based on the user's school-confirmation report; no independent website/account availability check is claimed."
+  },
+  {
+    "record_id": "school-30",
+    "title": "General Campus Information and Frequently Asked Questions",
+    "active_source": "school_confirmed_30_general_campus_information_and_frequently_asked_questions.txt",
+    "source_records": "29 and 30",
+    "selected_facts": {
+      "destination": "Talibon Polytechnic College",
+      "aliases": [
+        "general college information",
+        "college information",
+        "about TPC",
+        "about Talibon Polytechnic College",
+        "campus address",
+        "college address",
+        "TPC address",
+        "TPC contact",
+        "TPC phone",
+        "TPC email"
+      ],
+      "location": "San Isidro, Talibon, Bohol, Philippines.",
+      "contact": "Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/",
+      "services": [
+        "Official college name: Talibon Polytechnic College (TPC).",
+        "Campus address: San Isidro, Talibon, Bohol, Philippines.",
+        "Public contact channels: Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
+      ]
+    },
+    "scope_and_omissions": "Public identity, address, and supplied contacts only. Mission/vision wording and generic procedures are preserved in the original attachment but not mapped to factual answers."
+  }
+]

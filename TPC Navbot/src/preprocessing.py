@@ -29,9 +29,12 @@ class SourceRegistry:
         except (OSError, ValueError, TypeError, AttributeError):
             return {}
 
-    def metadata(self, filename, content_bytes):
+    def metadata(self, filename, content_bytes, *, registry_entries=None):
         digest = hashlib.sha256(content_bytes).hexdigest()
-        entry = self.entries().get(Path(filename).name, {})
+        # A retrieval operation may reuse one freshly read registry snapshot.
+        # Ordinary callers still read the current approval on every call.
+        entries = self.entries() if registry_entries is None else registry_entries
+        entry = entries.get(Path(filename).name, {})
         if not isinstance(entry, dict):
             entry = {}
         def review_string(key):
@@ -135,12 +138,12 @@ class TextPreprocessor:
             start = max(start + 1, end - overlap)
         return chunks
 
-    def process_file(self, filepath):
+    def process_file(self, filepath, *, registry_entries=None):
         path = Path(filepath)
         raw = path.read_bytes()
         content = raw.decode("utf-8-sig")
         metadata = self.extract_metadata(content, path.name)
-        metadata.update(self.registry.metadata(path.name, raw))
+        metadata.update(self.registry.metadata(path.name, raw, registry_entries=registry_entries))
         return self.chunk_text(content, metadata)
 
     def process_directory(self, raw_dir=None):

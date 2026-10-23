@@ -1,0 +1,20 @@
+## Record 15 --- Campus Internet and Wi-Fi Access
+
+-   **Availability:** Reported as available.
+-   **Network:** DICT Free WiFi.
+-   **Coverage:** Library.
+-   **Access:** Students, staff, and visitors (reported).
+-   **Procedure:** Connect to Wi-Fi and sign in; exact sign-in steps
+    were not provided.
+-   **Availability time:** Reported as 24/7, but it is unclear whether
+    this describes the Wi-Fi service or the library opening hours.
+-   **Usage rules:** User stated there are no rules and users may use it
+    freely; this requires verification because network policies may
+    apply.
+-   **Technical help:** Librarian.
+-   **Evidence/source named:** School administration; no actual
+    confirmation/document/date was supplied.
+-   **Verification:** Pending confirmation.
+-   **Needs confirmation:** Exact network name and login method,
+    coverage, meaning of 24/7, visitor access, acceptable-use rules,
+    librarian support role, and source/date.

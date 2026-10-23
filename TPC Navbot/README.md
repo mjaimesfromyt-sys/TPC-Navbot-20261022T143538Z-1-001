@@ -2,7 +2,15 @@
 
 A campus assistance prototype for Talibon Polytechnic College (TPC), with English, Bisaya, and Tagalog responses. The bot handles campus locations and supported campus services, rejects unrelated requests, and withholds unverified facts and routes.
 
-**Data status:** the 30 text files in `data/raw/` are generated sample documents. They demonstrate the capstone pipeline; they are **not official or verified campus records**. The source registry leaves them unverified. A normal question about their locations should return an honest unavailable-information response until an authorized reviewer supplies real evidence.
+**Data status:** `data/raw/` contains the original 30 generated samples (still
+unverified) and 30 separate `school_confirmed_*.txt` records curated from the
+user's school-confirmed submission. The user supplied reviewer **Flordelis
+Tortuga**, review date **23 October 2026**, and reference **Admin and handbook**.
+The review is recorded as school confirmation reported by the user; no independent
+school verification by this software is claimed. Exact handbook edition/pages
+and the reviewer's position were not supplied. Only the selected explicit facts
+are approved; missing or ambiguous details remain unavailable. See
+[the import and remaining gaps](docs/11_school_confirmed_records.md).
 
 Read [the requirements audit](docs/00_requirements_audit.md) for what is complete, partial, and still dependent on real-world evidence. The earlier README's claims of full checkpoint scores, verified documents, and completed deployment were unsupported.
 
@@ -24,11 +32,22 @@ Open `http://localhost:8501`. The app supports an offline, deterministic mode wi
 
 The web interface includes a responsive campus assistant, multilingual question
 cards, a campus question guide, and an explanation of answer verification. Each
-reply shows its status, detected language, and expandable source details. **New
+reply shows a plain answer. The optional **Show answer details** control reveals
+its status, detected language, and expandable source details. **New
 conversation** clears both the visible chat and its follow-up context. The guide
 offers questions rather than claiming unverified office locations. Visual styles
 and the decorative campus illustration live in `assets/`; the Streamlit theme
 lives in `.streamlit/config.toml`.
+
+Short queries such as `crim building`, `registrar`, and `comlab` work without a
+full question. The question resolver and retrieval filter share campus aliases;
+reviewed directory names are also recognized. Tips quote relevant details from
+the selected approved record. Up to two follow-up buttons offer only fields
+available for that destination. Unknown named facilities retain their names so
+their questions cannot borrow another facility's hours or services.
+
+For Streamlit Community Cloud, the entrypoint is **`TPC Navbot/app.py`** relative
+to the GitHub repository root. See [the exact deployment setup](docs/07_deployment_and_containerization.md#streamlit-community-cloud).
 
 ```powershell
 python cli_chat.py

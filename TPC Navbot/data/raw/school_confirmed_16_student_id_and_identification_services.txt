@@ -1,0 +1,22 @@
+TPC school-confirmed submission: Student ID and Identification Services
+Location ID: TPC-SCHOOL-16
+Submitted record(s): 16
+School confirmation reported by the user; no independent school review by the software is claimed.
+
+Selected structured facts:
+{
+  "destination": "IT Office / Student ID Services",
+  "aliases": [
+    "IT Office",
+    "student ID",
+    "student ID services",
+    "ID replacement",
+    "ID issuance"
+  ],
+  "building": "Main Building",
+  "hours": "Monday–Friday, 8:00 AM–5:00 PM.",
+  "services": "New student IDs for enrolled students. Requirement: Enrollment Form; ask IT staff for the requirements. New student IDs are free. Replacement fees and lost/damaged-ID procedures are not specified; ask IT staff."
+}
+
+Scope and unavailable details:
+Free applies to new student IDs only. Replacement fees, affidavits, and lost/damaged-ID workflows are not approved.

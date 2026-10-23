@@ -1,5 +1,41 @@
 # Containerization, configuration, and deployment evidence
 
+## Streamlit Community Cloud
+
+Deployment is prepared locally; no remote deployment is claimed.
+
+1. Commit and push the reviewed application changes, school-confirmed raw records,
+   `data/source_registry.json`, assets, dependencies, and root `.streamlit/config.toml`.
+2. In Streamlit Community Cloud, create an app from repository
+   `mjaimesfromyt-sys/TPC-Navbot-20261022T143538Z-1-001` and the branch containing
+   the final changes. Set the main file path to **`TPC Navbot/app.py`**.
+3. In Advanced settings select Python **3.13**, the version tested locally.
+   For the offline configuration used in the local chat checks, add these
+   root-level values in Secrets:
+
+   ```toml
+   TPC_EMBEDDING_MODE = "lexical"
+   TPC_ENABLE_LLM_SELECTION = "0"
+   ```
+
+   This mode needs no API key or downloaded model. It uses lexical retrieval
+   with campus aliases and approved structured facts. It is not semantic
+   embedding retrieval. A separately provisioned local model can enable semantic
+   mode later.
+4. Deploy, inspect build/startup logs, and test `crim building`, `registrar`,
+   `Asa ang library?`, `How do I enroll?`, a suggested follow-up, an unknown
+   phone number, and an unrelated question. Retain the URL and commit used.
+
+Community Cloud runs from the repository root. The root configuration is included
+for this reason; `TPC Navbot/requirements.txt` sits beside the entrypoint and
+declares the dependencies. Application paths resolve from the project directory.
+The source registry and raw files are durable inputs in Git; runtime indexes
+are rebuilt from them and are not an editing interface for school records.
+
+See the official [file organization guide](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/file-organization),
+[deployment guide](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy),
+and [secrets setup](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/secrets-management).
+
 ## Local container workflow
 
 From the `TPC Navbot` project directory:
