@@ -49,7 +49,7 @@ ENTITY_ALIASES = {
     'administration offices': ('administration offices', 'administrative offices', 'admin offices', 'administration office', 'admin office', 'administration building', 'admin building', 'administration', 'admin'),
     'faculty offices': ('faculty offices', 'faculty office', 'faculty room'),
     'it office': ('it office', 'student id services', 'student id', 'student ids', 'id issuance', 'id replacement'),
-    'enrollment documents': ('enrollment requirements and documents', 'enrollment documents', 'enrolment documents', 'enrollment requirements', 'enrolment requirements'),
+    'enrollment documents': ('enrollment requirements and documents', 'enrollment documents', 'enrolment documents', 'enrollment requirements', 'enrolment requirements', 'transferee requirements', 'requirements for transferees', 'requirements for new students', 'requirements for returning students', 'requirements for shifters'),
     'academic programs': ('academic programs and departments', 'academic programs', 'degree programs', 'programs offered', 'courses offered', 'programs', 'courses'),
     'academic calendar': ('academic calendar and school schedule', 'academic calendar', 'school schedule', 'school calendar'),
     'examination policies': ('examination schedules and policies', 'examination policies', 'exam policies', 'examination schedules', 'examination schedule', 'exam schedules', 'exam schedule', 'examinations', 'exams', 'examination', 'exam'),
@@ -59,7 +59,7 @@ ENTITY_ALIASES = {
     'campus accessibility': ('campus facilities and accessibility', 'campus accessibility', 'campus facilities', 'campus ramps', 'campus wheelchair access'),
     'campus transportation': ('campus transportation and parking rules', 'campus transportation', 'transportation rules', 'parking rules'),
     'campus communication': ('campus communication channels and announcements', 'campus communication', 'communication channels', 'campus announcements', 'official announcements', 'official website', 'tpc website', 'college website', 'official facebook page'),
-    'college information': ('general college information', 'general campus information', 'college information', 'about tpc', 'about talibon polytechnic college', 'tpc contact', 'tpc phone', 'tpc email', 'tpc address', 'campus address', 'college address'),
+    'college information': ('general college information', 'general campus information', 'college information', 'about tpc', 'about talibon polytechnic college', 'talibon polytechnic college', 'tpc contact', 'tpc phone', 'tpc email', 'tpc address', 'campus address', 'college address'),
     'computer studies': ('computer studies', 'bsis', 'bsais', 'ccis'),
 }
 

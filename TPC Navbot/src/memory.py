@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 
 class ConversationSession:
     FOLLOWUPS = (
+        r"(?:and\s+)?(?:what services (?:are there|are available|does it offer)|what (?:are|is) (?:its|the) requirements|what about (?:its|the) (?:hours|services|contact))",
         r"(?:and\s+)?(?:what (?:are|is) (?:its|the) (?:operating |opening )?hours|(?:its )?(?:operating |opening )?hours|when (?:does it open|is it open))",
         r"(?:and\s+)?(?:what (?:are|is) (?:its|the) (?:services|contact (?:number|details))|how (?:do i|can i) (?:get|go) there|how long (?:does it take|is the walk)(?: to (?:walk|get) there)?|is it (?:wheelchair )?accessible|is there (?:a ramp|an elevator))",
         r"(?:ug\s+)?(?:unsa(?:y| ang)? (?:iyang |ang )?(?:oras|orasa|serbisyo)|unsang orasa (?:abli|moabli)(?: didto)?|kanus a (?:abli|moabli)|unsaon (?:pag adto|pagadto)(?: didto)?|pila ka minuto(?: ang lakaw)?(?: padulong didto)?|naa bay (?:rampa|elevator)(?: didto)?)",
@@ -34,6 +35,8 @@ class ConversationSession:
 
     def add_ai_message(self, message: str, building: Optional[str] = None):
         self.history.append({"role": "assistant", "content": message, "timestamp": time.time()})
+        # Retain at most forty turns; history is never training material.
+        self.history = self.history[-80:]
         if building:
             self.last_building = building
         self.updated_at = time.time()
@@ -84,6 +87,9 @@ class ConversationMemoryManager:
 
     def get_session(self, session_id: str = "default_user") -> ConversationSession:
         if session_id not in self.sessions:
+            if len(self.sessions) >= 128:
+                oldest = min(self.sessions, key=lambda key: self.sessions[key].updated_at)
+                del self.sessions[oldest]
             self.sessions[session_id] = ConversationSession(session_id)
         return self.sessions[session_id]
 

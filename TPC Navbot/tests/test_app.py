@@ -48,6 +48,7 @@ class WebChatTests(unittest.TestCase):
             "TPC_VECTOR_STORE_DIR": str(paths["PERSIST_DIRECTORY"]),
             "TPC_INGESTION_MANIFEST": str(paths["MANIFEST_PATH"]),
             "TPC_PROCESSED_CHUNKS": str(paths["PROCESSED_CHUNKS_PATH"]),
+            "TPC_LEARNING_PATH": str(base / "learning.sqlite3"),
         })
         environment.start()
         self.addCleanup(environment.stop)
@@ -354,6 +355,95 @@ class WebChatTests(unittest.TestCase):
         self.assertEqual(messages[-1]["metadata"]["status"], "UNVERIFIED")
         self.assertEqual(messages[-1]["metadata"]["language"], "english")
         self.assertEqual(messages[-1]["content"], MESSAGES["english"]["unverified"])
+
+    def test_rate_limit_rejects_before_chat_and_localized_request_can_recover(self):
+        from src.request_limits import RateLimitDecision
+
+        app = self.start_app()
+        bot = app.session_state["rag_bot"]
+        browser_id = app.session_state["browser_rate_id"]
+        session_id = app.session_state["session_id"]
+        session = bot.memory_manager.get_session(session_id)
+        with patch("src.request_limits.QueryRateLimiter.allow", side_effect=[
+            RateLimitDecision(False, 7.2), RateLimitDecision(True),
+        ]) as allowance, patch.object(bot, "chat", wraps=bot.chat) as chat:
+            app.chat_input(key="campus_prompt").set_value("Saan po ang library?").run()
+            self.assertFalse(app.exception)
+            chat.assert_not_called()
+            allowance.assert_called_once_with(browser_id)
+            refused = app.session_state["messages"][-1]
+            self.assertEqual(refused["metadata"]["status"], "RATE_LIMITED")
+            self.assertEqual(refused["metadata"]["language"], "tagalog")
+            self.assertEqual(refused["metadata"]["sources"], [])
+            self.assertIn("Maghintay po ng 8 segundo", refused["content"])
+            self.assertIn(refused["content"], "\n".join(element.value for element in app.markdown))
+            self.assertEqual(session.history, [], "A throttled request must not enter RAG memory")
+
+            app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
+            self.assertFalse(app.exception)
+            chat.assert_called_once_with("Where is the library?", session_id=session_id)
+            self.assertEqual(allowance.call_count, 2)
+            recovered = app.session_state["messages"][-1]
+            self.assertEqual(recovered["metadata"]["status"], "UNVERIFIED")
+            self.assertEqual(recovered["metadata"]["language"], "english")
+            self.assertEqual(len(app.session_state["messages"]), 4)
+            self.assertEqual(len(session.history), 2)
+
+    def test_new_conversation_preserves_browser_rate_quota(self):
+        from src.request_limits import QueryRateLimiter
+
+        app = self.start_app()
+        bot = app.session_state["rag_bot"]
+        browser_id = app.session_state["browser_rate_id"]
+        conversation_id = app.session_state["session_id"]
+        # Keep one deterministic real quota while intercepting the UI's shared
+        # limiter. Changing conversation IDs must not restore browser allowance.
+        limiter = QueryRateLimiter(session_limit=1, clock=lambda: 1000.0)
+        enforce_quota = limiter.allow
+        with patch("src.request_limits.QueryRateLimiter.allow", side_effect=enforce_quota) as allowance, \
+                patch.object(bot, "chat", wraps=bot.chat) as chat:
+            app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
+            self.assertFalse(app.exception)
+            self.assertEqual(chat.call_count, 1)
+            self.assertEqual(app.session_state["messages"][-1]["metadata"]["status"], "UNVERIFIED")
+
+            app.button(key="new_chat").click().run()
+            self.assertFalse(app.exception)
+            self.assertEqual(app.session_state["messages"], [])
+            self.assertNotEqual(app.session_state["session_id"], conversation_id)
+            self.assertEqual(app.session_state["browser_rate_id"], browser_id)
+
+            app.chat_input(key="campus_prompt").set_value("Where is the registrar?").run()
+            self.assertFalse(app.exception)
+            self.assertEqual(chat.call_count, 1, "A new conversation must not bypass the exhausted quota")
+            self.assertEqual(allowance.call_count, 2)
+            self.assertTrue(all(call.args == (browser_id,) for call in allowance.call_args_list))
+            self.assertEqual(app.session_state["messages"][-1]["metadata"]["status"], "RATE_LIMITED")
+            current_session = bot.memory_manager.get_session(app.session_state["session_id"])
+            self.assertEqual(current_session.history, [])
+
+    def test_answer_feedback_records_once_and_disables_submitted_widget(self):
+        app = self.start_app()
+        bot = app.session_state["rag_bot"]
+        app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
+        self.assertFalse(app.exception)
+        message = app.session_state["messages"][-1]
+        metadata = message["metadata"]
+        feedback_key = "feedback_" + metadata["feedback_id"]
+        self.assertFalse(app.feedback(key=feedback_key).disabled)
+        with patch.object(bot.learning_store, "observe") as observe:
+            app.feedback(key=feedback_key).set_value(1).run()
+            self.assertFalse(app.exception)
+            observe.assert_called_once_with(
+                status="UNVERIFIED", entity="library", intent="location",
+                language="english", feedback="helpful",
+            )
+            self.assertTrue(app.session_state["messages"][-1]["metadata"]["feedback_recorded"])
+            self.assertTrue(app.feedback(key=feedback_key).disabled)
+            app.run()
+            self.assertFalse(app.exception)
+            self.assertEqual(observe.call_count, 1, "Rerendering feedback must not duplicate learning counts")
+            self.assertEqual(len(app.session_state["messages"]), 2)
 
     def test_guide_question_and_about_navigation_preserve_conversation(self):
         app = self.start_app()

@@ -2,6 +2,7 @@
 from base64 import b64encode
 from html import escape
 import logging
+import math
 from pathlib import Path
 import sys
 import time
@@ -14,6 +15,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 LOGO_PATH = PROJECT_ROOT / "assets" / "tpc-logo.png"
 sys.path.insert(0, str(PROJECT_ROOT))
 from src.llm_rag import MESSAGES, TPCNavBotRAG
+from src.learning import LearningStore
+from src.query_safety import MAX_QUERY_CHARS, evaluate_query
+from src.request_limits import QueryRateLimiter
 
 logger = logging.getLogger("tpc_navbot.app")
 
@@ -24,11 +28,34 @@ st.set_page_config(
 
 STATUSES = {
     "SUCCESS": ("Verified campus information", "verified", "✓"),
+    "PARTIAL": ("Some details still need confirmation", "pending", "!"),
+    "RATE_LIMITED": ("Please wait before asking again", "pending", "!"),
     "UNVERIFIED": ("Needs campus confirmation", "pending", "!"),
     "OFF_TOPIC": ("Outside campus assistance", "neutral", "↗"),
     "CLARIFICATION": ("A little more detail needed", "neutral", "?"),
     "ERROR": ("Unable to complete this request", "error", "!"),
 }
+
+
+@st.cache_resource
+def chat_request_limiter():
+    return QueryRateLimiter()
+
+
+def record_answer_feedback(message_index):
+    message = st.session_state.messages[message_index]
+    metadata = message.get("metadata", {})
+    key = "feedback_" + metadata["feedback_id"]
+    value = st.session_state.get(key)
+    bot = st.session_state.get("rag_bot")
+    if value is None or metadata.get("feedback_recorded") or bot is None or bot.learning_store is None:
+        return
+    bot.learning_store.observe(
+        status=metadata.get("status"), entity=metadata.get("entity"),
+        intent=metadata.get("intent"), language=metadata.get("language"),
+        feedback="helpful" if value == 1 else "not_helpful",
+    )
+    metadata["feedback_recorded"] = True
 STARTERS = [
     ("registrar", "office", "Find an office", "Registrar’s Office", "Where is the Registrar's Office?"),
     ("library", "book", "Explore a facility", "Campus library", "Asa dapit ang library?"),
@@ -288,7 +315,7 @@ def render_about():
         for label, tone, symbol in STATUSES.values():
             html(f'<div class="status-explanation"><span class="answer-status {tone}">{symbol} {label}</span></div>')
         st.caption("Verified locations do not automatically verify routes, walking times, or accessibility details. These need their own reviewed evidence.")
-    st.caption("Conversations are held in this browser session. New conversation clears the active chat and its follow-up context.")
+    st.caption("Conversations are held in this browser session. New conversation clears the active chat and its follow-up context. Anonymous topic counts and optional feedback help identify information to improve; questions and personal details are not saved in these counts. New school facts require review before use.")
 
 
 def render_chat(bot):
@@ -307,10 +334,15 @@ def render_chat(bot):
                 if message["role"] == "assistant" and message.get("metadata"):
                     show_helpful_followups(message["metadata"], message_index,
                                           latest=message_index == latest_assistant)
+                    metadata = message["metadata"]
+                    if metadata.get("feedback_id") and metadata.get("status") in {"SUCCESS", "PARTIAL", "UNVERIFIED"}:
+                        st.feedback("thumbs", key="feedback_" + metadata["feedback_id"],
+                                    disabled=metadata.get("feedback_recorded", False),
+                                    on_change=record_answer_feedback, args=(message_index,))
                 if message.get("metadata") and st.session_state.get("show_answer_details", False):
                     show_evidence(message["metadata"])
 
-    prompt = st.chat_input("Ask about a classroom, office, or campus service…", key="campus_prompt", max_chars=2000)
+    prompt = st.chat_input("Ask about a classroom, office, or campus service…", key="campus_prompt", max_chars=MAX_QUERY_CHARS)
     prompt = st.session_state.pop("preset_query", None) or prompt
     if prompt and prompt.strip():
         prompt = prompt.strip()
@@ -323,9 +355,20 @@ def render_chat(bot):
             started = time.perf_counter()
             with st.spinner("Checking campus information…"):
                 try:
-                    response = bot.chat(prompt, session_id=st.session_state.session_id)
+                    allowance = chat_request_limiter().allow(st.session_state.browser_rate_id)
+                    if allowance.allowed:
+                        response = bot.chat(prompt, session_id=st.session_state.session_id)
+                    else:
+                        language = bot.detect_language(prompt[:MAX_QUERY_CHARS])
+                        wait = math.ceil(allowance.retry_after_seconds)
+                        answer = {
+                            "english": f"Please wait {wait} seconds before asking again. You can ask up to 12 questions per minute.",
+                            "bisaya": f"Palihug hulat og {wait} ka segundo sa dili pa mangutana pag-usab. Hangtod 12 ka pangutana matag minuto.",
+                            "tagalog": f"Maghintay po ng {wait} segundo bago magtanong muli. Hanggang 12 tanong bawat minuto.",
+                        }[language]
+                        response = {"status": "RATE_LIMITED", "language": language, "sources": [], "answer": answer}
                 except Exception:
-                    language = bot.detect_language(prompt)
+                    language = bot.detect_language(prompt[:MAX_QUERY_CHARS])
                     response = {"status": "ERROR", "language": language, "sources": [], "answer": MESSAGES[language]["error"]}
             metadata = {
                 "status": response.get("status", "ERROR"), "language": response.get("language", "english"),
@@ -334,19 +377,23 @@ def render_chat(bot):
                 "helpful_tip": response.get("helpful_tip", ""),
                 "suggested_questions": response.get("suggested_questions", []),
                 "turn_count": response.get("turn_count", 1),
+                "intent": bot._intent(prompt) if evaluate_query(prompt).allowed else None,
+                "entity": bot._entity(prompt) if evaluate_query(prompt).allowed else None,
+                "feedback_id": str(uuid4()),
             }
             st.markdown(response["answer"])
             if st.session_state.get("show_answer_details", False):
                 show_evidence(metadata)
         st.session_state.messages.append({"role": "assistant", "content": response["answer"], "metadata": metadata})
+        st.session_state.messages = st.session_state.messages[-200:]
         # Redraw removes the empty state and refreshes the sidebar transcript.
         st.rerun()
-    html('<div class="composer-note">Ask a follow-up or start a new conversation.</div>')
+    html('<div class="composer-note">Up to 600 characters · 3 school questions per message · 12 messages per minute</div>')
 
 
 def main():
     html(f'<style>{(PROJECT_ROOT / "assets" / "styles.css").read_text(encoding="utf-8")}</style>')
-    for key, default in [("messages", []), ("session_id", str(uuid4())), ("view", "Assistant")]:
+    for key, default in [("messages", []), ("session_id", str(uuid4())), ("browser_rate_id", str(uuid4())), ("view", "Assistant")]:
         if key not in st.session_state:
             st.session_state[key] = default
     render_sidebar()
@@ -360,6 +407,7 @@ def main():
         try:
             with st.spinner("Getting your campus companion ready…"):
                 st.session_state.rag_bot = TPCNavBotRAG()
+                st.session_state.rag_bot.learning_store = LearningStore()
                 st.session_state.knowledge_revision = revision
         except Exception:
             logger.exception("Campus information initialization failed")

@@ -46,6 +46,36 @@ the selected approved record. Up to two follow-up buttons offer only fields
 available for that destination. Unknown named facilities retain their names so
 their questions cannot borrow another facility's hours or services.
 
+The assistant checks up to three school questions in one message, handles
+contextual follow-ups, and keeps missing fees, deadlines, access permissions,
+and other specific details unconfirmed. Approved referral contacts can still
+help students reach the right office. Explicit program questions distinguish
+BSIS from BSAIS instead of returning the wrong overlapping title.
+
+Public chat input is limited to 600 characters and 120 words. The web app allows
+12 messages per browser session per minute and 120 messages per process per
+minute. These counters survive **New conversation**. Unicode/encoded injection,
+credential disclosure, private-record requests, and operational hacking requests
+are checked before retrieval or model selection. Legitimate account-recovery
+and security-course questions remain eligible for supported school information.
+
+Anonymous daily topic counts and optional thumbs feedback identify recurring
+information gaps and rank follow-ups that already have verified answers. Raw
+questions, answers, session identifiers, and personal details are not saved in
+the learning database. Student claims cannot change school facts or source
+approvals. This is a reviewed improvement workflow, not autonomous model training.
+
+```powershell
+python scripts/evaluate_school_qa.py --output data/evaluation/school_qa_final.json
+python scripts/review_learning.py
+```
+
+The school benchmark checks 199 declared cases against the reviewed corpus,
+including three languages, missing facts, multipart requests, and abuse cases.
+It cannot establish accuracy for every possible question. See
+[answer quality and continuous improvement](docs/12_answer_quality_and_learning.md)
+for limits, review steps, and optional reviewed detail fields.
+
 For Streamlit Community Cloud, the entrypoint is **`TPC Navbot/app.py`** relative
 to the GitHub repository root. See [the exact deployment setup](docs/07_deployment_and_containerization.md#streamlit-community-cloud).
 

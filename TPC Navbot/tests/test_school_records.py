@@ -182,8 +182,17 @@ class SchoolConfirmedRecordsTests(unittest.TestCase):
             with self.subTest(query=query):
                 answer = self.bot.query(query)
                 self.assertEqual(answer["status"], "UNVERIFIED")
-                self.assertEqual(answer["sources"], [])
-                self.assertEqual(answer["answer"], MESSAGES["english"]["unverified"])
+                self.assertTrue(answer["answer"].startswith(MESSAGES["english"]["unverified"]))
+                if query in ("What is the passing grade at TPC?", "What is the school calendar?"):
+                    # These topics now help the student reach the approved
+                    # referral while still withholding grades and dates.
+                    self.assertIn("Confirm with:", answer["answer"])
+                    self.assertTrue(answer["sources"])
+                    self.assertTrue(all(source.split(" [", 1)[0] in self.confirmed for source in answer["sources"]))
+                    self.assertNotRegex(answer["answer"], r"\b(?:75|2026|October|November)\b")
+                else:
+                    self.assertEqual(answer["sources"], [])
+                    self.assertEqual(answer["answer"], MESSAGES["english"]["unverified"])
 
     def test_landmark_location_does_not_confer_measured_or_step_by_step_route(self):
         answer = self.bot.query("Directions to the library from Main Gate?")
