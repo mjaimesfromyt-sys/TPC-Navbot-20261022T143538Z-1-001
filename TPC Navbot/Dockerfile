@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies to a clean prefix directory
-COPY requirements.txt .
+COPY requirements-full.txt ./requirements.txt
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # ------------------------------------------------------------------------------
@@ -49,7 +49,8 @@ COPY --chown=tpcuser:tpcuser scripts/ ./scripts/
 COPY --chown=tpcuser:tpcuser tests/ ./tests/
 COPY --chown=tpcuser:tpcuser assets/ ./assets/
 COPY --chown=tpcuser:tpcuser .streamlit/ ./.streamlit/
-COPY --chown=tpcuser:tpcuser app.py cli_chat.py requirements.txt README.md ./
+COPY --chown=tpcuser:tpcuser app.py cli_chat.py README.md ./
+COPY --chown=tpcuser:tpcuser requirements-full.txt ./requirements.txt
 COPY --chown=tpcuser:tpcuser .env.example ./.env.example
 
 # Create directory for ChromaDB vector storage with proper ownership

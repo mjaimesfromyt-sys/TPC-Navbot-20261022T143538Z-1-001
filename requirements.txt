@@ -1,0 +1,5 @@
+# Streamlit Community Cloud installs this repository-root manifest.
+# Include the full local/container dependency list with its path quoted.
+# Do not add a requirements.txt beside the
+# entrypoint: the host currently splits its directory name at the space.
+-r "TPC Navbot/requirements-full.txt"

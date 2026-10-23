@@ -1,5 +1,7 @@
 # Full application, semantic embeddings, persistent retrieval and framework integration.
 # Core safety tests also run with the Python standard library alone.
+# Included by the repository-root requirements.txt for Community Cloud.
+# This filename avoids Community Cloud selecting a path containing a space.
 sentence-transformers>=3.0,<6
 chromadb>=1.0,<2
 numpy>=1.26,<3

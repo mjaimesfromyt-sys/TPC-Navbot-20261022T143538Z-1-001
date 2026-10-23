@@ -27,8 +27,13 @@ Deployment is prepared locally; no remote deployment is claimed.
    phone number, and an unrelated question. Retain the URL and commit used.
 
 Community Cloud runs from the repository root. The root configuration is included
-for this reason; `TPC Navbot/requirements.txt` sits beside the entrypoint and
-declares the dependencies. Application paths resolve from the project directory.
+for this reason. The repository-root `requirements.txt` includes the quoted path
+`TPC Navbot/requirements-full.txt`, the shared full local/container manifest.
+Keep it under that name: Community Cloud selects a
+manifest beside the entrypoint before searching the repository root, and its
+installer split the previous `TPC Navbot/requirements.txt` at the space in the
+directory name. No main-file-path change is needed for this fix. Application
+paths resolve from the project directory.
 The source registry and raw files are durable inputs in Git; runtime indexes
 are rebuilt from them and are not an editing interface for school records.
 

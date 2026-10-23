@@ -23,7 +23,7 @@ From this directory:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-full.txt
 Copy-Item .env.example .env
 python run_app.py
 ```
