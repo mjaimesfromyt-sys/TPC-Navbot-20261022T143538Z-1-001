@@ -4,3 +4,11 @@ gatherUsageStats = false
 [server]
 headless = true
 port = 8501
+
+[theme]
+base = "light"
+primaryColor = "#245443"
+backgroundColor = "#FDFEFB"
+secondaryBackgroundColor = "#F3F5EF"
+textColor = "#263B32"
+font = "sans serif"

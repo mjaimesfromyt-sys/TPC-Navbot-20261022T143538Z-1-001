@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="310" viewBox="0 0 420 310" fill="none">
+  <defs>
+    <pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" stroke="#DCE5D4" stroke-width=".7"/></pattern>
+    <linearGradient id="paper" x1="85" y1="20" x2="350" y2="290" gradientUnits="userSpaceOnUse"><stop stop-color="#F0F4E9"/><stop offset="1" stop-color="#F8FAF3"/></linearGradient>
+    <linearGradient id="pin" x1="230" y1="25" x2="270" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#3C7255"/><stop offset="1" stop-color="#24513E"/></linearGradient>
+  </defs>
+  <path d="M91 28C145-2 249 10 312 39c62 29 90 91 72 155-18 62-101 94-177 83C130 267 59 243 51 180 43 117 39 57 91 28Z" fill="url(#paper)"/>
+  <path d="M91 28C145-2 249 10 312 39c62 29 90 91 72 155-18 62-101 94-177 83C130 267 59 243 51 180 43 117 39 57 91 28Z" fill="url(#grid)" opacity=".55"/>
+  <ellipse cx="218" cy="232" rx="141" ry="18" fill="#E3EBD9"/>
+  <path d="M80 226h60l26 25h130" stroke="#B9CAAA" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 7"/>
+  <circle cx="80" cy="226" r="7" fill="#FBFDF6" stroke="#9BB38B" stroke-width="2"/>
+  <circle cx="80" cy="226" r="2" fill="#769D63"/>
+  <path d="m141 206 68-39 97 40-72 40-93-41Z" fill="#D1DEC3"/>
+  <path d="m151 130 77-25 73 30v76l-73 31-77-32v-80Z" fill="#EBEDDA"/>
+  <path d="m228 105 73 30v76l-73 31V105Z" fill="#D6DEC6"/>
+  <path d="m143 128 85-36 82 38-83 33-84-35Z" fill="#63815B"/>
+  <path d="m143 128 84 35v9l-84-35v-9Z" fill="#4C6B48"/>
+  <path d="m227 163 83-33v9l-83 33v-9Z" fill="#3C6040"/>
+  <path d="m167 153 15 6v21l-15-6v-21Zm26 10 15 6v21l-15-6v-21Z" fill="#88A18B"/>
+  <path d="m167 157 15 6m-7-7v22m18-11 15 6m-8-7v22" stroke="#EFF3DF" stroke-width="1.2"/>
+  <path d="m248 168 14-5v21l-14 6v-22Zm25-10 14-6v22l-14 6v-22Z" fill="#6D8E76"/>
+  <path d="m248 173 14-5m-7-2v21m18-24 14-5m-7-3v21" stroke="#DCE7CE" stroke-width="1.2"/>
+  <path d="m199 196 17 7v27l-17-7v-27Z" fill="#4E7354"/>
+  <path d="m158 211 38 15 21 9-7 4-59-24 7-4Zm-6 7 59 24-8 4-58-24 7-4Z" fill="#BDCCB0"/>
+  <path d="M120 209v-54" stroke="#7A8B62" stroke-width="4" stroke-linecap="round"/>
+  <path d="M96 165c-5-12 7-35 24-47 17 14 27 37 22 49-7 14-38 14-46-2Z" fill="#91AB75"/>
+  <path d="M120 135v49m0-25-10-9m10 19 11-11" stroke="#79945D" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M329 222v-40" stroke="#87916B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M311 184c-2-13 7-27 18-38 13 10 22 30 17 40-5 10-31 10-35-2Z" fill="#A7BC83"/>
+  <path d="M329 159v41m0-25-8-7" stroke="#8CA56C" stroke-width="1.4" stroke-linecap="round"/>
+  <ellipse cx="264" cy="108" rx="15" ry="4" fill="#D4DFC9"/>
+  <path d="M264 24c-18 0-32 14-32 31 0 23 32 52 32 52s32-29 32-52c0-17-14-31-32-31Z" fill="url(#pin)"/>
+  <circle cx="264" cy="55" r="12" fill="#E7EFDF"/>
+  <circle cx="264" cy="55" r="5" fill="#8AA37B"/>
+  <path d="m115 61 2-6 2 6 6 2-6 2-2 6-2-6-6-2 6-2Zm229 38 1.5-4 1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5Z" fill="#A3B88B"/>
+  <rect x="205" y="258" width="174" height="33" rx="16.5" fill="#FFF" stroke="#E2E8DA"/>
+  <circle cx="223" cy="274.5" r="4" fill="#8EA773"/>
+  <text x="235" y="278" fill="#6B7E5F" font-family="Segoe UI,Arial,sans-serif" font-size="10" letter-spacing=".2">Here to help you find your way.</text>
+</svg>

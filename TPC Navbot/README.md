@@ -22,6 +22,14 @@ python run_app.py
 
 Open `http://localhost:8501`. The app supports an offline, deterministic mode without a Gemini API key. Keep `.env` private. Check `.env.example` for optional settings; enable a cloud model only when that deployment is authorized to send student questions and candidate campus record fields to the provider.
 
+The web interface includes a responsive campus assistant, multilingual question
+cards, a campus question guide, and an explanation of answer verification. Each
+reply shows its status, detected language, and expandable source details. **New
+conversation** clears both the visible chat and its follow-up context. The guide
+offers questions rather than claiming unverified office locations. Visual styles
+and the decorative campus illustration live in `assets/`; the Streamlit theme
+lives in `.streamlit/config.toml`.
+
 ```powershell
 python cli_chat.py
 python -m src.ingestion --force

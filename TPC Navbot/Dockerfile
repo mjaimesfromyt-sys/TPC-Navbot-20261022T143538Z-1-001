@@ -47,6 +47,8 @@ COPY --chown=tpcuser:tpcuser data/ ./data/
 COPY --chown=tpcuser:tpcuser docs/ ./docs/
 COPY --chown=tpcuser:tpcuser scripts/ ./scripts/
 COPY --chown=tpcuser:tpcuser tests/ ./tests/
+COPY --chown=tpcuser:tpcuser assets/ ./assets/
+COPY --chown=tpcuser:tpcuser .streamlit/ ./.streamlit/
 COPY --chown=tpcuser:tpcuser app.py cli_chat.py requirements.txt README.md ./
 COPY --chown=tpcuser:tpcuser .env.example ./.env.example
 

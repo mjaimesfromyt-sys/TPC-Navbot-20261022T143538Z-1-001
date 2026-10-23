@@ -20,6 +20,9 @@ except ImportError:
     sys.exit(subprocess.run(cmd).returncode)
 
 if __name__ == "__main__":
+    # Streamlit reads its theme from the working directory, including when the
+    # launcher is invoked from an IDE or the parent folder.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     app_path = os.path.join(os.path.dirname(__file__), "app.py")
     sys.argv = [
         "streamlit", "run", app_path,
