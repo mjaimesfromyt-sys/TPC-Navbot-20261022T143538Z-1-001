@@ -132,49 +132,6 @@ def new_conversation():
     st.session_state.view = "Assistant"
 
 
-def show_evidence(metadata):
-    label, tone, symbol = STATUSES.get(metadata.get("status"), ("Status unavailable", "neutral", "?"))
-    language = str(metadata.get("language", "english")).title()
-    html(
-        f'<div class="answer-meta"><span class="answer-status {tone}">'
-        f'<span aria-hidden="true">{symbol}</span> {label}</span>'
-        f'<span class="answer-language">{escape(language)}</span></div>'
-    )
-    sources = metadata.get("sources") or []
-    title = f"Sources & answer details · {len(sources)} source{'s' if len(sources) != 1 else ''}"
-    with st.expander(title):
-        st.write(label)
-        st.caption(f"Response language: {language}")
-        if sources:
-            details = metadata.get("source_details") or []
-            for index, source in enumerate(sources, 1):
-                detail = details[index - 1] if index <= len(details) else None
-                if isinstance(detail, dict):
-                    st.text(f"{index:02d} · {detail.get('destination', 'Campus record')}")
-                    st.text(f"Reference: {detail.get('official_source', source)}")
-                    st.caption(
-                        f"Reviewed by {detail.get('reviewed_by', 'Not supplied')} · "
-                        f"{detail.get('reviewed_at', 'Date not supplied')}"
-                    )
-                    st.caption(f"Source file: {detail.get('source_doc', 'Not supplied')}")
-                    for key, label in (
-                        ('document_title', 'Document'), ('section', 'Section'), ('page', 'Page'),
-                        ('document_version', 'Version'), ('publication_date', 'Published'),
-                        ('effective_date', 'Effective'), ('valid_until', 'Valid until'),
-                        ('source_url', 'Source URL'), ('review_method', 'Review method'),
-                        ('supporting_sections', 'Supporting sections'), ('supporting_pages', 'Supporting pages'),
-                    ):
-                        if detail.get(key) not in (None, ''):
-                            st.caption(f"{label}: {detail[key]}")
-                else:
-                    # Source strings are labels, not trusted URLs or HTML.
-                    st.text(f"{index:02d} · {source}")
-        else:
-            st.caption("No verified source supports a factual answer to this question.")
-        if metadata.get("latency_ms") is not None:
-            st.caption(f"Checked in {metadata['latency_ms'] / 1000:.2f} seconds")
-
-
 def show_answer_bubble(content, message_index, metadata=None):
     options = {"key": f"assistant_bubble_{message_index}"}
     if "width" in signature(st.container).parameters:
@@ -230,17 +187,6 @@ def render_sidebar():
                 type="primary" if st.session_state.view == view else "secondary",
                 on_click=select_view, args=(view,),
             )
-        html('<div class="sidebar-label conversation-label">THIS CONVERSATION</div>')
-        user_messages = [message for message in st.session_state.messages if message["role"] == "user"]
-        if user_messages:
-            for message in user_messages[-3:]:
-                html(f'<div class="conversation-item"><span aria-hidden="true">↳</span> {escape(message["content"])}</div>')
-        else:
-            html('<div class="sidebar-empty">A fresh start.<br>Your questions will appear here.</div>')
-        st.checkbox(
-            "Show answer details", key="show_answer_details", value=False,
-            help="Show source references, review details, and answer status.",
-        )
         with st.container(key="sidebar_footer"):
             html(
                 '<div class="language-card"><span class="language-heading">A language that feels like home.</span>'
@@ -256,6 +202,7 @@ def render_sidebar():
                         '<div class="college-signature">Talibon Polytechnic College'
                         '<br><small>Built for our campus community</small></div>'
                     )
+            html('<div class="sidebar-copyright">© 2026 TPC NavBot. All rights reserved.</div>')
 
 
 def render_header():
@@ -360,7 +307,7 @@ def render_about():
     for column, (number, title, description) in zip(st.columns(3, gap="medium"), [
         ("01", "Ask naturally", "Use your own words and language. For directions, include where you’re starting from."),
         ("02", "Check campus sources", "NavBot retrieves relevant campus records and checks whether the facts have been reviewed."),
-        ("03", "Know what’s supported", "Replies show the answer. Turn on Show answer details to inspect sources and review status. Missing facts stay unconfirmed."),
+        ("03", "Know what’s supported", "Replies use reviewed campus records. Missing facts stay unconfirmed."),
     ]):
         with column:
             with st.container(border=True):
@@ -398,8 +345,6 @@ def render_chat(bot):
                             st.feedback("thumbs", key="feedback_" + metadata["feedback_id"],
                                         disabled=metadata.get("feedback_recorded", False),
                                         on_change=record_answer_feedback, args=(message_index,))
-                if message.get("metadata") and st.session_state.get("show_answer_details", False):
-                    show_evidence(message["metadata"])
 
     prompt = st.chat_input("Ask about a classroom, office, or campus service…", key="campus_prompt", max_chars=MAX_QUERY_CHARS)
     prompt = st.session_state.pop("preset_query", None) or prompt
@@ -439,11 +384,9 @@ def render_chat(bot):
                 "feedback_id": str(uuid4()),
             }
             show_answer_bubble(response["answer"], len(st.session_state.messages), metadata)
-            if st.session_state.get("show_answer_details", False):
-                show_evidence(metadata)
         st.session_state.messages.append({"role": "assistant", "content": response["answer"], "metadata": metadata})
         st.session_state.messages = st.session_state.messages[-200:]
-        # Redraw removes the empty state and refreshes the sidebar transcript.
+        # Redraw replaces pending messages with the saved conversation.
         st.rerun()
 
 

@@ -48,9 +48,9 @@ welcome screen, and compact conversation styling. User messages appear in rounde
 bubbles on the right; assistant answers and tips share a rounded bubble on the left.
 Recommendations and feedback appear underneath the assistant bubble.
 Multilingual question cards, a campus guide, and small follow-up chips help students
-start and continue a conversation. The optional **Show answer details** control reveals
-its status, detected language, and expandable source details. **New
-conversation** clears both the visible chat and its follow-up context. The guide
+start and continue a conversation. Source references and review metadata remain
+attached to each answer in session state. **New conversation** clears both the
+visible chat and its follow-up context. The guide
 offers questions rather than claiming unverified office locations. Visual styles
 live in `assets/styles.css`. The project and repository-root Streamlit theme
 files stay aligned so the local preview and hosted application use the same colors.

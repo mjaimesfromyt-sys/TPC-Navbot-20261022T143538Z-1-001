@@ -173,31 +173,8 @@ class WebChatTests(unittest.TestCase):
         self.assertEqual(refreshed_session.pending_buildings, [])
         self.assertEqual(refreshed_session.pending_starts, [])
 
-    def test_answer_displays_status_language_and_source_evidence(self):
+    def test_structured_evidence_is_retained_in_message_metadata(self):
         app = self.start_app()
-        app.checkbox(key="show_answer_details").check().run()
-        source = "SYNTHETIC TEST SOURCE: Student Services Guide, p. 12"
-        response = {
-            "answer": "Synthetic reviewed campus answer for this UI test.",
-            "status": "SUCCESS", "language": "english", "sources": [source], "turn_count": 1,
-        }
-        with patch("src.llm_rag.TPCNavBotRAG.chat", return_value=response):
-            app.chat_input(key="campus_prompt").set_value("Where is the library?").run()
-        self.assertFalse(app.exception)
-        self.assertTrue(app.expander, "Answers must expose their supporting evidence")
-        rendered = "\n".join(element.value for element in app.markdown)
-        captions = "\n".join(element.value for element in app.caption)
-        source_labels = "\n".join(element.value for element in app.text)
-        self.assertIn(response["answer"], rendered)
-        self.assertIn(source, source_labels)
-        self.assertTrue(any("1 source" in element.label for element in app.expander))
-        self.assertIn("verified campus information", rendered.lower())
-        self.assertIn("English", captions)
-        self.assertEqual(app.session_state["messages"][-1]["metadata"]["sources"], [source])
-
-    def test_structured_evidence_is_available_in_expander_without_cluttering_answer(self):
-        app = self.start_app()
-        app.checkbox(key="show_answer_details").check().run()
         source_doc = "reviewed-fixture.txt"
         reference = "Authorized campus test record"
         source = f"{source_doc} [{reference}]"
@@ -218,14 +195,8 @@ class WebChatTests(unittest.TestCase):
         self.assertEqual(message["content"], response["answer"])
         self.assertEqual(message["metadata"]["sources"], [source])
         self.assertEqual(message["metadata"]["source_details"], details)
-        evidence = next(element for element in app.expander if "1 source" in element.label)
-        evidence_text = "\n".join(
-            element.value for kind in ("markdown", "caption", "text")
-            for element in getattr(evidence, kind)
-        )
-        for value in ("Library", source_doc, reference, "Test reviewer", "2026-10-22"):
-            with self.subTest(evidence=value):
-                self.assertIn(value, evidence_text)
+        self.assertEqual(message["metadata"]["status"], response["status"])
+        self.assertEqual(message["metadata"]["language"], response["language"])
         all_rendered = "\n".join(
             element.value for kind in ("markdown", "caption", "text")
             for element in getattr(app, kind)
@@ -233,21 +204,22 @@ class WebChatTests(unittest.TestCase):
         for value in (source_doc, reference, "Test reviewer", "2026-10-22"):
             with self.subTest(answer_excludes=value):
                 self.assertNotIn(value, message["content"])
-                self.assertEqual(all_rendered.count(value), evidence_text.count(value))
+                self.assertNotIn(value, all_rendered)
 
         # Review details survive the ordinary rerun that renders saved messages.
         app.run()
         self.assertFalse(app.exception)
-        self.assertEqual(app.session_state["messages"][-1]["metadata"]["source_details"], details)
-        evidence = next(element for element in app.expander if "1 source" in element.label)
-        self.assertIn(source_doc, "\n".join(
+        self.assertEqual(app.session_state["messages"][-1], message)
+        rendered_after_rerun = "\n".join(
             element.value for kind in ("markdown", "caption", "text")
-            for element in getattr(evidence, kind)
-        ))
+            for element in getattr(app, kind)
+        )
+        for value in (source_doc, reference, "Test reviewer", "2026-10-22"):
+            with self.subTest(rerun_excludes=value):
+                self.assertNotIn(value, rendered_after_rerun)
 
-    def test_answers_show_plain_text_by_default_and_keep_evidence_available_on_request(self):
+    def test_answers_show_plain_text_and_retain_source_metadata(self):
         app = self.start_app()
-        self.assertFalse(app.checkbox(key="show_answer_details").value)
         source_doc = "synthetic_registrar.txt"
         reference = "Synthetic reviewed campus reference"
         response = {
@@ -274,16 +246,12 @@ class WebChatTests(unittest.TestCase):
                 self.assertNotIn(value, rendered)
         self.assertEqual(app.session_state["messages"][-1]["metadata"]["sources"], response["sources"])
 
-        # Students can opt into the existing answer's complete review details.
-        app.checkbox(key="show_answer_details").check().run()
+        app.run()
         self.assertFalse(app.exception)
-        evidence = next(element for element in app.expander if "1 source" in element.label)
-        self.assertIn(source_doc, "\n".join(
-            element.value for kind in ("markdown", "caption", "text")
-            for element in getattr(evidence, kind)
-        ))
         self.assertEqual(len(app.session_state["messages"]), 2)
         self.assertEqual(app.session_state["messages"][-1]["content"], response["answer"])
+        self.assertEqual(app.session_state["messages"][-1]["metadata"]["sources"], response["sources"])
+        self.assertEqual(app.session_state["messages"][-1]["metadata"]["source_details"], response["source_details"])
 
     def test_helpful_tip_and_latest_suggested_question_submit_one_turn(self):
         app = self.start_app()

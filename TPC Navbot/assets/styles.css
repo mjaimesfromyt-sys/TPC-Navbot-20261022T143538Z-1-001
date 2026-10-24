@@ -84,11 +84,6 @@ div[class*="st-key-nav_"] button { min-height: 42px; border-radius: 11px; justif
 div[class*="st-key-nav_"] button p { font-size: .8rem; }
 div[class*="st-key-nav_"] button[kind="primary"] { background: rgba(91, 142, 105, .15); border-color: rgba(118, 166, 126, .12); color: var(--lime); }
 div[class*="st-key-nav_"] button:hover { background: rgba(111, 155, 123, .1); border-color: transparent; color: #d6e9dc; }
-.conversation-label { margin-top: 1.6rem; }
-.sidebar-empty { padding: 0 12px; font-size: .73rem; color: #6f8a79; line-height: 1.7; }
-.conversation-item { padding: 7px 12px; max-width: 230px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #8ea696; font-size: .74rem; }
-.conversation-item span { color: #4b705b; padding-right: 6px; }
-[data-testid="stSidebar"] [data-testid="stCheckbox"] label p { color: #8ca595; font-size: .72rem; }
 .st-key-sidebar_footer { margin-top: auto; padding-top: 2.5rem; }
 .language-card { position: relative; padding: 16px 14px; border-radius: 15px; background: linear-gradient(135deg, rgba(46, 82, 54, .3), rgba(22, 40, 29, .6)); border: 1px solid rgba(136, 181, 136, .12); }
 .language-heading { font-size: .75rem; font-weight: 500; color: #c6d9c8; }
@@ -98,6 +93,7 @@ div[class*="st-key-nav_"] button:hover { background: rgba(111, 155, 123, .1); bo
 .st-key-college_identity { padding: 20px 3px 0; }
 .college-signature { color: #8ca792; font-size: .63rem; line-height: 1.65; }
 .college-signature small { color: #799381; font-size: .57rem; }
+.sidebar-copyright { padding: 14px 3px 0; color: #789381; font-size: .6rem; line-height: 1.7; }
 
 /* The welcome screen has a single focal point and four quick ways in. */
 .welcome { position: relative; isolation: isolate; max-width: 760px; margin: 0 auto; padding: 1.8rem 0 1.6rem; text-align: center; }
