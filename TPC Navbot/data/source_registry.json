@@ -466,7 +466,7 @@
     "school_confirmed_09_registrar_s_office.txt": {
       "verified": true,
       "source_type": "authorized_campus_record",
-      "sha256": "42e0fa560fe0a5a8d22709bf97bc244578f9d982479fded253083a7a88569f66",
+      "sha256": "3a30d32b9c295c7bf128af277037bd24289b087dce769dc464f5d8d5a4a4bcf1",
       "official_source": "Admin and handbook; user-supplied school confirmation, record(s) 09 and 17",
       "reviewed_by": "Flordelis Tortuga",
       "reviewed_at": "2026-10-23",

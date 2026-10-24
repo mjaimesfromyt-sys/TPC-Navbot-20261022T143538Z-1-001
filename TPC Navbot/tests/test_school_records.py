@@ -56,6 +56,8 @@ class SchoolConfirmedRecordsTests(unittest.TestCase):
         for name, entry in self.confirmed.items():
             with self.subTest(source=name):
                 content = (self.raw / name).read_bytes()
+                # Git deploys these files with LF; approve those same bytes on Windows.
+                self.assertNotIn(b"\r\n", content, "Reviewed sources must use LF line endings")
                 self.assertTrue(entry["verified"])
                 self.assertEqual(entry["reviewed_by"], "Flordelis Tortuga")
                 self.assertEqual(entry["reviewed_at"], "2026-10-23")

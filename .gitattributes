@@ -1,0 +1,2 @@
+# Reviewed source hashes bind exact bytes across Windows and Linux checkouts.
+"TPC Navbot/data/raw/*.txt" text eol=lf

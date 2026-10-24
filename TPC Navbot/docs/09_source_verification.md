@@ -5,7 +5,7 @@ The bundled 30 generated documents must remain unverified. Do not change their s
 ## Review workflow
 
 1. Obtain a current official campus document, map, notice, or authorized record. Confirm permission to include its relevant content. Keep private student records and credentials out of the knowledge base.
-2. Create a UTF-8 `.txt` source in `data/raw/`, preserving exact destination names and clearly labelled facts. Prefer small single-destination records over prose mixing many buildings.
+2. Create a UTF-8 `.txt` source with LF line endings in `data/raw/`, preserving exact destination names and clearly labelled facts. Save it with LF before computing its hash: `.gitattributes` enforces LF on checkout, and a hash of Windows CRLF bytes will fail verification after deployment. Prefer small single-destination records over prose mixing many buildings.
 3. Have an authorized reviewer confirm the contents against the official reference, including whether any area is restricted. Review translated explanatory text; retain official building/office/room names.
 4. Compute the exact file SHA-256 in PowerShell: `Get-FileHash -Algorithm SHA256 -LiteralPath 'data/raw/your_source.txt'`. Use the lowercase digest in the registry.
 5. Add a `documents[filename]` registry entry with `verified: true`, approved `source_type`, `sha256`, `official_source`, `reviewed_by`, and `reviewed_at` in `YYYY-MM-DD` format. All fields must describe a real review. The source type must be `official_document`, `official_map`, or `authorized_campus_record`.
