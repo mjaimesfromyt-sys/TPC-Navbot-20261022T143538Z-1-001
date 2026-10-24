@@ -43,14 +43,17 @@ python run_app.py
 
 Open `http://localhost:8501`. The app supports an offline, deterministic mode without a Gemini API key. Keep `.env` private. Check `.env.example` for optional settings; enable a cloud model only when that deployment is authorized to send student questions and candidate campus record fields to the provider.
 
-The web interface includes a responsive campus assistant, multilingual question
-cards, a campus question guide, and an explanation of answer verification. Each
-reply shows a plain answer. The optional **Show answer details** control reveals
+The web interface uses a dark forest theme with jade and lime accents, a centered
+welcome screen, and compact conversation styling. User messages appear in rounded
+bubbles on the right; assistant answers and tips share a rounded bubble on the left.
+Recommendations and feedback appear underneath the assistant bubble.
+Multilingual question cards, a campus guide, and small follow-up chips help students
+start and continue a conversation. The optional **Show answer details** control reveals
 its status, detected language, and expandable source details. **New
 conversation** clears both the visible chat and its follow-up context. The guide
 offers questions rather than claiming unverified office locations. Visual styles
-and the decorative campus illustration live in `assets/`; the Streamlit theme
-lives in `.streamlit/config.toml`.
+live in `assets/styles.css`. The project and repository-root Streamlit theme
+files stay aligned so the local preview and hosted application use the same colors.
 
 Short queries such as `crim building`, `registrar`, and `comlab` work without a
 full question. The question resolver and retrieval filter share campus aliases;

@@ -10,7 +10,9 @@ from functools import lru_cache
 @lru_cache(maxsize=4096)
 def normalize(text):
     text = re.sub(r"['’]s\b", "", text.casefold().replace("_", " "))
-    text = re.sub(r"\b(?:bldg|bldng)\b", "building", text)
+    # Correct only these whole-word building variants. Keep unfamiliar place
+    # names intact so spelling support cannot select an unrelated campus record.
+    text = re.sub(r"\b(?:bldg|bldng|bulding|buidling|bilding|buildng)\b", "building", text)
     text = re.sub(r"\bdept\b", "department", text)
     return " ".join(re.findall(r"\w+", text))
 

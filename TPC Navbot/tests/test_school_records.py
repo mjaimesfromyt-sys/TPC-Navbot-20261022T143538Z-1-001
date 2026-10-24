@@ -188,6 +188,11 @@ class SchoolConfirmedRecordsTests(unittest.TestCase):
             with self.subTest(query=query):
                 answer = self.bot.query(query)
                 self.assertEqual(answer["status"], "UNVERIFIED")
+                if query == 'Where is Room 203?':
+                    self.assertIn('confirmed location for Room 203', answer['answer'])
+                    self.assertEqual(answer['sources'], [])
+                    self.assertEqual(answer['source_details'], [])
+                    continue
                 self.assertTrue(answer["answer"].startswith(MESSAGES["english"]["unverified"]))
                 if query in ("What is the passing grade at TPC?", "What is the school calendar?"):
                     # These topics now help the student reach the approved

@@ -103,7 +103,6 @@ class WebChatTests(unittest.TestCase):
             ("quick_registrar", "registrar", "english"),
             ("quick_library", "library", "bisaya"),
             ("quick_guidance", "guidance", "tagalog"),
-            ("quick_room", "203", "english"),
         ]:
             with self.subTest(button=key):
                 app = self.start_app()

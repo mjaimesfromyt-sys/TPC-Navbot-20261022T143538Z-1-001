@@ -643,6 +643,13 @@ class TPCNavBotRAG:
     def _unverified_subject(self, entity, intent, lang):
         if entity in ACADEMIC_DEPARTMENTS:
             return self._missing_detail(ACADEMIC_DEPARTMENTS[entity]['name'], intent, lang)
+        if isinstance(entity, str) and entity.startswith('room ') and intent in {'location', 'route'}:
+            room = 'Room ' + entity[5:].upper()
+            return {
+                'english': f"I don't have a confirmed location for {room} yet. Please confirm its building and floor with TPC personnel.",
+                'bisaya': f'Wala pa koy gikumpirmang lokasyon sa {room}. Palihug kumpirmaha sa kawani sa TPC ang building ug andana niini.',
+                'tagalog': f'Wala pa akong kumpirmadong lokasyon ng {room}. Pakikumpirma sa kawani ng TPC ang gusali at palapag nito.',
+            }[lang]
         return MESSAGES[lang]["unverified"]
 
     def _specific_answer(self, record, query, lang):

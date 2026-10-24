@@ -1,6 +1,9 @@
 """Student-facing campus assistant; factual grounding stays in the RAG service."""
 from base64 import b64encode
+from contextlib import contextmanager, nullcontext
 from html import escape
+from inspect import signature
+from io import BytesIO
 import logging
 import math
 from pathlib import Path
@@ -10,6 +13,7 @@ import traceback
 from uuid import uuid4
 
 import streamlit as st
+from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 LOGO_PATH = PROJECT_ROOT / "assets" / "tpc-logo.png"
@@ -60,7 +64,6 @@ STARTERS = [
     ("registrar", "office", "Find an office", "Registrar’s Office", "Where is the Registrar's Office?"),
     ("library", "book", "Explore a facility", "Campus library", "Asa dapit ang library?"),
     ("guidance", "chat", "Get student support", "Guidance Office", "Saan po ang Guidance Office?"),
-    ("room", "door", "Locate a classroom", "Rooms & buildings", "Where is Room 203?"),
 ]
 ICON_PATHS = {
     "office": '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 21v-4h6v4M9 7h1m4 0h1M9 11h1m4 0h1"/>',
@@ -81,6 +84,33 @@ def icon(name, css_class="line-icon"):
 
 def html(markup):
     st.markdown(markup, unsafe_allow_html=True)
+
+
+@st.cache_data(show_spinner=False)
+def tpc_logo():
+    """Cache a small logo image for the inline branding elements."""
+    output = BytesIO()
+    with Image.open(LOGO_PATH) as logo:
+        logo.thumbnail((160, 160), Image.Resampling.LANCZOS)
+        logo.save(output, format="PNG", optimize=True)
+    encoded = b64encode(output.getvalue()).decode("ascii")
+    return f'<img class="tpc-logo" src="data:image/png;base64,{encoded}" alt="TPC logo">'
+
+
+@contextmanager
+def chat_bubble(role, *, parent=None):
+    """Keep native accessible messages while giving each role a compact style."""
+    options = {"avatar": ":material/person:" if role == "user" else str(LOGO_PATH)}
+    if "width" in signature(st.chat_message).parameters:
+        options["width"] = "stretch"
+    with parent if parent is not None else nullcontext():
+        with st.chat_message(role, **options):
+            if role == "user":
+                html('<span class="user-message-marker" aria-hidden="true"></span>')
+            else:
+                html('<div class="message-label assistant-message-marker">TPC NavBot'
+                     '<span class="message-label-note">Campus companion</span></div>')
+            yield
 
 
 def select_view(view):
@@ -145,19 +175,34 @@ def show_evidence(metadata):
             st.caption(f"Checked in {metadata['latency_ms'] / 1000:.2f} seconds")
 
 
+def show_answer_bubble(content, message_index, metadata=None):
+    options = {"key": f"assistant_bubble_{message_index}"}
+    if "width" in signature(st.container).parameters:
+        options["width"] = "content"
+    with st.container(**options):
+        with st.container(key=f"answer_text_{message_index}"):
+            st.markdown(content)
+        tip = (metadata or {}).get("helpful_tip")
+        if isinstance(tip, str) and tip.strip():
+            with st.container(key=f"answer_tip_{message_index}"):
+                st.caption(f"Tip: {tip.strip()}")
+
+
 def show_helpful_followups(metadata, message_index, *, latest=False):
-    tip = metadata.get("helpful_tip")
-    if isinstance(tip, str) and tip.strip():
-        st.caption(f"Tip: {tip.strip()}")
     questions = metadata.get("suggested_questions")
     if latest and isinstance(questions, list):
         questions = [question.strip() for question in questions
                      if isinstance(question, str) and question.strip()][:2]
-        for question_index, question in enumerate(questions):
-            st.button(
-                question, key=f"suggested_{message_index}_{question_index}",
-                use_container_width=True, on_click=ask_question, args=(question,),
-            )
+        if questions:
+            options = {"key": f"followups_{message_index}"}
+            if "horizontal" in signature(st.container).parameters:
+                options.update(horizontal=True, gap="small")
+            with st.container(**options):
+                for question_index, question in enumerate(questions):
+                    st.button(
+                        question, key=f"suggested_{message_index}_{question_index}",
+                        use_container_width=False, on_click=ask_question, args=(question,),
+                    )
 
 
 def render_sidebar():
@@ -215,9 +260,12 @@ def render_sidebar():
 
 def render_header():
     html(
-        '<div class="topbar"><div class="breadcrumb">Workspace <span>/</span> '
-        f'<strong>{escape(st.session_state.view)}</strong></div>'
-        '<div class="topbar-tag"><span class="small-spark">✧</span> A little help goes a long way</div></div>'
+        '<div class="topbar"><div class="workspace-identity">'
+        f'<span class="workspace-mark">{tpc_logo()}</span>'
+        '<div><div class="workspace-title">TPC NavBot</div>'
+        f'<div class="workspace-subtitle">{escape(st.session_state.view)} · Talibon Polytechnic College</div></div></div>'
+        '<div class="connection-pill"><span class="live-dot" aria-hidden="true"></span>'
+        'Your campus companion</div></div>'
     )
 
 
@@ -231,11 +279,6 @@ def render_verification_notice(bot):
                 "but please confirm locations and services with authorized TPC personnel.",
                 icon=":material/info:",
             )
-    else:
-        st.caption(
-            f"{len(verified_docs)} reviewed campus source records · "
-            "Details without reviewed evidence remain unavailable. Check each answer’s sources."
-        )
 
 
 def campus_revision():
@@ -243,6 +286,12 @@ def campus_revision():
     from src.config import RAW_DATA_DIR, SOURCE_REGISTRY_PATH
 
     files = [Path(SOURCE_REGISTRY_PATH), *sorted(Path(RAW_DATA_DIR).glob("*.txt"))]
+    # A running preview may retain its RAG object across script reruns. Refresh
+    # that object after backend fixes as well as reviewed-source updates.
+    files.extend(PROJECT_ROOT / "src" / filename for filename in (
+        "campus_entities.py", "query_understanding.py", "llm_rag.py", "evidence.py",
+        "preprocessing.py", "vector_store.py", "ingestion.py",
+    ))
     revision = []
     for path in files:
         try:
@@ -254,36 +303,32 @@ def campus_revision():
 
 
 def render_starters():
-    html('<div class="section-heading"><h2>A good place to start</h2><span>Pick a question or ask your own below</span></div>')
-    for column, (key, icon_name, eyebrow, title, question) in zip(st.columns(4, gap="small"), STARTERS):
-        with column:
-            with st.container(key=f"starter_{key}", border=True):
-                html(
-                    f'<div class="starter-icon {key}">{icon(icon_name)}</div>'
-                    f'<div class="starter-eyebrow">{eyebrow}</div><h3 class="starter-title">{title}</h3>'
-                )
-                st.button(question + "  ↗", key=f"quick_{key}", use_container_width=True, on_click=ask_question, args=(question,))
+    html('<div class="section-heading"><h2>A little inspiration</h2><span>Pick a starting point, or ask your own question</span></div>')
+    with st.container(key="prompt_grid"):
+        for column, (key, icon_name, eyebrow, title, question) in zip(st.columns(len(STARTERS), gap="small"), STARTERS):
+            with column:
+                with st.container(key=f"starter_{key}", border=True):
+                    html(
+                        f'<div class="starter-icon {key}">{icon(icon_name)}</div>'
+                        f'<div class="starter-eyebrow">{eyebrow}</div><h3 class="starter-title">{title}</h3>'
+                    )
+                    st.button(question + "  ↗", key=f"quick_{key}", use_container_width=True, on_click=ask_question, args=(question,))
 
 
 def render_welcome():
-    illustration = b64encode((PROJECT_ROOT / "assets" / "campus.svg").read_bytes()).decode("ascii")
     html(
-        '<div class="welcome"><div class="welcome-copy">'
-        '<div class="eyebrow"><span></span> A FRIENDLIER WAY TO FIND YOUR WAY</div>'
-        '<h1>A little guidance.<br>A better <em>campus day.</em></h1>'
-        '<p>From your next classroom to the right office,<br class="desktop-break"> '
-        'let’s find your way around TPC. What do you need?</p>'
-        '<div class="welcome-languages">Pangutana. <span>Ask.</span> Magtanong.</div></div>'
-        f'<img class="campus-illustration" src="data:image/svg+xml;base64,{illustration}" '
-        'alt="Decorative illustration of a college building, trees, and a navigation pin"></div>'
+        '<div class="welcome"><div class="welcome-orbit" aria-hidden="true"></div>'
+        '<div class="welcome-copy">'
+        f'<div class="hero-logo">{tpc_logo()}</div>'
+        '<div class="hero-kicker eyebrow"><span></span> A LITTLE GUIDANCE. A BETTER CAMPUS DAY.</div>'
+        '<h1>Your campus.<br><em>One conversation away.</em></h1>'
+        '<p>Find the right office, your next classroom, or a little help.<br class="desktop-break"> '
+        'Just ask. We’ll help you find your way.</p>'
+        '<div class="hero-stats"><span class="hero-stat">Made for TPC</span>'
+        '<span class="hero-stat">English · Bisaya · Tagalog</span></div>'
+        '<div class="welcome-languages">Pangutana. <span>Ask.</span> Magtanong.</div></div></div>'
     )
     render_starters()
-    html(
-        '<div class="help-strip"><span class="help-strip-icon">' + icon("compass") + '</span>'
-        '<div><strong>Your campus, a little less confusing.</strong>'
-        '<p>Ask about offices, classrooms, facilities, and student services.</p></div>'
-        '<span class="help-strip-note">Campus questions welcome</span></div>'
-    )
 
 
 def render_guide(bot):
@@ -329,25 +374,30 @@ def render_about():
 
 def render_chat(bot):
     if st.session_state.messages:
-        html('<div class="chat-heading"><div class="eyebrow">YOUR CAMPUS CONVERSATION</div><h1>Let’s find your way.</h1><p>Keep asking. You can follow up in your own language.</p></div>')
+        html('<div class="chat-heading"><div class="eyebrow"><span></span> YOUR CAMPUS CONVERSATION</div>'
+             '<p>A little less searching. A little more knowing.</p></div>')
     else:
         render_welcome()
     render_verification_notice(bot)
     latest_assistant = max((index for index, message in enumerate(st.session_state.messages)
                             if message["role"] == "assistant"), default=-1)
-    with st.container(key="conversation"):
+    conversation = st.container(key="conversation")
+    with conversation:
         for message_index, message in enumerate(st.session_state.messages):
-            with st.chat_message(message["role"], avatar=":material/person:" if message["role"] == "user" else str(LOGO_PATH)):
-                st.caption("You" if message["role"] == "user" else "TPC NavBot")
-                st.markdown(message["content"])
+            with chat_bubble(message["role"]):
+                if message["role"] == "assistant":
+                    show_answer_bubble(message["content"], message_index, message.get("metadata"))
+                else:
+                    st.markdown(message["content"])
                 if message["role"] == "assistant" and message.get("metadata"):
                     show_helpful_followups(message["metadata"], message_index,
                                           latest=message_index == latest_assistant)
                     metadata = message["metadata"]
                     if metadata.get("feedback_id") and metadata.get("status") in {"SUCCESS", "PARTIAL", "UNVERIFIED"}:
-                        st.feedback("thumbs", key="feedback_" + metadata["feedback_id"],
-                                    disabled=metadata.get("feedback_recorded", False),
-                                    on_change=record_answer_feedback, args=(message_index,))
+                        with st.container(key=f"answer_actions_{message_index}"):
+                            st.feedback("thumbs", key="feedback_" + metadata["feedback_id"],
+                                        disabled=metadata.get("feedback_recorded", False),
+                                        on_change=record_answer_feedback, args=(message_index,))
                 if message.get("metadata") and st.session_state.get("show_answer_details", False):
                     show_evidence(message["metadata"])
 
@@ -356,11 +406,9 @@ def render_chat(bot):
     if prompt and prompt.strip():
         prompt = prompt.strip()
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user", avatar=":material/person:"):
-            st.caption("You")
+        with chat_bubble("user", parent=conversation):
             st.markdown(prompt)
-        with st.chat_message("assistant", avatar=str(LOGO_PATH)):
-            st.caption("TPC NavBot")
+        with chat_bubble("assistant", parent=conversation):
             started = time.perf_counter()
             with st.spinner("Checking campus information…"):
                 try:
@@ -390,14 +438,13 @@ def render_chat(bot):
                 "entity": bot._entity(prompt) if evaluate_query(prompt).allowed else None,
                 "feedback_id": str(uuid4()),
             }
-            st.markdown(response["answer"])
+            show_answer_bubble(response["answer"], len(st.session_state.messages), metadata)
             if st.session_state.get("show_answer_details", False):
                 show_evidence(metadata)
         st.session_state.messages.append({"role": "assistant", "content": response["answer"], "metadata": metadata})
         st.session_state.messages = st.session_state.messages[-200:]
         # Redraw removes the empty state and refreshes the sidebar transcript.
         st.rerun()
-    html('<div class="composer-note">Up to 600 characters · 3 school questions per message · 12 messages per minute</div>')
 
 
 def main():
