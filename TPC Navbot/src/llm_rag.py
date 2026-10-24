@@ -11,8 +11,10 @@ from pathlib import Path
 import re
 from typing import Optional
 
-from src.campus_entities import ENTITY_ALIASES as ENTITIES, normalize
+from src.campus_entities import ACADEMIC_DEPARTMENTS, ENTITY_ALIASES as ENTITIES, alias_specificity, normalize
 from src.memory import ConversationMemoryManager, ConversationSession
+from src.query_understanding import understand_query
+from src.evidence import claim_fields, conflicting_fields, field_value, requested_period, select_current_records, source_detail
 
 
 def _norm(value):
@@ -122,7 +124,7 @@ class TPCNavBotRAG:
                 aliases = record.get("aliases", [])
                 if isinstance(aliases, list):
                     names.extend(name for name in aliases if isinstance(name, str))
-                matches = [(len(_norm(alias)), entity)
+                matches = [(alias_specificity(alias), entity)
                            for entity, known in ENTITIES.items() for alias in known
                            if any(_contains(name, alias) for name in names)]
                 entity = max(matches)[1] if matches else _norm(record["destination"])
@@ -141,6 +143,9 @@ class TPCNavBotRAG:
         self.vector_store.add_chunks(self.processor.process_directory(raw_data_dir))
 
     def detect_language(self, query):
+        understood = understand_query(query)
+        if understood:
+            return understood.language
         q = _norm(query)
         # Distinct question words outweigh shared particles in mixed language text.
         bisaya = ("asa", "hain", "unsa", "unsay", "unsaon", "kinsa", "orasa", "palihug", "akong", "dapit", "naa", "moadto", "padulong", "nawagtang", "buhata", "sultihi", "ayaw", "ihap", "pila", "ug", "didto", "abli", "tambalanan", "kaonan")
@@ -174,7 +179,12 @@ class TPCNavBotRAG:
         return any(re.search(pattern, q) for pattern in patterns)
 
     def _intent(self, query):
+        understood = understand_query(query)
+        if understood and understood.supported_pattern:
+            return understood.intent
         q = _norm(query)
+        if re.search(r'\b(?:deadline|deadlines|online option|eligibility|appointment|processing time)\b', q):
+            return 'services'
         if re.search(r"\b(?:contacts?|phone|email|telepono|kontak|hotline|emergency numbers|website|facebook|url|link|who (?:do|can|should) i (?:ask|contact)|kinsa.*duolan|sino.*lapitan)\b", q):
             return "contact"
         if re.search(r"\b(?:student ids?|identification card|id replacement|id issuance)\b", q) and re.search(r"\b(?:how|paano|unsaon|apply|get|obtain|request)\b", q) and not re.search(r"\b(?:where|directions?|route|walking|distance|office)\b", q):
@@ -189,6 +199,9 @@ class TPCNavBotRAG:
             return "hours"
         if re.search(r"\b(?:wheelchair|accessible|accessibility|ramp|rampa|elevator|stairs|hagdan)\b", q):
             return "accessibility"
+        if (re.search(r"\b(?:where (?:do|can|should) i go|asa ko (?:magkuha|mokuha)|saan (?:ako )?(?:kukuha|makakakuha))\b", q)
+                and self._entity(query)):
+            return "location"
         if (re.search(r"\b(?:borrow|borrowing|maghulam|manghiram|enroll|enrol|magpaenroll|magpa enroll)\b", q)
                 and not re.search(r"\b(?:directions?|route|distance|where|asa|nasaan|saan)\b", q)):
             return "services"
@@ -198,9 +211,9 @@ class TPCNavBotRAG:
             return "route"
         if re.search(r"\b(?:contacts?|phone|email|telepono|kontak|hotline|emergency numbers|website|facebook)\b", q):
             return "contact"
-        if re.search(r"\b(?:services?|serbisyo|procedures?|requirements?|policy|policies|rules?|regulations?|programs?|courses?|grading|passing grade|attendance|absences|announcements?|communication channels|campus safety|campus transportation|college information|general campus information|about tpc|about talibon polytechnic college|student ids?|id issuance|id replacement|fees?|tuition|admission|enrollment|enrolment|scholarship|lost|nawala|nawagtang|magbayad|magbabayad|bayranan|matrikula|handbook|dress code|uniform)\b", q):
+        if re.search(r"\b(?:services?|serbisyo|procedures?|requirements?|policy|policies|rules?|regulations?|programs?|courses?|departments|mga departamento|mga kurso|mga programa|grading|passing grade|attendance|absences|announcements?|communication channels|campus safety|campus transportation|college information|general campus information|about tpc|about talibon polytechnic college|student ids?|id issuance|id replacement|fees?|tuition|admission|enrollment|enrolment|scholarship|lost|nawala|nawagtang|magbayad|magbabayad|bayranan|matrikula|handbook|dress code|uniform)\b", q):
             return "services"
-        if re.search(r"\b(?:where|location|locate|find|address|which building|which floor|asa|hain|nasaan|saan|saang silid|how about|what about|kumusta ang)\b", q):
+        if re.search(r"\b(?:where|location|locate|find|address|which building|which floor|what floor|which room|what room|room number|room code|unsang andana|unsang lawak|anong palapag|saang palapag|anong silid|asa|hain|nasaan|saan|saang silid|how about|what about|kumusta ang)\b", q):
             return "location"
         # A campus place name is a complete location request in a navigation
         # assistant. Only accept fragments made from a destination and courtesy
@@ -223,7 +236,8 @@ class TPCNavBotRAG:
         q = re.sub(r"^(?:show me|tell me about|information about|info about|info on|looking for|i am looking for|i need)\s+", "", q)
         q = re.sub(r"\s+(?:please|palihug|po|pls|plz)$", "", q)
         if entity not in self.entities:
-            return q == entity and bool(re.search(r"\b(?:office|building|department|laboratory|lab|library|room)\b", q))
+            name = re.sub(r"^(?:the |ang |tpc |campus )+", "", q)
+            return name == entity and bool(re.search(r"\b(?:office|building|department|laboratory|lab|library|room)\b", q))
         for alias in sorted(self.entities[entity], key=len, reverse=True):
             remaining, count = re.subn(r"(?<!\w)" + re.escape(_norm(alias)) + r"(?!\w)", " ", q, count=1)
             if count and set(remaining.split()) <= {
@@ -240,6 +254,9 @@ class TPCNavBotRAG:
         return _norm(match.group(1)) if match else None
 
     def _entity(self, query):
+        understood = understand_query(query)
+        if understood and understood.supported_pattern:
+            return understood.entity
         # An explicitly supplied origin must not win over the requested destination.
         original_query = query
         origin = self._origin(query)
@@ -258,9 +275,11 @@ class TPCNavBotRAG:
                             for alias in aliases)):
             return "enrollment documents"
         if (re.search(r"\b(?:offers?|offered|degree programs|courses offered)\b", q)
-                and re.search(r"\b(?:tpc|school|college|programs?|courses?|bsis|bsais|bscrim|nursing)\b", q)):
+                and (re.search(r"\b(?:tpc|school|college|programs?|courses?|departments|nursing)\b", q)
+                     or any(_contains(q, alias) for department in ACADEMIC_DEPARTMENTS.values()
+                            for alias in department['aliases']))):
             return "academic programs"
-        found = [(len(_norm(alias)), entity, alias) for entity, aliases in self.entities.items() for alias in aliases if _contains(q, alias)]
+        found = [(alias_specificity(alias), entity, alias) for entity, aliases in self.entities.items() for alias in aliases if _contains(q, alias)]
         if found:
             found = [item for item in found if item[1] != "college information"] or found
             _, entity, alias = max(found)
@@ -281,9 +300,12 @@ class TPCNavBotRAG:
             candidate = re.sub(r"^(?:tpc|campus)\s+", "", candidate)
             if re.search(r"\b(?:office|building|department|laboratory|lab|facility|pool|room|silid|lawak|gusali|opisina|departamento)\b", candidate) or _contains(q, "campus") or _contains(q, "tpc"):
                 return re.sub(r"\s+(?:please|po)$", "", candidate)
-        match = re.search(r"\b([\w ]+?\s+(?:office|building|department|laboratory|lab))\b", q)
-        if match and re.search(r"\b(?:tpc|campus)\b", q):
-            return match.group(1).strip()
+        # A short named campus place is already a navigation question. Keep
+        # its full name so an unknown office cannot borrow another one's facts.
+        candidate = self._target_phrase(original_query)
+        if candidate and (re.search(r"\b(?:office|building|department|laboratory|lab|library|facility|pool|room|silid|lawak|gusali|opisina|departamento)\b", candidate)
+                          or re.search(r"\b(?:tpc|campus)\b", q)):
+            return candidate
         return None
 
     @staticmethod
@@ -301,9 +323,9 @@ class TPCNavBotRAG:
             "tpc campus talibon polytechnic please palihug po pls plz "
             "what which when where how who can could would will do does did is are exact "
             "was were i me we you it about of for at in on to from near and or "
-            "asa hain unsa unsay unsang unsaon pag orasa naa dapit diay ba kaha "
-            "saan nasaan ano anong paano may meron bang "
-            "show tell need want looking find finding locate give information info use access "
+            "asa hain unsa unsay unsang unsaon pag orasa naa dapit dapita makita man diay ba kaha "
+            "saan nasaan ano anong paano may meron bang makikita matatagpuan banda "
+            "show tell need want looking find finding locate give information info use access get obtain request ko og ug magkuha mokuha kukuha makakakuha "
             "hours hour opening open closes close closing time schedule schedules "
             "services service rules policy policies requirements contact phone number "
             "email address location directions route walk walking distance far steps "
@@ -331,7 +353,7 @@ class TPCNavBotRAG:
 
     def _target_phrase(self, query):
         q = _norm(self._question_portion(query))
-        pattern = r"\b(?:where (?:is|are)|where can i find|location of|asa(?: dapit)?(?: ang)?|hain(?: ang)?|nasaan(?: po)?(?: ang)?|saan(?: po)?(?: matatagpuan)?(?: ang)?|saang silid(?: ang)?|how about|what about)\s+(?:the |ang )?(.+)"
+        pattern = r"\b(?:where (?:is|are)|where can i find|location of|(?:asa|hain)(?: man)?(?: dapita?)?(?: makita)?(?: ang)?|(?:nasaan|saan)(?: po)?(?: banda)?(?: makikita| matatagpuan)?(?: ang)?|saang silid(?: ang)?|how about|what about)\s+(?:the |ang )?(.+)"
         match = re.search(pattern, q)
         if not match:
             match = re.search(r"(?:get to|go to|way to|pumunta sa|papunta sa|para sa)\s+(?:the |ang )?(.+)", q)
@@ -342,11 +364,14 @@ class TPCNavBotRAG:
             candidate = re.sub(r"^(?:show me|tell me about|information about|info about|info on|looking for|i am looking for|i need)\s+", "", candidate)
             candidate = re.sub(r"\s+(?:please|palihug|po|pls|plz)$", "", candidate)
             if (len(candidate.split()) <= 8
-                    and not re.search(r"\b(?:what|which|when|how|where|can|may|could|use|access|asa|hain|unsa|unsay|unsang|orasa|saan|nasaan|ano|anong|paano|services?|hours?|rules?|contact|phone|email|open|close)\b", candidate)
+                    and not re.search(r"\b(?:what|which|when|how|where|can|may|could|use|access|asa|hain|unsa|unsay|unsang|orasa|saan|nasaan|ano|anong|paano|services?|hours?|rules?|contact|phone|email|open|close|write|explain|describe|recommend|calculate|compute|solve|create|generate|code|debug|translate)\b", candidate)
                     and re.fullmatch(r"[\w ]+\b(?:office|building|department|laboratory|lab|library|room)", candidate)):
                 return candidate
             return None
-        phrase = re.split(r"\s+(?:at|in|from|near|within|sa|gikan sa|mula sa|and|ug|og|at|also)\s+", match.group(1), maxsplit=1)[0]
+        # Service destinations often follow a short purpose clause. Remove
+        # only these fixed lead-ins, never arbitrary words from a named office.
+        phrase = re.sub(r"^(?:(?:get|obtain|request) (?:a |an |the )?|ko (?:magkuha|mokuha) (?:og|ug) |(?:ako )?(?:kukuha|makakakuha) ng )", "", match.group(1))
+        phrase = re.split(r"\s+(?:at|in|from|near|within|sa|gikan sa|mula sa|and|ug|og|at|also)\s+", phrase, maxsplit=1)[0]
         phrase = re.sub(r"^(?:tpc|campus)\s+", "", phrase)
         phrase = re.sub(r"\s+(?:please|po|located|location)$", "", phrase).strip()
         return phrase or None
@@ -374,6 +399,8 @@ class TPCNavBotRAG:
                 continue
             if value in ("tpc", "campus", "tpc campus", "talibon polytechnic college", "talibon polytechnic college campus"):
                 continue
+            if re.fullmatch(r'(?:(?:(?:academic|school) year|year|sy|ay|tuig|taon) )?(?:19|20)\d{2}(?:\s+(?:19|20)\d{2})?', value):
+                continue  # A year constrains the evidence, not the campus place.
             qualifiers.append(value)
         return qualifiers
 
@@ -397,6 +424,9 @@ class TPCNavBotRAG:
     def is_in_scope(self, query):
         if not query or len(query) > 3000 or self._blocked(query):
             return False
+        understood = understand_query(query)
+        if understood and understood.supported_pattern:
+            return bool(understood.entity and understood.intent)
         if not self._intent(query) or not self._entity(query):
             return False
         entity = self._entity(query)
@@ -420,6 +450,8 @@ class TPCNavBotRAG:
             if not normalized or normalized in ("please", "thanks", "thank you", "salamat", "palihug", "po"):
                 continue
             if self._pure_origin(clause, self._origin(clause)):
+                continue
+            if normalized in {'why', 'bakit', 'ngano'} and self._claim_premise(query) and self._entity(query):
                 continue
             if not self._entity(clause) and not ConversationSession.is_campus_followup(clause):
                 return False
@@ -495,7 +527,7 @@ class TPCNavBotRAG:
         if entity in self.entities:
             # Prefer the full reviewed topic over a shared word. Enrollment
             # requirements and enrollment procedures are different questions.
-            matches = [(len(_norm(alias)), candidate)
+            matches = [(alias_specificity(alias), candidate)
                        for candidate, aliases in self.entities.items() for alias in aliases
                        if any(_contains(name, alias) for name in names)]
             return bool(matches and max(matches)[1] == entity)
@@ -554,6 +586,65 @@ class TPCNavBotRAG:
     def _render_request(self, request):
         return self._render_record(**request)
 
+    @staticmethod
+    def _missing_detail(destination, field, lang):
+        """Acknowledge the requested subject without inventing a missing fact."""
+        details = {
+            "english": {"location": "location", "route": "route", "hours": "office hours", "services": "service details", "contact": "contact details", "accessibility": "accessibility details", "floor": "floor", "room": "room number"},
+            "bisaya": {"location": "lokasyon", "route": "agi", "hours": "oras sa opisina", "services": "mga serbisyo", "contact": "kontak", "accessibility": "accessibility", "floor": "andana", "room": "numero sa lawak"},
+            "tagalog": {"location": "lokasyon", "route": "daan", "hours": "oras ng opisina", "services": "mga serbisyo", "contact": "kontak", "accessibility": "accessibility", "floor": "palapag", "room": "numero ng silid"},
+        }
+        templates = {
+            "english": "I don't yet have confirmed {detail} for the {name}. Please confirm this with TPC personnel.",
+            "bisaya": "Wala pa koy gikumpirmang {detail} sa {name}. Palihug kumpirmaha kini sa kawani sa TPC.",
+            "tagalog": "Wala pa akong kumpirmadong {detail} ng {name}. Pakikumpirma ito sa kawani ng TPC.",
+        }
+        return templates[lang].format(name=destination, detail=details[lang].get(field, field.replace('_', ' ')))
+
+    @staticmethod
+    def _answer_fields(query, intent, understood=None):
+        if TPCNavBotRAG._claim_premise(query):
+            return ('details.change_explanation',)
+        if understood and understood.supported_pattern:
+            facet = understood.facet
+            if facet == 'office_hours':
+                return ('hours',)
+            if facet in {'referral', 'contact'}:
+                return ('contact',)
+            if facet == 'location':
+                return claim_fields(query, intent)
+            if facet in {'requirements', 'documents'} and understood.category in {'enrollment', 'admissions', 'student id'}:
+                return ('services',)
+            if facet == 'process' and understood.category == 'enrollment':
+                return ('services',)
+            return ('details.' + facet,)
+        return claim_fields(query, intent)
+
+    def _pattern_answer(self, record, understood, lang):
+        facet = understood.facet
+        if facet in {'office_hours', 'location', 'referral', 'contact', 'fees', 'deadlines'}:
+            return None
+        details = record.get('details', {})
+        value = self._localized(details.get(facet), lang) if isinstance(details, dict) else None
+        if self._safe_value(value):
+            return 'SUCCESS', f"{record['destination']}\n\n{value}"
+        if facet in {'requirements', 'documents'} and understood.category in {'enrollment', 'admissions', 'student id'}:
+            if understood.audience == 'new_student' and understood.entity == 'enrollment documents':
+                services = self._localized(record.get('services'), lang)
+                items = services if isinstance(services, list) else [services] if isinstance(services, str) else []
+                matches = [item for item in items if isinstance(item, str) and re.match(r'New students\s*:', item, re.I)]
+                if matches:
+                    return 'SUCCESS', record['destination'] + '\n\n' + '\n'.join(matches)
+            return None
+        if facet == 'process' and understood.category == 'enrollment':
+            return None
+        return 'UNVERIFIED', self._missing_detail(record['destination'], facet, lang)
+
+    def _unverified_subject(self, entity, intent, lang):
+        if entity in ACADEMIC_DEPARTMENTS:
+            return self._missing_detail(ACADEMIC_DEPARTMENTS[entity]['name'], intent, lang)
+        return MESSAGES[lang]["unverified"]
+
     def _specific_answer(self, record, query, lang):
         """Require an explicit reviewed field for a transaction-specific fact.
 
@@ -562,6 +653,20 @@ class TPCNavBotRAG:
         in the usual hash-bound location_data record after school review.
         """
         q = _norm(query)
+        premise = self._claim_premise(query)
+        if premise:
+            details = record.get('details', {})
+            explanation = self._localized(details.get('change_explanation'), lang) if isinstance(details, dict) else None
+            if self._safe_value(explanation) and premise in str(explanation):
+                return 'SUCCESS', f"{record['destination']}\n\n{explanation}"
+            return 'UNVERIFIED', self._unconfirmed_claim(lang)
+        # Knowing a building does not establish its office's floor or room.
+        for field, pattern in (
+            ("floor", r"\b(?:(?:which|what) floor|floor (?:number|of)|unsang andana|anong palapag|saang palapag)\b"),
+            ("room", r"\b(?:(?:which|what) room|room (?:number|code)|unsang lawak|anong silid|saang silid)\b"),
+        ):
+            if re.search(pattern, q) and not self._safe_value(self._localized(record.get(field), lang)):
+                return "UNVERIFIED", self._missing_detail(record["destination"], field, lang)
         contact = self._localized(record.get("contact"), lang)
         contact = str(contact) if self._safe_value(contact) else ""
         # An office referral does not establish its telephone, email or URL.
@@ -614,11 +719,9 @@ class TPCNavBotRAG:
                 requested = match.group(1).strip()
                 if requested in {"tpc", "school", "college", "programs", "courses"}:
                     return None
-                aliases = {"bsis": "Bachelor of Science in Information Systems",
-                           "bsais": "Bachelor of Science in Accounting Information Systems",
-                           "bscrim": "Bachelor of Science in Criminology", "crim": "Bachelor of Science in Criminology",
-                           "bsag": "Bachelor of Science in Agriculture", "beced": "Bachelor in Early Childhood Education",
-                           "baps": "Bachelor of Arts in Political Science", "bael": "Bachelor of Arts in English Language"}
+                aliases = {_norm(alias): department['program']
+                           for department in ACADEMIC_DEPARTMENTS.values()
+                           for alias in department['aliases']}
                 exact = requested in aliases
                 requested = aliases.get(requested, requested)
                 programs = record.get("services", [])
@@ -630,8 +733,24 @@ class TPCNavBotRAG:
                 return "UNVERIFIED", MESSAGES[lang]["unverified"]
         return None
 
+    @staticmethod
+    def _claim_premise(query):
+        percentage = re.search(r'\b\d+(?:\.\d+)?\s*%', query)
+        if percentage and re.search(r'\b(?:increas\w*|raised|tumaas|nisaka|misaka)\b', query, re.I):
+            return percentage.group().replace(' ', '')
+        return None
+
+    @staticmethod
+    def _unconfirmed_claim(lang):
+        return {'english': "I don't have a verified TPC source confirming that claimed increase. Please confirm it with TPC personnel.",
+                'bisaya': 'Wala koy verified nga tinubdan sa TPC nga nagkumpirma nianang giingong pagtaas. Palihug kumpirmaha sa kawani sa TPC.',
+                'tagalog': 'Wala akong beripikadong sanggunian ng TPC na nagpapatunay sa sinasabing pagtaas. Pakikumpirma sa kawani ng TPC.'}[lang]
+
     def _school_question(self, query):
         """Recognize unsupported school topics without guessing a record."""
+        understood = understand_query(query)
+        if understood and understood.school_topic:
+            return True
         q = _norm(query)
         return bool(re.search(r"\b(?:tpc|talibon polytechnic college|school|college|campus|eskwelahan|paaralan)\b", q)
                     and re.search(r"\b(?:who|what|when|where|which|how|does|is|are|can|may|sino|ano|saan|paano|unsa|asa|kinsa|pila)\b", q)
@@ -783,7 +902,7 @@ class TPCNavBotRAG:
                     parts.append(m["start"])
                     return "CLARIFICATION", "\n\n".join(parts)
         if not facts:
-            return "UNVERIFIED", m["unverified"]
+            return "UNVERIFIED", self._unverified_subject(self._entity(record["destination"]), intent, lang)
         if intent == "location":
             plain_location = self._plain_location(record, lang)
             if plain_location:
@@ -831,6 +950,8 @@ class TPCNavBotRAG:
         # An origin statement belongs to its route/location question.
         if self._origin(query):
             return [query]
+        if re.fullmatch(r'what are the requirements,?\s*how much is the fee,?\s*and when is the deadline\??', query.strip(), re.I):
+            return ['What are its requirements?', 'How much are its fees?', 'What is its deadline?']
         short = re.fullmatch(r"(.+?)\s+(?:location|address)\s+(?:and|&)\s+(?:opening )?hours\??", query.strip(), re.I)
         if short and self._entity(short.group(1)) and self._campus_fragment(short.group(1), self._entity(short.group(1))):
             return [f"Where is {short.group(1)}?", "What are its hours?"]
@@ -873,6 +994,9 @@ class TPCNavBotRAG:
                     "safety_reason": decision.reason, "session_id": session_id,
                     "turn_count": len(session.history) // 2}
         query = decision.normalized_query
+        understood = understand_query(query, last_entity=self.memory_manager.get_session(session_id).last_entity)
+        if understood and understood.supported_pattern:
+            return self._chat_one(query, session_id, top_k, metric)
         parts = self._question_parts(query)
         if len(parts) <= 1:
             return self._chat_one(query, session_id, top_k, metric)
@@ -902,8 +1026,25 @@ class TPCNavBotRAG:
         sources, details, hits = [], [], []
         for result in results:
             sources.extend(source for source in result["sources"] if source not in sources)
-            details.extend(detail for detail in result["source_details"] if detail not in details)
+            for detail in result['source_details']:
+                previous = next((item for item in details if all(item.get(key) == detail.get(key)
+                                 for key in ('source_doc', 'source_sha256', 'destination'))), None)
+                if previous is None:
+                    details.append(dict(detail))
+                else:
+                    for key in ('claim_fields', 'verified_fact_ids'):
+                        previous[key] = list(dict.fromkeys(previous.get(key, []) + detail.get(key, [])))
+                    for key in ('page', 'section'):
+                        if detail.get(key) and detail.get(key) != previous.get(key):
+                            plural = 'supporting_pages' if key == 'page' else 'supporting_sections'
+                            previous[plural] = list(dict.fromkeys(previous.get(plural, []) + [value for value in (previous.get(key), detail[key]) if value]))
             hits.extend(result["retrieved_chunks"])
+        if len(details) != len(sources):
+            sources = [f"{detail['source_doc']} [{detail['official_source']}] ({detail['destination']})" for detail in details]
+        unique_hits = {}
+        for hit in hits:
+            unique_hits.setdefault((hit.get('id'), hit['metadata'].get('source_doc'), hit['metadata'].get('source_sha256')), hit)
+        hits = list(unique_hits.values())
         return {"status": status, "answer": answer, "language": lang,
                 "sources": sources, "source_details": details, "retrieved_chunks": hits,
                 "helpful_tip": "", "suggested_questions": results[-1]["suggested_questions"],
@@ -913,7 +1054,8 @@ class TPCNavBotRAG:
     def _chat_one(self, user_query: str, session_id="default_user", top_k=3, metric="cosine", *, record_turn=True) -> dict:
         session = self.memory_manager.get_session(session_id)
         user_query = user_query.strip() if isinstance(user_query, str) else ""
-        lang = self.detect_language(user_query)
+        understood = understand_query(user_query, last_entity=session.last_entity)
+        lang = understood.language if understood else self.detect_language(user_query)
         m = MESSAGES[lang]
 
         def finish(status, answer, sources=None, hits=None, source_details=None,
@@ -927,12 +1069,19 @@ class TPCNavBotRAG:
                     "source_details": source_details or [],
                     "helpful_tip": helpful_tip, "suggested_questions": suggested_questions or [],
                     "retrieved_chunks": hits or [], "session_id": session_id,
-                    "turn_count": len(session.history) // 2, "language": lang}
+                    "turn_count": len(session.history) // 2, "language": lang,
+                    "query_understanding": {key: value for key, value in understood.as_dict().items()
+                                            if key not in {"original_query", "normalized_query"}} if understood else {}}
 
         if not user_query:
             return finish("CLARIFICATION", {"english": "Which TPC room, office, or campus service do you need?", "bisaya": "Unsang lawak, opisina, o serbisyo sa TPC imong gipangita?", "tagalog": "Anong silid, opisina, o serbisyo sa TPC ang kailangan ninyo?"}[lang])
+        if understood and understood.facet == "submission" and not understood.entity:
+            return finish("CLARIFICATION", {"english": "Which TPC application or documents do you mean?", "bisaya": "Unsang aplikasyon o mga dokumento sa TPC imong gipasabot?", "tagalog": "Anong aplikasyon o mga dokumento sa TPC ang tinutukoy ninyo?"}[lang])
+        if not session.last_entity and ConversationSession.is_campus_followup(user_query):
+            return finish("CLARIFICATION", {"english": "Which TPC room, office, or campus service do you mean?", "bisaya": "Unsang lawak, opisina, o serbisyo sa TPC imong gipasabot?", "tagalog": "Anong silid, opisina, o serbisyo sa TPC ang tinutukoy ninyo?"}[lang])
         # Critically, classify the original turn before adding any remembered entity.
-        followup = bool(session.last_entity and ConversationSession.is_campus_followup(user_query))
+        followup = bool(session.last_entity and (ConversationSession.is_campus_followup(user_query)
+                        or understood and understood.supported_pattern and understood.facet == "submission"))
         building_reply = bool(session.last_entity and any(_norm(user_query) == _norm(building) for building in session.pending_buildings))
         start_reply = bool(session.last_entity and any(_norm(user_query) == _norm(start) for start in session.pending_starts))
         origin = self._origin(user_query)
@@ -948,8 +1097,8 @@ class TPCNavBotRAG:
             session.clear_context()
             return finish("OFF_TOPIC", m["off_topic"])
         entity = session.last_entity if followup or origin_only or building_reply else self._entity(user_query)
-        intent = "route" if origin_only else "location" if building_reply else self._intent(user_query)
-        standalone = session.get_standalone_query(user_query) if followup else user_query
+        intent = "route" if origin_only else "location" if building_reply else understood.intent if understood and understood.supported_pattern else self._intent(user_query)
+        standalone = understood.normalized_query if understood and understood.supported_pattern else session.get_standalone_query(user_query) if followup else user_query
         if origin_only:
             standalone = f"Directions to {entity} from {origin} at TPC"
         if building_reply:
@@ -983,21 +1132,52 @@ class TPCNavBotRAG:
             records = building_in_query
         unique = {}
         for record in records:
-            key = tuple(_norm(record.get(field, "")) for field in ("destination", "building", "floor", "room"))
+            key = (record['_hit']['metadata']['source_doc'], json.dumps({key: value for key, value in record.items() if key != '_hit'}, sort_keys=True, ensure_ascii=False))
             unique.setdefault(key, record)
-        records = list(unique.values())
+        fields = self._answer_fields(user_query, intent, understood)
+        records = select_current_records(list(unique.values()), user_query, fields=fields, language=lang)
         if not records:
-            return finish("UNVERIFIED", m["unverified"])
+            if self._claim_premise(user_query):
+                return finish('UNVERIFIED', self._unconfirmed_claim(lang))
+            if requested_period(user_query):
+                return finish("UNVERIFIED", {"english": "I don't have a verified TPC source for the requested year or academic period. Please confirm with TPC personnel.", "bisaya": "Wala koy verified nga tinubdan sa TPC alang sa gipangayong tuig o academic period. Palihug kumpirmaha sa kawani sa TPC.", "tagalog": "Wala akong beripikadong sanggunian ng TPC para sa hinihinging taon o academic period. Pakikumpirma sa kawani ng TPC."}[lang])
+            return finish("UNVERIFIED", self._unverified_subject(entity, intent, lang))
+        identities = {tuple(_norm(record.get(field, '')) for field in ('building', 'floor', 'room')) for record in records}
+        distinct_destinations = {_norm(record['destination']) for record in records}
+        if len(identities) > 1 and (entity.startswith('room ') or len(distinct_destinations) > 1):
+            session.pending_buildings = list(dict.fromkeys(record['building'] for record in records if record.get('building')))
+            choices = [' - '.join(str(record[field]) for field in ('destination', 'building', 'room') if record.get(field)) for record in records]
+            return finish('CLARIFICATION', m['ambiguous'] + '\n' + '\n'.join('- ' + choice for choice in choices))
+        conflicts = conflicting_fields(records, fields, lang)
+        if conflicts:
+            labels = {"english": "The reviewed TPC sources conflict on this information. Please confirm with TPC personnel before relying on it.", "bisaya": "Nagkasumpaki ang reviewed nga mga tinubdan sa TPC bahin niini. Palihug kumpirmaha sa kawani sa TPC.", "tagalog": "Magkasalungat ang mga nasuring sanggunian ng TPC tungkol dito. Pakikumpirma sa kawani ng TPC."}
+            distinct = {record['_hit']['metadata']['source_doc']: record for record in records}
+            descriptions = []
+            for record in distinct.values():
+                meta = record['_hit']['metadata']
+                facts = '; '.join(f'{field}: {field_value(record, field, lang)}' for field in conflicts if field_value(record, field, lang) not in (None, ''))
+                date = meta.get('effective_date') or meta.get('publication_date') or 'date not supplied'
+                version = meta.get('document_version') or 'version not supplied'
+                descriptions.append(f"- {meta['source_doc']} ({date}; {version}): {facts[:600]}")
+            return finish("UNVERIFIED", labels[lang] + '\n\n' + '\n'.join(descriptions),
+                          [f"{record['_hit']['metadata']['source_doc']} [{record['_hit']['metadata']['official_source']}]" for record in distinct.values()],
+                          [record['_hit'] for record in distinct.values()],
+                          [source_detail(record, conflicts) for record in distinct.values()])
         identities = {tuple(_norm(record.get(field, "")) for field in ("building", "floor", "room")) for record in records}
         if len(identities) > 1:
             session.pending_buildings = [record["building"] for record in records if record.get("building")]
             choices = [" — ".join(str(record[field]) for field in ("destination", "building", "room") if record.get(field)) for record in records]
             return finish("CLARIFICATION", m["ambiguous"] + "\n" + "\n".join(f"- {choice}" for choice in choices))
+        records.sort(key=lambda record: -sum(field_value(record, field, lang) not in (None, '', [], {}) for field in fields))
         record = self._select_record(user_query, records)
         session.set_context(entity, building=record.get("building"), starting_point=origin, language=lang)
         render_request = {"record": record, "lang": lang, "intent": intent, "origin": origin}
-        specific = self._specific_answer(record, user_query, lang)
+        specific = self._pattern_answer(record, understood, lang) if understood and understood.supported_pattern else None
+        specific = specific or self._specific_answer(record, standalone, lang)
         status, answer = specific or (self.answer_chain.invoke(render_request) if self.answer_chain else self._render_request(render_request))
+        if status == 'SUCCESS' and fields == ('details.fees',) and not field_value(record, 'details.fees', lang):
+            # Existing reviewed free-new-ID/free-Wi-Fi exceptions quote services.
+            fields = ('services',)
         # A verified referral remains helpful even when the requested fact is
         # missing. Its source stays visible, and the answer remains UNVERIFIED.
         referral = self._localized(record.get("contact"), lang)
@@ -1013,11 +1193,7 @@ class TPCNavBotRAG:
         source_details = []
         if sources:
             source_metadata = record["_hit"]["metadata"]
-            source_details.append({
-                "destination": record["destination"],
-                **{key: source_metadata[key] for key in (
-                    "source_doc", "official_source", "reviewed_by", "reviewed_at")},
-            })
+            source_details.append(source_detail(record, ('contact',) if has_referral else fields))
         helpful_tip, suggested_questions = self._helpful_next(record, lang, intent) if status == "SUCCESS" else ("", [])
         return finish(status, answer, sources, [record["_hit"]] if sources else [], source_details,
                       helpful_tip, suggested_questions)

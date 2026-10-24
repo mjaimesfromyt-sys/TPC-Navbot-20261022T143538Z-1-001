@@ -14,6 +14,23 @@ The bundled 30 generated documents must remain unverified. Do not change their s
 
 The registry is an operator review record, not cryptographic proof that a human is authorized. Limit write access to trusted maintainers and keep the underlying official evidence. The application checks completeness and content binding; campus governance supplies the authority.
 
+Optional reviewed metadata includes `document_title`, `source_url` (HTTP/HTTPS),
+`document_version`, `publication_date`, `effective_date`, `valid_until`,
+`academic_year`, `category`, `intent`, `entity`, `language`, `campus`, `department`,
+`section`, `page`, and `supersedes` (source filenames). Keep unknown values absent.
+Malformed or contradictory validity dates invalidate approval. A review date is
+not a publication/effective date. `source_authority` accepts integers 1–7, with
+lower values stronger; defaults are 2 for official documents/maps and 4 for
+authorized campus records. The priority applies to the requested claim, so a
+document lacking hours does not contradict a separate reviewed hours record.
+Unresolved claims at the same authority require confirmation. Future/expired or
+wrong-period sources cannot establish a current/historical fact respectively.
+
+The student-question CSV is never an approval source. Its answer, referral, and
+instruction columns stay outside the fact index. Derived `data/verified_qa/`
+exports retain source hashes and field IDs and must be regenerated after updates;
+runtime retrieval continues to revalidate the original sources.
+
 ## Structured location facts
 
 `location_data` is an object, optionally containing `locations`, a list of reviewed destination objects. Each destination needs `destination`; recommended optional fields are:

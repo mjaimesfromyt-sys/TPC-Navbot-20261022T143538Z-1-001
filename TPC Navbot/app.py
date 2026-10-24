@@ -127,6 +127,15 @@ def show_evidence(metadata):
                         f"{detail.get('reviewed_at', 'Date not supplied')}"
                     )
                     st.caption(f"Source file: {detail.get('source_doc', 'Not supplied')}")
+                    for key, label in (
+                        ('document_title', 'Document'), ('section', 'Section'), ('page', 'Page'),
+                        ('document_version', 'Version'), ('publication_date', 'Published'),
+                        ('effective_date', 'Effective'), ('valid_until', 'Valid until'),
+                        ('source_url', 'Source URL'), ('review_method', 'Review method'),
+                        ('supporting_sections', 'Supporting sections'), ('supporting_pages', 'Supporting pages'),
+                    ):
+                        if detail.get(key) not in (None, ''):
+                            st.caption(f"{label}: {detail[key]}")
                 else:
                     # Source strings are labels, not trusted URLs or HTML.
                     st.text(f"{index:02d} · {source}")

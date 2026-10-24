@@ -971,6 +971,30 @@
         "contact": "Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
       }
     },
+    "user_confirmed_bsis_office.txt": {
+      "verified": true,
+      "source_type": "authorized_campus_record",
+      "sha256": "5436477a3b994f195bb916162f97dea9e2c1621c9d2d326b421345f9272b29da",
+      "official_source": "Project maintainer's direct BSIS office location confirmation in conversation, 24 October 2026",
+      "reviewed_by": "Project maintainer (direct user confirmation)",
+      "reviewed_at": "2026-10-24",
+      "review_method": "location_confirmation_reported_by_user",
+      "submitted_reference": "data/raw/user_confirmed_bsis_office.txt",
+      "notes": "User answered the BSIS / Information Systems department office location question with 'Naa sa main building sulod'. Only the Main Building location is confirmed. No independent school verification, named additional reviewer, floor, room, hours, staff, route, or BSAIS office location is claimed.",
+      "location_data": {
+        "destination": "Information Systems (BSIS) Department Office",
+        "aliases": [
+          "BSIS",
+          "BSIS office",
+          "BSIS department",
+          "Information System office",
+          "Information Systems office",
+          "Information System department",
+          "Information Systems department"
+        ],
+        "location": "Inside the Main Building."
+      }
+    },
     "school_confirmed_30_general_campus_information_and_frequently_asked_questions.txt": {
       "verified": true,
       "source_type": "authorized_campus_record",
@@ -1002,6 +1026,92 @@
           "Campus address: San Isidro, Talibon, Bohol, Philippines.",
           "Public contact channels: Telephone: (038) 411 5340; Email: tpcwebsite05@gmail.com; Facebook: https://www.facebook.com/TalibonPolytechnicCollege; Website: https://www.tpc.edu.ph/"
         ]
+      }
+    },
+    "user_confirmed_bsais_office.txt": {
+      "verified": true,
+      "source_type": "authorized_campus_record",
+      "sha256": "e04be45443f0b02fe231f1c19427a5089f7d8cad772691ba1303d576f585fb42",
+      "official_source": "User's direct department office location confirmation in conversation, 24 October 2026",
+      "reviewed_by": "User (direct location confirmation)",
+      "reviewed_at": "2026-10-24",
+      "review_method": "location_confirmation_reported_by_user",
+      "submitted_reference": "data/raw/user_confirmed_bsais_office.txt",
+      "notes": "Explicit follow-up confirmation covers the four named department offices. Exact user wording: \"Naa ra gihaponn sa main building maka ask raman kas mga tao inag sulod nmo sa main building\". Only Main Building and asking someone after entering are supplied; no floor, room, hours, named staff, or route is established.",
+      "location_data": {
+        "destination": "Accounting Information Systems (BSAIS) Department Office",
+        "aliases": [
+          "BSAIS office",
+          "BSAIS department",
+          "Accounting Information Systems office",
+          "Accounting Information Systems department"
+        ],
+        "location": "Inside the Main Building. Ask someone after entering for the exact department office."
+      }
+    },
+    "user_confirmed_bael_office.txt": {
+      "verified": true,
+      "source_type": "authorized_campus_record",
+      "sha256": "85576b092dd90730592858895b2f0532e347c92ca5f4e441dc931bb8cf9dcae6",
+      "official_source": "User's direct department office location confirmation in conversation, 24 October 2026",
+      "reviewed_by": "User (direct location confirmation)",
+      "reviewed_at": "2026-10-24",
+      "review_method": "location_confirmation_reported_by_user",
+      "submitted_reference": "data/raw/user_confirmed_bael_office.txt",
+      "notes": "Explicit follow-up confirmation covers the four named department offices. Exact user wording: \"Naa ra gihaponn sa main building maka ask raman kas mga tao inag sulod nmo sa main building\". Only Main Building and asking someone after entering are supplied; no floor, room, hours, named staff, or route is established.",
+      "location_data": {
+        "destination": "English Language (BAEL) Department Office",
+        "aliases": [
+          "BAEL office",
+          "BAEL department",
+          "English Language office",
+          "English Language department",
+          "English office",
+          "English department"
+        ],
+        "location": "Inside the Main Building. Ask someone after entering for the exact department office."
+      }
+    },
+    "user_confirmed_baps_office.txt": {
+      "verified": true,
+      "source_type": "authorized_campus_record",
+      "sha256": "d2379987919bf0694371d4f90f5b55855f20d52244c46bda30262135f562c176",
+      "official_source": "User's direct department office location confirmation in conversation, 24 October 2026",
+      "reviewed_by": "User (direct location confirmation)",
+      "reviewed_at": "2026-10-24",
+      "review_method": "location_confirmation_reported_by_user",
+      "submitted_reference": "data/raw/user_confirmed_baps_office.txt",
+      "notes": "Explicit follow-up confirmation covers the four named department offices. Exact user wording: \"Naa ra gihaponn sa main building maka ask raman kas mga tao inag sulod nmo sa main building\". Only Main Building and asking someone after entering are supplied; no floor, room, hours, named staff, or route is established.",
+      "location_data": {
+        "destination": "Political Science (BAPS) Department Office",
+        "aliases": [
+          "BAPS office",
+          "BAPS department",
+          "Political Science office",
+          "Political Science department"
+        ],
+        "location": "Inside the Main Building. Ask someone after entering for the exact department office."
+      }
+    },
+    "user_confirmed_beced_office.txt": {
+      "verified": true,
+      "source_type": "authorized_campus_record",
+      "sha256": "e9500b67fef587844976098222cbb3c626c8d49ca8b8e7a9f439397201dccb99",
+      "official_source": "User's direct department office location confirmation in conversation, 24 October 2026",
+      "reviewed_by": "User (direct location confirmation)",
+      "reviewed_at": "2026-10-24",
+      "review_method": "location_confirmation_reported_by_user",
+      "submitted_reference": "data/raw/user_confirmed_beced_office.txt",
+      "notes": "Explicit follow-up confirmation covers the four named department offices. Exact user wording: \"Naa ra gihaponn sa main building maka ask raman kas mga tao inag sulod nmo sa main building\". Only Main Building and asking someone after entering are supplied; no floor, room, hours, named staff, or route is established.",
+      "location_data": {
+        "destination": "Early Childhood Education (BECED) Department Office",
+        "aliases": [
+          "BECED office",
+          "BECED department",
+          "Early Childhood Education office",
+          "Early Childhood Education department"
+        ],
+        "location": "Inside the Main Building. Ask someone after entering for the exact department office."
       }
     }
   }

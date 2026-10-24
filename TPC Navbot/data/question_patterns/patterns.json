@@ -1,0 +1,517 @@
+{
+  "schema_version": 1,
+  "purpose": "student_question_patterns_only",
+  "authority": "none; wording patterns are not TPC evidence",
+  "dataset_profile": {
+    "source_dataset": "TPC_NavBot_10000_New_Student_QA.csv",
+    "source_sha256": "c6f8aa305a06a6f545921460f2807843e18a397cf9b7f70645f4fa714f486653",
+    "records": 10000,
+    "unique_questions": 10000,
+    "duplicate_question_rows": 0,
+    "languages": {
+      "Cebuano": 3333,
+      "English": 3334,
+      "Filipino": 3333
+    },
+    "categories": {
+      "Academic Policies": 400,
+      "Academic Programs": 401,
+      "Accessibility": 383,
+      "Activities and Events": 398,
+      "Admissions": 404,
+      "Campus Facilities": 407,
+      "Campus Navigation": 395,
+      "Class Schedules": 402,
+      "Enrollment": 392,
+      "Fees and Payments": 398,
+      "Graduation": 407,
+      "Health and Wellbeing": 400,
+      "Housing and Accommodation": 400,
+      "Information Technology": 397,
+      "International/New Students": 406,
+      "Library": 397,
+      "Policies and Rules": 400,
+      "Privacy and Data": 408,
+      "Safety and Security": 405,
+      "Scholarships and Financial Aid": 401,
+      "Student ID": 397,
+      "Student Organizations": 409,
+      "Student Records": 394,
+      "Student Services": 399,
+      "Transportation": 400
+    },
+    "recognized_patterns": 10000,
+    "unrecognized_patterns": 0,
+    "language_label_agreement": 10000,
+    "category_label_agreement": 10000,
+    "facet_counts": {
+      "appointment": 513,
+      "change_information": 497,
+      "contact": 507,
+      "correction": 492,
+      "deadlines": 503,
+      "documents": 502,
+      "eligibility": 503,
+      "fees": 490,
+      "first_step": 502,
+      "follow_up": 502,
+      "location": 499,
+      "lost_item": 490,
+      "office_hours": 497,
+      "online_option": 502,
+      "process": 501,
+      "referral": 507,
+      "requirements": 503,
+      "schedule": 496,
+      "status": 495,
+      "verify_information": 499
+    },
+    "mapped_entity_counts": {
+      "academic calendar": 402,
+      "academic programs": 401,
+      "admissions": 404,
+      "campus accessibility": 790,
+      "campus safety": 405,
+      "campus transportation": 400,
+      "cashier": 398,
+      "clinic": 400,
+      "enrollment": 354,
+      "enrollment documents": 38,
+      "it office": 794,
+      "library": 397,
+      "registrar": 394,
+      "scholarship": 401,
+      "student affairs": 399,
+      "student government": 409,
+      "student handbook": 400,
+      "unsupported_school_topic": 2814
+    },
+    "observed_language_category_facet_combinations": 1500,
+    "answer_columns_used": false,
+    "fact_indexed": false
+  },
+  "templates": [
+    {
+      "language": "english",
+      "facet": "office_hours",
+      "intent": "hours",
+      "question": "What are the office hours?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "office_hours",
+      "intent": "hours",
+      "question": "Ano ang oras ng opisina?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "office_hours",
+      "intent": "hours",
+      "question": "Unsa ang oras sa opisina?"
+    },
+    {
+      "language": "english",
+      "facet": "location",
+      "intent": "location",
+      "question": "Where should I go?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "location",
+      "intent": "location",
+      "question": "Saan ako dapat pumunta?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "location",
+      "intent": "location",
+      "question": "Asa ko angay moadto?"
+    },
+    {
+      "language": "english",
+      "facet": "online_option",
+      "intent": "services",
+      "question": "Can I do this online?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "online_option",
+      "intent": "services",
+      "question": "Pwede ba itong gawin online?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "online_option",
+      "intent": "services",
+      "question": "Pwede ba kini buhaton online?"
+    },
+    {
+      "language": "english",
+      "facet": "schedule",
+      "intent": "hours",
+      "question": "When is it scheduled?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "schedule",
+      "intent": "hours",
+      "question": "Kailan ito naka-schedule?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "schedule",
+      "intent": "hours",
+      "question": "Kanus-a kini naka-schedule?"
+    },
+    {
+      "language": "english",
+      "facet": "referral",
+      "intent": "contact",
+      "question": "Where can I get help?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "referral",
+      "intent": "contact",
+      "question": "Saan ako makakakuha ng tulong?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "referral",
+      "intent": "contact",
+      "question": "Asa ko makakuha og tabang?"
+    },
+    {
+      "language": "english",
+      "facet": "follow_up",
+      "intent": "services",
+      "question": "How do I follow up?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "follow_up",
+      "intent": "services",
+      "question": "Paano ako magfo-follow up?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "follow_up",
+      "intent": "services",
+      "question": "Unsaon nako pag-follow up?"
+    },
+    {
+      "language": "english",
+      "facet": "change_information",
+      "intent": "services",
+      "question": "How do I change my information?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "change_information",
+      "intent": "services",
+      "question": "Paano ko babaguhin ang aking impormasyon?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "change_information",
+      "intent": "services",
+      "question": "Unsaon nako pag-usab sa akong impormasyon?"
+    },
+    {
+      "language": "english",
+      "facet": "requirements",
+      "intent": "services",
+      "question": "What requirements do I need?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "requirements",
+      "intent": "services",
+      "question": "Ano ang mga requirements na kailangan ko?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "requirements",
+      "intent": "services",
+      "question": "Unsa ang mga requirements nga akong kinahanglan?"
+    },
+    {
+      "language": "english",
+      "facet": "documents",
+      "intent": "services",
+      "question": "What documents should I prepare?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "documents",
+      "intent": "services",
+      "question": "Anong mga dokumento ang dapat kong ihanda?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "documents",
+      "intent": "services",
+      "question": "Unsa nga mga dokumento ang akong andamon?"
+    },
+    {
+      "language": "english",
+      "facet": "process",
+      "intent": "services",
+      "question": "What is the process?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "process",
+      "intent": "services",
+      "question": "Ano ang proseso?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "process",
+      "intent": "services",
+      "question": "Unsa ang proseso?"
+    },
+    {
+      "language": "english",
+      "facet": "first_step",
+      "intent": "services",
+      "question": "What is the first step?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "first_step",
+      "intent": "services",
+      "question": "Ano ang unang hakbang?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "first_step",
+      "intent": "services",
+      "question": "Unsa ang unang lakang?"
+    },
+    {
+      "language": "english",
+      "facet": "deadlines",
+      "intent": "services",
+      "question": "What is the deadline?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "deadlines",
+      "intent": "services",
+      "question": "Ano ang deadline?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "deadlines",
+      "intent": "services",
+      "question": "Unsa ang deadline?"
+    },
+    {
+      "language": "english",
+      "facet": "fees",
+      "intent": "services",
+      "question": "How much does it cost?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "fees",
+      "intent": "services",
+      "question": "Magkano ang bayad o fees?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "fees",
+      "intent": "services",
+      "question": "Pila ang bayad o fees?"
+    },
+    {
+      "language": "english",
+      "facet": "appointment",
+      "intent": "services",
+      "question": "Do I need an appointment?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "appointment",
+      "intent": "services",
+      "question": "Kailangan ba ng appointment?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "appointment",
+      "intent": "services",
+      "question": "Kinahanglan ba og appointment?"
+    },
+    {
+      "language": "english",
+      "facet": "status",
+      "intent": "services",
+      "question": "How can I check my status?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "status",
+      "intent": "services",
+      "question": "Paano ko malalaman ang status ko?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "status",
+      "intent": "services",
+      "question": "Unsaon nako pagkahibalo sa akong status?"
+    },
+    {
+      "language": "english",
+      "facet": "verify_information",
+      "intent": "services",
+      "question": "How can I verify the information?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "verify_information",
+      "intent": "services",
+      "question": "Paano ko mabe-verify ang impormasyon?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "verify_information",
+      "intent": "services",
+      "question": "Unsaon nako pag-verify sa impormasyon?"
+    },
+    {
+      "language": "english",
+      "facet": "contact",
+      "intent": "contact",
+      "question": "Who should I contact?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "contact",
+      "intent": "contact",
+      "question": "Sino ang dapat kong kontakin?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "contact",
+      "intent": "contact",
+      "question": "Kinsa ang akong kontakon?"
+    },
+    {
+      "language": "english",
+      "facet": "eligibility",
+      "intent": "services",
+      "question": "Who is eligible?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "eligibility",
+      "intent": "services",
+      "question": "Sino ang eligible?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "eligibility",
+      "intent": "services",
+      "question": "Kinsa ang eligible?"
+    },
+    {
+      "language": "english",
+      "facet": "lost_item",
+      "intent": "services",
+      "question": "What should I do if I lose a document or item?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "lost_item",
+      "intent": "services",
+      "question": "Ano ang gagawin ko kung mawala ang dokumento o gamit ko?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "lost_item",
+      "intent": "services",
+      "question": "Unsa akong buhaton kung mawala ang dokumento o gamit?"
+    },
+    {
+      "language": "english",
+      "facet": "correction",
+      "intent": "services",
+      "question": "What should I do if I made a mistake?"
+    },
+    {
+      "language": "tagalog",
+      "facet": "correction",
+      "intent": "services",
+      "question": "Ano ang gagawin ko kung nagkamali ako?"
+    },
+    {
+      "language": "bisaya",
+      "facet": "correction",
+      "intent": "services",
+      "question": "Unsa akong buhaton kung nasayop ko?"
+    }
+  ],
+  "introductions": {
+    "english": [
+      "I am a new student at TPC",
+      "I am getting ready for my first term at TPC",
+      "I am new to TPC and I am not sure what to do",
+      "I am preparing to study at TPC",
+      "I am starting at TPC and need guidance",
+      "I need help as a first-time TPC student",
+      "I will be a new TPC student"
+    ],
+    "tagalog": [
+      "Bagong estudyante ako sa TPC",
+      "Baguhan ako sa TPC at kailangan ko ng gabay",
+      "Kailangan ko ng tulong bilang bagong estudyante sa TPC",
+      "Kakapasok ko lang sa TPC",
+      "Mag-aaral ako sa TPC at gusto kong makasiguro",
+      "Magsisimula ako bilang estudyante sa TPC",
+      "Naghahanda ako para sa unang term ko sa TPC"
+    ],
+    "bisaya": [
+      "Bag-o pa ko nga na-enroll sa TPC",
+      "Bag-o pa ko sa TPC ug nanginahanglan ko og giya",
+      "Bag-ong estudyante ko sa TPC",
+      "Kinahanglan ko og tabang isip bag-ong estudyante sa TPC",
+      "Magsugod ko og eskwela sa TPC",
+      "Magtuon ko sa TPC ug gusto ko makasiguro",
+      "Nangandam ko para sa akong unang term sa TPC"
+    ]
+  },
+  "supported_categories": [
+    "academic policies",
+    "academic programs",
+    "accessibility",
+    "activities and events",
+    "admissions",
+    "campus facilities",
+    "campus navigation",
+    "class schedules",
+    "enrollment",
+    "fees and payments",
+    "graduation",
+    "health and wellbeing",
+    "housing and accommodation",
+    "information technology",
+    "international new students",
+    "library",
+    "policies and rules",
+    "privacy and data",
+    "safety and security",
+    "scholarships and financial aid",
+    "student id",
+    "student organizations",
+    "student records",
+    "student services",
+    "transportation"
+  ],
+  "limitations": [
+    "The dataset has synthetic combinations of a small fixed template vocabulary.",
+    "Pattern coverage is not answer accuracy, factual verification or independent generalization.",
+    "No answer, alleged referral office or instruction column is imported.",
+    "Unknown campus facts still require approved evidence at retrieval time."
+  ]
+}

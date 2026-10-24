@@ -160,11 +160,17 @@ class GuardrailsTests(unittest.TestCase):
         self.assertEqual(response["sources"], [
             "reviewed-fixture.txt [Authorized campus test record]",
         ])
-        self.assertEqual(response["source_details"], [{
+        original = {
             "destination": "Library", "source_doc": "reviewed-fixture.txt",
             "official_source": "Authorized campus test record",
             "reviewed_by": "Test reviewer", "reviewed_at": "2026-10-22",
-        }])
+        }
+        self.assertEqual(len(response['source_details']), 1)
+        detail = response['source_details'][0]
+        self.assertEqual({key: detail[key] for key in original}, original)
+        self.assertEqual(detail['source_sha256'], 'a' * 64)
+        self.assertEqual(detail['claim_fields'], ['building', 'room'])
+        self.assertEqual(len(detail['verified_fact_ids']), 2)
         for evidence in ("Source:", "reviewed-fixture.txt", "Authorized campus test record",
                          "Test reviewer", "2026-10-22"):
             with self.subTest(evidence=evidence):
@@ -274,7 +280,12 @@ class GuardrailsTests(unittest.TestCase):
                 nav = bot([approved_hit()])
                 nav.chat("Where is the library?")
                 self.assertEqual(nav.chat(attack)["status"], "OFF_TOPIC")
-                self.assertEqual(nav.chat("What are its operating hours?")["status"], "OFF_TOPIC")
+                calls_before = list(nav.vector_store.calls)
+                followup = nav.chat("What are its operating hours?")
+                self.assertEqual(followup["status"], "CLARIFICATION")
+                self.assertEqual(followup["sources"], [])
+                self.assertEqual(nav.vector_store.calls, calls_before)
+                self.assertIsNone(nav.memory_manager.get_session().last_entity)
 
     def test_explicit_origin_preserved_across_campus_destination_change(self):
         nav = bot([with_route(approved_hit()), approved_hit("Registrar Office", building="Admin", room="101")])
@@ -310,11 +321,16 @@ class GuardrailsTests(unittest.TestCase):
     def test_query_is_single_turn_and_sessions_are_isolated(self):
         nav = bot([approved_hit()])
         nav.chat("Where is the library?", session_id="student_a")
-        self.assertEqual(nav.chat("What are its hours?", session_id="student_b")["status"], "OFF_TOPIC")
+        self.assertEqual(nav.chat("What are its hours?", session_id="student_b")["status"], "CLARIFICATION")
+        self.assertEqual(len(nav.vector_store.calls), 1)
+        self.assertIsNone(nav.memory_manager.get_session("student_b").last_entity)
         nav.query("Where is the library?")
-        self.assertEqual(nav.query("What are its hours?")["status"], "OFF_TOPIC")
+        self.assertEqual(nav.query("What are its hours?")["status"], "CLARIFICATION")
+        self.assertEqual(len(nav.vector_store.calls), 2)
         nav.reset_conversation("student_a")
-        self.assertEqual(nav.chat("What are its hours?", session_id="student_a")["status"], "OFF_TOPIC")
+        self.assertEqual(nav.chat("What are its hours?", session_id="student_a")["status"], "CLARIFICATION")
+        self.assertEqual(len(nav.vector_store.calls), 2)
+        self.assertIsNone(nav.memory_manager.get_session("student_a").last_entity)
 
     def test_free_text_model_output_cannot_bypass_grounding(self):
         def malicious_selector(query, candidates):

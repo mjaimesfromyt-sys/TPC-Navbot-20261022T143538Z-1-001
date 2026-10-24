@@ -9,7 +9,7 @@ if __package__ in {None, ""}:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.config import MANIFEST_PATH, PROCESSED_CHUNKS_PATH, RAW_DATA_DIR, SOURCE_REGISTRY_PATH
-from src.preprocessing import TextPreprocessor
+from src.preprocessing import CHUNKER_VERSION, TextPreprocessor
 from src.storage_io import atomic_text_writer, atomic_write_text
 from src.vector_store import VectorStore
 
@@ -47,7 +47,8 @@ class IngestionPipeline:
     def _fingerprint(self, filepath):
         entry = self.processor.registry.entries().get(Path(filepath).name, {})
         payload = {"sha256": self._compute_file_hash(filepath), "review": entry,
-                   "embedding": self.vector_store.embedding_signature, "chunker": "bounded-v2:400:50"}
+                   "embedding": self.vector_store.embedding_signature,
+                   "chunker": f"{CHUNKER_VERSION}:{self.processor.chunk_size}:{self.processor.chunk_overlap}"}
         return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
     def ingest_file(self, filepath, force=False):

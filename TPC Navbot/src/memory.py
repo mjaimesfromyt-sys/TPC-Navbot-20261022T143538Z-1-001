@@ -10,11 +10,17 @@ from typing import Dict, List, Optional
 
 class ConversationSession:
     FOLLOWUPS = (
+        r"(?:and\s+)?(?:how much (?:is|are) (?:its|the) fees?|what (?:is|are) (?:its|the) deadlines?)",
         r"(?:and\s+)?(?:what services (?:are there|are available|does it offer)|what (?:are|is) (?:its|the) requirements|what about (?:its|the) (?:hours|services|contact))",
         r"(?:and\s+)?(?:what (?:are|is) (?:its|the) (?:operating |opening )?hours|(?:its )?(?:operating |opening )?hours|when (?:does it open|is it open))",
         r"(?:and\s+)?(?:what (?:are|is) (?:its|the) (?:services|contact (?:number|details))|how (?:do i|can i) (?:get|go) there|how long (?:does it take|is the walk)(?: to (?:walk|get) there)?|is it (?:wheelchair )?accessible|is there (?:a ramp|an elevator))",
         r"(?:ug\s+)?(?:unsa(?:y| ang)? (?:iyang |ang )?(?:oras|orasa|serbisyo)|unsang orasa (?:abli|moabli)(?: didto)?|kanus a (?:abli|moabli)|unsaon (?:pag adto|pagadto)(?: didto)?|pila ka minuto(?: ang lakaw)?(?: padulong didto)?|naa bay (?:rampa|elevator)(?: didto)?)",
         r"(?:at\s+)?(?:ano(?: po)? (?:ang )?(?:oras|serbisyo)(?: nito|niya)?|anong oras (?:ito )?(?:bukas|nagbubukas)|kailan (?:ito )?bukas|paano(?: po)? (?:pumunta|makapunta)(?: doon)?|gaano katagal(?: ang lakad)?(?: papunta doon)?|may (?:rampa|elevator) ba(?: doon)?)",
+        # Common short student follow-ups still require an existing campus
+        # destination and a complete match, including any additional task.
+        r"(?:and\s+)?(?:where is it(?: located)?|where exactly|what (?:are|is) (?:its|the) office hours|what time does it (?:open|close)|(?:what|which) (?:floor|room)(?: (?:is it (?:in|on)|number))?)",
+        r"(?:ug\s+)?(?:asa(?: dapit| dapita)?|unsang orasa (?:mosira|magsira)(?: didto)?|unsang (?:andana|lawak))",
+        r"(?:at\s+)?(?:saan(?: po)? banda|nasaan(?: po)? (?:ito|iyon)|anong oras(?: po)? (?:ito )?(?:nagsasara|nagbubukas)|(?:anong|saang) (?:palapag|silid))",
     )
 
     def __init__(self, session_id: str):

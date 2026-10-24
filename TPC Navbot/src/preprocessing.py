@@ -2,13 +2,19 @@
 import hashlib
 import json
 import re
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from src.config import RAW_DATA_DIR, SOURCE_REGISTRY_PATH
 
 VERIFICATION_SCHEMA = "tpc-source-v1"
 APPROVED_SOURCE_TYPES = {"official_document", "official_map", "authorized_campus_record"}
+CHUNKER_VERSION = "structural-v3.1"
+
+
+def _campus_today():
+    return datetime.now(timezone(timedelta(hours=8))).date()
 
 
 class SourceRegistry:
@@ -57,7 +63,7 @@ class SourceRegistry:
                 reason = "invalid_review"
                 try:
                     reviewed = date.fromisoformat(fields["reviewed_at"])
-                    valid_date = reviewed <= date.today()
+                    valid_date = reviewed <= _campus_today()
                 except ValueError:
                     valid_date = False
                 if entry.get("sha256") != digest:
@@ -67,8 +73,63 @@ class SourceRegistry:
                 elif fields["official_source"] and fields["reviewed_by"] and valid_date:
                     fields["verified_source"] = True
                     reason = "verified"
+        # Optional source dates must be usable, rather than silently turning a
+        # malformed expiry into an indefinitely current source.
+        dates = {}
+        if fields["verified_source"]:
+            for key in ("publication_date", "effective_date", "valid_until"):
+                value = entry.get(key)
+                if value not in (None, ""):
+                    try:
+                        parsed = date.fromisoformat(value) if isinstance(value, str) else None
+                    except ValueError:
+                        parsed = None
+                    if parsed is None or parsed.isoformat() != value:
+                        fields["verified_source"] = False
+                        reason = "invalid_source_dates"
+                        break
+                    dates[key] = value
+            if (dates.get("effective_date") and dates.get("valid_until")
+                    and dates["effective_date"] > dates["valid_until"]):
+                fields["verified_source"] = False
+                reason = "invalid_source_dates"
         fields["verification_reason"] = reason
         if fields["verified_source"]:
+            fields.update(dates)
+            # Authority is an operator-supplied review field, never a heading or
+            # assertion inside a document. Smaller numbers have higher priority.
+            authority = entry.get("source_authority")
+            if type(authority) is int and 1 <= authority <= 7:
+                fields["source_authority"] = authority
+            else:
+                fields["source_authority"] = 4 if fields["source_type"] == "authorized_campus_record" else 2
+            fields["evidence_status"] = "reviewed"
+            for key in ("document_title", "document_version", "academic_year", "category", "intent",
+                        "entity", "language", "campus", "department", "section", "review_method"):
+                value = review_string(key)
+                if value:
+                    fields[key] = value
+            if "section" in fields:
+                fields["section_origin"] = "registry"
+            page = entry.get("page")
+            if type(page) is int and page > 0 or isinstance(page, str) and page.strip():
+                fields["page"] = page if type(page) is int else page.strip()
+                fields["page_origin"] = "registry"
+            source_url = review_string("source_url")
+            try:
+                parsed = urlparse(source_url)
+                if parsed.scheme in ("http", "https") and parsed.netloc and not parsed.username and not parsed.password:
+                    fields["source_url"] = source_url
+            except ValueError:
+                pass
+            supersedes = entry.get("supersedes")
+            if isinstance(supersedes, str):
+                supersedes = [supersedes]
+            if isinstance(supersedes, list):
+                names = sorted({name for name in supersedes if isinstance(name, str) and name
+                                and Path(name).name == name and "/" not in name and "\\" not in name})
+                if names:
+                    fields["supersedes"] = json.dumps(names, ensure_ascii=False)
             for key in ("location_data", "route_data"):
                 value = entry.get(key)
                 if isinstance(value, str):
@@ -82,7 +143,7 @@ class SourceRegistry:
 
 
 class TextPreprocessor:
-    """Create bounded overlapping chunks while retaining source metadata."""
+    """Keep sections, paragraphs and table headers together in bounded chunks."""
 
     def __init__(self, chunk_size=400, chunk_overlap=50, source_registry_path=None):
         if chunk_size < 120 or not 0 <= chunk_overlap < chunk_size // 2:
@@ -104,7 +165,7 @@ class TextPreprocessor:
         building = re.search(r"^Building Name:\s*(.+)$", text, re.MULTILINE)
         location = re.search(r"^Location ID:\s*(.+)$", text, re.MULTILINE)
         filename = Path(source_filename).name
-        return {
+        metadata = {
             "source_doc": filename,
             "building": building.group(1).strip() if building else Path(filename).stem.replace("_", " ").title(),
             "location_id": location.group(1).strip() if location else "CAMPUS-GEN-00",
@@ -112,30 +173,159 @@ class TextPreprocessor:
             "verification_schema": VERIFICATION_SCHEMA,
             "verification_reason": "unregistered",
         }
+        # These are literal source labels, not inferred publication facts. Trust
+        # remains false until SourceRegistry validates the document's exact bytes.
+        for label, key in (("Document Title", "document_title"), ("Title", "document_title")):
+            match = re.search(r"^" + label + r":\s*(.+)$", text, re.MULTILINE | re.I)
+            if match and key not in metadata:
+                metadata[key] = match.group(1).strip()
+        return metadata
+
+    @staticmethod
+    def _is_heading(line):
+        match = re.fullmatch(r"\s*#{1,6}\s+(.+?)\s*#*", line)
+        if not match:
+            match = re.fullmatch(r"\s*Section\s*:\s*(.+)", line, re.I)
+        return match.group(1).strip() if match else None
+
+    @staticmethod
+    def _split_body(body, capacity, overlap=0):
+        """Split only oversized units; ordinary paragraphs/items stay whole."""
+        start = 0
+        while start < len(body):
+            end = min(start + capacity, len(body))
+            if end < len(body):
+                # Prefer a complete sentence, then a word, then a hard bound.
+                candidates = [m.end() for m in re.finditer(r"[.!?](?:\s|$)", body[start:end])]
+                boundary = candidates[-1] + start if candidates else body.rfind(" ", start, end)
+                if boundary > start + capacity // 2:
+                    end = boundary
+            value = body[start:end].strip()
+            if value:
+                yield value
+            if end >= len(body):
+                break
+            start = max(start + 1, end - overlap)
+
+    @staticmethod
+    def _table_separator(line):
+        return bool(re.fullmatch(r"\s*\|?\s*:?-{2,}:?\s*(?:\|\s*:?-{2,}:?\s*)+\|?\s*", line))
+
+    def _table_chunks(self, lines, capacity):
+        """Repeat a Markdown table's header, or pair oversized rows by column."""
+        columns = [cell.strip() for cell in lines[0].strip().strip("|").split("|")]
+        table_meta = {"chunk_kind": "table", "table_columns": json.dumps(columns, ensure_ascii=False)}
+        table_header = "\n".join(lines[:2])
+        current = table_header
+        for row_number, row in enumerate(lines[2:], 1):
+            if len(table_header) + 1 + len(row) > capacity:
+                if current != table_header:
+                    yield current, table_meta
+                    current = table_header
+                cells = [cell.strip() for cell in row.strip().strip("|").split("|")]
+                row_label = f"{columns[0]}: {cells[0]}" if columns and cells else ""
+                for index, cell in enumerate(cells):
+                    label = columns[index] if index < len(columns) else f"Column {index + 1}"
+                    context = (row_label + "\n" if index and len(row_label) < capacity // 2 else "") + label + ": "
+                    # Keep the complete relationship in metadata even when an
+                    # individual column heading itself exceeds a text chunk.
+                    prefix = context[:max(1, capacity // 2)]
+                    for part in self._split_body(cell, capacity - len(prefix)):
+                        yield prefix + part, dict(table_meta, table_row=row_number,
+                                                  table_row_label=row_label, table_column=label)
+                continue
+            proposed = current + "\n" + row
+            if len(proposed) > capacity:
+                yield current, table_meta
+                current = table_header + "\n" + row
+            else:
+                current = proposed
+        if current != table_header:
+            yield current, table_meta
+        elif len(lines) == 2:
+            for part in self._split_body(table_header, capacity):
+                yield part, table_meta
 
     def chunk_text(self, text, metadata):
         cleaned = self.clean_text(text)
         if not cleaned:
             return []
-        header = f"Context Source: {metadata['building']} ({metadata['location_id']})\n"
-        header = header[:min(100, self.chunk_size // 3)]
+        title = metadata.get("document_title") or metadata['building']
+        header = f"Context Source: {title} ({metadata['location_id']})"
+        header = header[:min(99, self.chunk_size // 3 - 1)].rstrip() + "\n"
         capacity = self.chunk_size - len(header)
         overlap = min(self.chunk_overlap, capacity // 2)
-        chunks, start = [], 0
-        while start < len(cleaned):
-            end = min(start + capacity, len(cleaned))
-            if end < len(cleaned):
-                boundary = cleaned.rfind(" ", start + capacity // 2, end)
-                if boundary > start:
-                    end = boundary
-            body = cleaned[start:end].strip()
-            if body:
-                meta = metadata.copy()
-                meta["chunk_id"] = f"{Path(meta['source_doc']).stem}_chunk_{len(chunks) + 1:04d}"
-                chunks.append({"text": header + body, "metadata": meta})
-            if end >= len(cleaned):
-                break
-            start = max(start + 1, end - overlap)
+        chunks, pending = [], []
+        section = metadata.get("section")
+        page = metadata.get("page")
+        section_origin = metadata.get("section_origin")
+        page_origin = metadata.get("page_origin")
+
+        def emit(body, extra=None):
+            if not body.strip():
+                return
+            meta = dict(metadata, chunker_version=CHUNKER_VERSION, chunk_kind="paragraph")
+            if section:
+                meta["section"] = section
+                if section_origin:
+                    meta["section_origin"] = section_origin
+            if page:
+                meta["page"] = page
+                if page_origin:
+                    meta["page_origin"] = page_origin
+            meta.update(extra or {})
+            meta["chunk_id"] = f"{Path(meta['source_doc']).stem}_chunk_{len(chunks) + 1:04d}"
+            chunks.append({"text": header + body, "metadata": meta})
+
+        def flush():
+            if pending:
+                body = "\n".join(pending)
+                for part in self._split_body(body, capacity, overlap):
+                    emit(part)
+                pending.clear()
+
+        lines = cleaned.splitlines()
+        index = 0
+        while index < len(lines):
+            line = lines[index]
+            heading = self._is_heading(line)
+            page_label = re.fullmatch(r"\s*(?:\[)?Page\s*:?\s*(\d+)(?:\])?\s*", line, re.I)
+            if heading:
+                flush()
+                section = heading
+                section_origin = "document"
+                pending.append(line)
+                index += 1
+                continue
+            if page_label:
+                flush()
+                page = int(page_label.group(1))
+                page_origin = "document"
+                pending.append(line)
+                index += 1
+                continue
+            if index + 1 < len(lines) and "|" in line and self._table_separator(lines[index + 1]):
+                flush()
+                table = [line, lines[index + 1]]
+                index += 2
+                while index < len(lines) and "|" in lines[index] and lines[index].strip():
+                    table.append(lines[index])
+                    index += 1
+                for body, table_metadata in self._table_chunks(table, capacity):
+                    emit(body, table_metadata)
+                continue
+            if not line.strip():
+                flush()
+                index += 1
+                continue
+            # Preserve each normal-sized list item/requirement rather than
+            # splitting one across unrelated paragraph or section boundaries.
+            is_item = bool(re.match(r"\s*(?:[-*+]\s+|\d+[.)]\s+)", line))
+            if pending and (is_item or len("\n".join(pending + [line])) > capacity):
+                flush()
+            pending.append(line)
+            index += 1
+        flush()
         return chunks
 
     def process_file(self, filepath, *, registry_entries=None):

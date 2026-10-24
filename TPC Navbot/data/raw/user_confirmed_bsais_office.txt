@@ -1,0 +1,15 @@
+TPC user-confirmed location: Accounting Information Systems (BSAIS) Department Office
+Location ID: TPC-BSAIS-OFFICE
+Confirmation date: 2026-10-24
+
+The user was asked for the BSAIS, English/BAEL, Political Science/BAPS,
+and Early Childhood Education/BECED department office locations and replied:
+"Naa ra gihaponn sa main building maka ask raman kas mga tao inag sulod nmo sa main building"
+
+Selected fact for Accounting Information Systems (BSAIS) Department Office:
+Inside the Main Building. Ask someone after entering for the exact department office.
+
+This is direct user confirmation. No additional school reviewer,
+handbook page, or independent campus verification is claimed.
+Floor, room number, office hours, named staff, and detailed routes
+were not supplied and must not be inferred from this record.

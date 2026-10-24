@@ -1,5 +1,11 @@
 # TPC NavBot
 
+The RAG optimization keeps the model and weights unchanged. Student-question
+patterns are separate from approved campus facts; default retrieval combines
+existing vectors with BM25 and checks claim-specific authority, dates, conflicts,
+and source citations. See the [implementation and evaluation report](docs/13_rag_optimization_report.md)
+for measured results, limitations, and regeneration commands for the derived Q&A.
+
 A campus assistance prototype for Talibon Polytechnic College (TPC), with English, Bisaya, and Tagalog responses. The bot handles campus locations and supported campus services, rejects unrelated requests, and withholds unverified facts and routes.
 
 **Data status:** `data/raw/` contains the original 30 generated samples (still
@@ -11,6 +17,13 @@ school verification by this software is claimed. Exact handbook edition/pages
 and the reviewer's position were not supplied. Only the selected explicit facts
 are approved; missing or ambiguous details remain unavailable. See
 [the import and remaining gaps](docs/11_school_confirmed_records.md).
+
+On 24 October 2026 the project maintainer directly confirmed that the BSIS /
+Information Systems department office is inside the Main Building. The user then
+confirmed the same building for the BSAIS, English/BAEL, Political Science/BAPS,
+and Early Childhood Education/BECED offices, with advice to ask someone after
+entering for the exact office. Five separate `user_confirmed_*_office.txt` sources
+record those confirmations without adding unsupplied floor, room, hours, or staff.
 
 Read [the requirements audit](docs/00_requirements_audit.md) for what is complete, partial, and still dependent on real-world evidence. The earlier README's claims of full checkpoint scores, verified documents, and completed deployment were unsupported.
 
@@ -51,6 +64,19 @@ contextual follow-ups, and keeps missing fees, deadlines, access permissions,
 and other specific details unconfirmed. Approved referral contacts can still
 help students reach the right office. Explicit program questions distinguish
 BSIS from BSAIS instead of returning the wrong overlapping title.
+All seven reviewed programs have shared full-name, subject-name, and abbreviation
+matching: BSIS, BSAIS, BSCRIM/Crim, BSAG/BSA/Agri, BAPS/PolSci, BAEL/English
+department, and BECED/Education. Each department uses its own reviewed location;
+Criminology and Agriculture retain their separately supplied building landmarks.
+`List all departments` and equivalent questions in Bisaya or Tagalog return the
+reviewed seven-program list. Individual program-offer questions return only the
+requested title. Missing department details name the requested subject rather
+than resetting the conversation to the assistant introduction.
+Common student wording such as `Asa dapit makita ang registrar?`, `Saan makikita
+ang registrar?`, and `Where do I go to get a student ID?` resolves to the relevant
+reviewed office. Short follow-ups such as `Where is it?` and `What time does it
+close?` keep the current destination; without a destination, the assistant asks
+which office the student means. Floor and room questions require those exact facts.
 
 Public chat input is limited to 600 characters and 120 words. The web app allows
 12 messages per browser session per minute and 120 messages per process per

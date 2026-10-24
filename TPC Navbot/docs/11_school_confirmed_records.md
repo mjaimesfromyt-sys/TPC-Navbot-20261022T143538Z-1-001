@@ -20,6 +20,24 @@ submission, with content hashes and review metadata. The original thirty
 `doc_*.txt` generated samples retain `verified: false`. The source registry
 is the approval authority used by retrieval.
 
+A separate `user_confirmed_bsis_office.txt` source records the project maintainer's
+24 October 2026 clarification, "Naa sa main building sulod," in response to the
+BSIS / Information Systems department office location question. Its only location
+fact is **inside the Main Building**. The registry identifies this as direct user
+confirmation; it does not attribute it to the earlier school reviewer or handbook.
+No floor, room, office hours, route, or BSAIS office location was supplied.
+
+Later on 24 October 2026 the user was explicitly asked for the BSAIS,
+English/BAEL, Political Science/BAPS, and Early Childhood Education/BECED office
+locations and replied, "Naa ra gihaponn sa main building maka ask raman kas mga
+tao inag sulod nmo sa main building." Separate `user_confirmed_bsais_office.txt`,
+`user_confirmed_bael_office.txt`, `user_confirmed_baps_office.txt`, and
+`user_confirmed_beced_office.txt` sources retain that later confirmation: the
+four offices are inside the Main Building, and students can ask someone after
+entering for the exact office. This supersedes the earlier missing BSAIS location;
+it supplies no exact floor, room, hours, named staff, or walking route. Existing
+Criminology and Agriculture building facts are unchanged.
+
 Approved fields include the supplied landmark-based locations, Main Building
 office assignments where stated, specified weekday hours, selected services,
 the common computer-laboratory rules, the seven supplied program titles, and

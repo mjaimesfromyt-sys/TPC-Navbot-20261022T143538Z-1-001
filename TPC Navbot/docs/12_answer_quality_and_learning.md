@@ -8,11 +8,31 @@ BSIS/BSAIS, preserve the reviewed fact that new student IDs are free, and preven
 scholarship/replacement workflows, renewal costs and specific contact requests
 from borrowing facts belonging to another service.
 
-Final validation on 24 October 2026: **150 regression tests passed**, including
+Latest validation on 24 October 2026: **231 regression tests passed**, including
 the 199-case benchmark, eight focused accuracy cases, UI feedback/quota checks,
 input attacks, reviewed-source revocation, storage and learning behavior. The
-full local runner log is retained in `.codex-tmp/full-regression-final.log` at
+full local runner log is retained in `.codex-tmp/rag-optimization-regression.log` at
 the workspace root.
+
+The current RAG adds source-document hybrid retrieval, structured chunking,
+question-only CSV pattern ingestion, claim-specific authority/date/conflict checks,
+field-bound citations, and derived source-grounded Q&A. The 10,000-row question
+dataset is not a factual answer key. See the
+[RAG optimization report](13_rag_optimization_report.md) for the before/after
+metrics, 1,500-group weighted evaluation, provenance limits, and reproducible commands.
+
+Eighteen additional tests cover department name variants, the user's BSIS office
+location confirmation, BSIS/BSAIS separation, natural student location wording,
+student-ID office questions, context-preserving follow-ups, and specific missing
+floor/room/hours. A follow-up with no current subject now requests clarification
+without retrieving information from a previous or another student's destination.
+
+Eleven further tests cover all seven departments: full names, abbreviations,
+department lists in three languages, individual program questions, source-specific
+locations, and follow-up hours. They also check the five direct user-confirmed
+Main Building office sources for exact hashes, LF bytes, honest review metadata,
+and rejection after content changes. Separate synthetic offices verify that a
+missing department cannot borrow another department's location or room.
 
 These are regression results, not a claim of universal accuracy. The tests use
 the local lexical embedding backend with cloud model selection disabled. They

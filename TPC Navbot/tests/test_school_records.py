@@ -77,7 +77,11 @@ class SchoolConfirmedRecordsTests(unittest.TestCase):
         self.assertGreater(self.summary["verified_chunks"], 0)
         self.assertEqual(
             {meta["source_doc"] for meta in self.store.metadatas if meta["verified_source"]},
-            set(self.confirmed),
+            set(self.confirmed) | {
+                "user_confirmed_bsis_office.txt", "user_confirmed_bsais_office.txt",
+                "user_confirmed_bael_office.txt", "user_confirmed_baps_office.txt",
+                "user_confirmed_beced_office.txt",
+            },
         )
         for query in ("library", "registrar", "guidance"):
             with self.subTest(query=query):

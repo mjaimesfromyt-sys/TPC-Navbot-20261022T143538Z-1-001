@@ -1,0 +1,14 @@
+TPC user-confirmed location: Information Systems (BSIS) Department Office
+Location ID: TPC-BSIS-OFFICE
+Confirmation date: 2026-10-24
+
+The project maintainer directly clarified the location in conversation:
+"Naa sa main building sulod"
+
+Selected fact:
+The Information Systems (BSIS) department office is inside the Main Building.
+
+This is the user's direct location confirmation. No additional school reviewer,
+handbook page, or independent campus verification is claimed.
+Floor, room number, office hours, staff, detailed routes, and BSAIS office
+location were not supplied and must not be inferred from this record.

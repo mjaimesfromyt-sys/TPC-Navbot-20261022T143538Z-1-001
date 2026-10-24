@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "purpose": "derived_verified_source_facts_and_qa",
+  "created_on": "2026-10-24",
+  "source_registry_sha256": "979b3e8ce8802cdb5eca485fa99acce73d3f9dbf0ddb4fb8fd6221ea0d65d456",
+  "approved_document_count": 35,
+  "current_document_count": 35,
+  "current_documents": [
+    "school_confirmed_01_computer_laboratories.txt",
+    "school_confirmed_02_main_academic_building.txt",
+    "school_confirmed_03_criminology_building.txt",
+    "school_confirmed_04_agriculture_building_field_office.txt",
+    "school_confirmed_05_administration_building.txt",
+    "school_confirmed_06_gymnasium_cultural_activity_center.txt",
+    "school_confirmed_07_canteen_dining_area.txt",
+    "school_confirmed_08_library_learning_resource_center.txt",
+    "school_confirmed_09_registrar_s_office.txt",
+    "school_confirmed_10_student_affairs_office.txt",
+    "school_confirmed_11_guidance_office.txt",
+    "school_confirmed_12_clinic_health_services.txt",
+    "school_confirmed_13_faculty_room_faculty_offices.txt",
+    "school_confirmed_14_computer_laboratory_rules_and_access.txt",
+    "school_confirmed_15_campus_internet_and_wi_fi_access.txt",
+    "school_confirmed_16_student_id_and_identification_services.txt",
+    "school_confirmed_17_student_enrollment_procedures.txt",
+    "school_confirmed_18_enrollment_requirements_and_documents.txt",
+    "school_confirmed_19_admission_and_eligibility_requirements.txt",
+    "school_confirmed_20_academic_programs_and_departments.txt",
+    "school_confirmed_21_academic_calendar_and_school_schedule.txt",
+    "school_confirmed_22_examination_schedules_and_policies.txt",
+    "school_confirmed_23_grading_system_and_academic_evaluation.txt",
+    "school_confirmed_24_student_attendance_and_absence_policies.txt",
+    "school_confirmed_25_student_handbook_and_campus_policies.txt",
+    "school_confirmed_26_campus_safety_and_emergency_procedures.txt",
+    "school_confirmed_27_campus_facilities_and_accessibility.txt",
+    "school_confirmed_28_campus_transportation_and_parking_rules.txt",
+    "school_confirmed_29_campus_communication_channels_and_announcements.txt",
+    "school_confirmed_30_general_campus_information_and_frequently_asked_questions.txt",
+    "user_confirmed_bael_office.txt",
+    "user_confirmed_baps_office.txt",
+    "user_confirmed_beced_office.txt",
+    "user_confirmed_bsais_office.txt",
+    "user_confirmed_bsis_office.txt"
+  ],
+  "facts": 65,
+  "qa_records": 215,
+  "languages": {
+    "bisaya": 65,
+    "english": 65,
+    "mixed": 20,
+    "tagalog": 65
+  },
+  "evidence_status_counts": {
+    "direct_user_confirmation": 5,
+    "reviewed_user_reported": 60
+  },
+  "excluded_documents": {
+    "not_reviewed": 30
+  },
+  "conflicts": [],
+  "ambiguous_fact_id_collisions": [],
+  "question_dataset_answers_used": false,
+  "model_weight_updates": false,
+  "limitations": [
+    "Approval and authority are locally recorded reviews, not independent school authentication.",
+    "Publication/effective dates, URLs and page references remain empty when not supplied.",
+    "Q&A answers quote approved field values; missing translations preserve reviewed source wording.",
+    "Derived artifacts must be rebuilt after raw source or registry changes; runtime revalidates original sources.",
+    "Only explicitly supported fields are exported; this is not proof all student questions are answerable."
+  ]
+}
